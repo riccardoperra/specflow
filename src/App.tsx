@@ -4,8 +4,11 @@ import { Home } from "./components/Home";
 import { Auth } from "./components/Auth";
 import { provideState } from "statebuilder";
 import { AuthState } from "./core/state/auth";
+import "./global.css";
 
 const App: Component = () => {
+  document.documentElement.setAttribute("data-cui-theme", "dark");
+
   const Routes = useRoutes([
     {
       path: "/",
