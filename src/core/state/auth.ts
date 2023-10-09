@@ -3,7 +3,7 @@ import { defineSignal } from "statebuilder";
 import { withProxyCommands } from "statebuilder/commands";
 import { useNavigate } from "@solidjs/router";
 import { withHanko } from "./hanko";
-import { createEffect, on } from "solid-js";
+import { createEffect, getOwner, on, runWithOwner } from "solid-js";
 
 type AuthCommands = {
   setCurrent: User | null;
@@ -27,13 +27,16 @@ export const AuthState = defineSignal<User | null>(() => null)
   }))
   .extend((_, context) => {
     const navigate = useNavigate();
+    const owner = getOwner();
 
     context.hooks.onInit(() => {
       _.loadCurrentUser().then(() => {
-        createEffect(
-          on(_, (user) => {
-            navigate(user ? "/" : "/login");
-          }),
+        runWithOwner(owner, () =>
+          createEffect(
+            on(_, (user) => {
+              navigate(user ? "/" : "/login");
+            }),
+          ),
         );
       });
 
