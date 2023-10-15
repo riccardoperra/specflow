@@ -1,7 +1,6 @@
 import { Component } from "solid-js";
 import { useRoutes } from "@solidjs/router";
-import { Home } from "./components/Home";
-import { Auth } from "./components/Auth";
+import { Auth } from "./components/Auth/Auth";
 import { provideState } from "statebuilder";
 import { AuthState } from "./core/state/auth";
 import "./global.css";
