@@ -101,15 +101,15 @@ export function MermaidEditor(props: VoidProps<JsonEditorProps>) {
     ]);
   }, editorView);
 
-  createExtension(() => readOnlyTransactionFilter());
+  // createExtension(() => readOnlyTransactionFilter());
   createExtension(theme);
 
   createExtension(() => [
-    EditorView.updateListener.of((vu) => {
-      if (!vu.docChanged) return;
-      disabledLineSelection(vu.view, 0, props.type.length + 1);
-      return false;
-    }),
+    // EditorView.updateListener.of((vu) => {
+    //   if (!vu.docChanged) return;
+    //   disabledLineSelection(vu.view, 0, props.type.length + 1);
+    //   return false;
+    // }),
     EditorView.theme({
       ".cm-line:first-child": {
         "user-select": "none",

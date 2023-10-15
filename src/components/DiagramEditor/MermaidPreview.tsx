@@ -1,10 +1,4 @@
-import {
-  createEffect,
-  createSignal,
-  createUniqueId,
-  on,
-  onMount,
-} from "solid-js";
+import { createEffect, createSignal, on, onMount, Show } from "solid-js";
 
 import mermaid from "mermaid";
 
@@ -13,13 +7,26 @@ interface MermaidPreviewProps {
 }
 
 export function MermaidPreview(props: MermaidPreviewProps) {
-  const id = createUniqueId();
+  const [errorMessage, setErrorMessage] = createSignal<string | null>(null);
+  const id = "id-1";
   let element!: HTMLDivElement;
 
   const render = async (content: string) => {
-    const { svg, bindFunctions } = await mermaid.render(id, content);
-    element.innerHTML = svg;
-    bindFunctions?.(element);
+    const result: Error | boolean = await mermaid
+      .parse(content)
+      .then((_) => _)
+      .catch((e) => e);
+
+    if (result === true) {
+      setErrorMessage(null);
+      document.querySelector(`#${id}`)!.textContent = content;
+      document.querySelector(`#${id}`)!.removeAttribute("data-processed");
+      mermaid.run({
+        nodes: [document.querySelector(`#${id}`)!],
+      });
+    } else if (result instanceof Error) {
+      setErrorMessage(result.message);
+    }
   };
 
   onMount(() => {
@@ -35,8 +42,22 @@ export function MermaidPreview(props: MermaidPreviewProps) {
   });
 
   return (
-    <div ref={element} class={"w-full flex justify-center overflow-auto"}>
-      <div id={id} />
+    <div
+      ref={element}
+      class={"w-full h-full flex justify-center overflow-auto relative"}
+    >
+      <Show when={errorMessage()}>
+        {(errorMessage) => (
+          <div
+            class={
+              "absolute w-full h-full top-0 left-0 text-red-500 text-2xl bg-neutral-900/50 p-12"
+            }
+          >
+            <span class={"whitespace-pre-wrap"}>{errorMessage()}</span>
+          </div>
+        )}
+      </Show>
+      <div id={id} class={"w-full h-full flex items-center justify-center"} />
     </div>
   );
 }
