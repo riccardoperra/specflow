@@ -12,7 +12,11 @@ export default defineConfig({
     solidPlugin(),
     // devtools(),
 
-    vanillaExtractPlugin(),
+    vanillaExtractPlugin({
+      esbuildOptions: {
+        external: ["solid-js", "solid-js/web"],
+      },
+    }),
   ],
   server: {
     port: 3000,

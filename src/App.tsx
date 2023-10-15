@@ -5,6 +5,10 @@ import { Auth } from "./components/Auth";
 import { provideState } from "statebuilder";
 import { AuthState } from "./core/state/auth";
 import "./global.css";
+import { Projects } from "./components/Projects/Projects";
+import { ProjectPage } from "./components/Projects/ProjectPage";
+import { ProjectSelectedPage } from "./components/Projects/ProjectSelectedPage";
+import { ProjectEditor } from "./components/Projects/ProjectEditor/ProjectEditor";
 
 const App: Component = () => {
   document.documentElement.setAttribute("data-cui-theme", "dark");
@@ -15,6 +19,22 @@ const App: Component = () => {
       component: Home,
     },
     {
+      path: "/projects",
+      component: Projects,
+    },
+    {
+      path: "/projects/:id/editor",
+      component: ProjectEditor,
+    },
+    {
+      path: "/projects/:id",
+      component: ProjectPage,
+    },
+    {
+      path: "projects/:id/page/:pageId",
+      component: ProjectSelectedPage,
+    },
+    {
       path: "/login",
       component: Auth,
     },
@@ -22,7 +42,11 @@ const App: Component = () => {
 
   void provideState(AuthState);
 
-  return <Routes />;
+  return (
+    <div class={"h-[100dvh] w-full overflow-hidden flex"}>
+      <Routes />
+    </div>
+  );
 };
 
 export default App;

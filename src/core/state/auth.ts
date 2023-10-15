@@ -34,7 +34,7 @@ export const AuthState = defineSignal<User | null>(() => null)
         runWithOwner(owner, () =>
           createEffect(
             on(_, (user) => {
-              navigate(user ? "/" : "/login");
+              // navigate(user ? "/" : "/login");
             }),
           ),
         );
