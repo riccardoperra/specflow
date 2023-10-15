@@ -15,6 +15,7 @@ import {
 import { makeAsyncAction } from "statebuilder/asyncAction";
 import { ControlledDialogProps } from "../../../../core/utils/controlledDialog";
 import { DIAGRAMS } from "../../../../core/constants/diagrams";
+import { createSignal } from "solid-js";
 
 interface ProjectEditorPageSettingsDialogProps extends ControlledDialogProps {
   onSave: (projectPageView: ProjectPageView) => void;
@@ -30,11 +31,14 @@ interface Form {
 export function ProjectEditorNewPageDialog(
   props: ProjectEditorPageSettingsDialogProps,
 ) {
+  const [submitted, setSubmitted] = createSignal(false);
   const [form, setForm] = createStore<Form>({
     name: "",
     description: "",
     diagramType: null,
   });
+
+  const formValid = () => !!form.name && form.diagramType;
 
   const onSave = (projectPageView: ProjectPageView) => {
     props.onOpenChange(false);
@@ -62,6 +66,17 @@ export function ProjectEditorNewPageDialog(
     { key: "label", valueKey: "value" },
   );
 
+  const validations = {
+    name: {
+      state: () => (submitted() && !form.name ? "invalid" : undefined),
+      errorMessage: () => "The field is required",
+    },
+    templateDiagram: {
+      state: () => (submitted() && !form.diagramType ? "invalid" : undefined),
+      errorMessage: () => "The field is required",
+    },
+  };
+
   return (
     <Dialog
       size={"md"}
@@ -73,17 +88,20 @@ export function ProjectEditorNewPageDialog(
         <div class={"flex flex-col gap-3"}>
           <TextField
             placeholder={"Enter a name"}
-            label={"Title"}
-            size={"md"}
+            label={"Title (required)"}
+            size={"lg"}
+            required={true}
             value={form.name}
+            validationState={validations.name.state()}
+            errorMessage={validations.name.errorMessage()}
             onChange={(value) => setForm("name", value)}
           />
 
           <TextField
             placeholder={"Enter a description"}
             label={"Description"}
-            size={"md"}
             value={form.description}
+            size={"lg"}
             onChange={(value) => setForm("description", value)}
           />
 
@@ -94,9 +112,13 @@ export function ProjectEditorNewPageDialog(
               (v) => setForm("diagramType", v ?? null),
             )}
             options={diagramsOptions.options()}
-            label={"Diagram type"}
+            label={"Template diagram (required)"}
             multiple={false}
-            aria-label={"Diagram type"}
+            required={true}
+            size={"lg"}
+            aria-label={"Template diagram"}
+            validationState={validations.templateDiagram.state()}
+            errorMessage={validations.templateDiagram.errorMessage()}
             modal={true}
           />
         </div>
@@ -113,7 +135,12 @@ export function ProjectEditorNewPageDialog(
           <Button
             loading={saveAction.loading}
             theme={"primary"}
-            onClick={() => saveAction(unwrap(form))}
+            onClick={() => {
+              setSubmitted(true);
+              if (formValid()) {
+                saveAction(unwrap(form));
+              }
+            }}
           >
             Save
           </Button>

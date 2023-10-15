@@ -1,9 +1,10 @@
-import { createEffect, createSignal, on, onMount, Show } from "solid-js";
+import { createEffect, createSignal, on, onMount, Ref, Show } from "solid-js";
 
 import mermaid from "mermaid";
 
 interface MermaidPreviewProps {
   content: string;
+  ref?: Ref<HTMLDivElement>;
 }
 
 export function MermaidPreview(props: MermaidPreviewProps) {
@@ -44,7 +45,9 @@ export function MermaidPreview(props: MermaidPreviewProps) {
   return (
     <div
       ref={element}
-      class={"w-full h-full flex justify-center overflow-auto relative"}
+      class={
+        "w-full h-full flex justify-center overflow-auto relative place-items-center"
+      }
     >
       <Show when={errorMessage()}>
         {(errorMessage) => (
@@ -57,7 +60,7 @@ export function MermaidPreview(props: MermaidPreviewProps) {
           </div>
         )}
       </Show>
-      <div id={id} class={"w-full h-full flex items-center justify-center"} />
+      <div ref={props.ref} id={id} class={"bg-neutral-800"} />
     </div>
   );
 }

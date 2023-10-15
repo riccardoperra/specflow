@@ -53,14 +53,24 @@ export function ProjectEditorSidebar(props: ProjectEditorSidebarProps) {
                   }}
                   onClick={() => editorState.actions.setActivePage(page.id)}
                 >
-                  <div class={"flex justify-between flex-start gap-2"}>
+                  <div
+                    class={
+                      "flex justify-between flex-start gap-2 overflow-hidden"
+                    }
+                  >
                     <div class={"flex-1"}>
                       <div class={"flex items-center gap-3"}>
                         <Show when={page.type === "diagram"}>
                           <PresentationChart class={"w-4 h-4"} />
                         </Show>
 
-                        <h1 class={"text-md whitespace-nowrap"}>{page.name}</h1>
+                        <h1
+                          class={
+                            "text-md whitespace-nowrap block text-ellipsis"
+                          }
+                        >
+                          {page.name}
+                        </h1>
                       </div>
                     </div>
                   </div>

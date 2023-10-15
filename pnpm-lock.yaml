@@ -59,6 +59,9 @@ dependencies:
   mermaid:
     specifier: ^10.5.0
     version: 10.5.0
+  modern-screenshot:
+    specifier: ^4.4.32
+    version: 4.4.32
   openai:
     specifier: ^4.12.1
     version: 4.12.1
@@ -4033,6 +4036,10 @@ packages:
       pathe: 1.1.1
       pkg-types: 1.0.3
       ufo: 1.3.1
+
+  /modern-screenshot@4.4.32:
+    resolution: {integrity: sha512-CWIEVwUep7PE56D3Et20/Nx2b7Bb9aSnfHCLgljnYhPAs3c5Lc20JrcnhRD6gOSb6J4L2PrkRDm3DZfyA1/ezg==}
+    dev: false
 
   /motion@10.16.4:
     resolution: {integrity: sha512-wvBeT0sZNgU6Od1aimjywBikqzm5yE97+L9eM/AoLy01AXNPdcnSDVHB3CoR0dGdHMbp/S0A/PjsJfWg0+k8Mg==}

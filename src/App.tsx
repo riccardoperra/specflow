@@ -8,6 +8,7 @@ import "./global.css";
 import { Projects } from "./components/Projects/Projects";
 import { ProjectPage } from "./components/Projects/ProjectPage";
 import { ProjectEditor } from "./components/Projects/ProjectEditor/ProjectEditor";
+import { Profile } from "./components/Profile";
 
 const App: Component = () => {
   document.documentElement.setAttribute("data-cui-theme", "dark");
@@ -32,6 +33,10 @@ const App: Component = () => {
     {
       path: "/login",
       component: Auth,
+    },
+    {
+      path: "/profile",
+      component: Profile,
     },
   ]);
 

@@ -1,11 +1,13 @@
 import { MermaidPreview } from "./MermaidPreview";
 import { MermaidEditor } from "../Editor/MermaidEditor";
+import { Ref } from "solid-js";
 
 interface DiagramEditorProps {
   content: string;
   diagramType: string;
   onValueChange: (value: string) => void;
   onSaveShortcut: () => void;
+  ref?: Ref<HTMLDivElement>;
 }
 
 export function DiagramEditor(props: DiagramEditorProps) {
@@ -22,7 +24,7 @@ export function DiagramEditor(props: DiagramEditorProps) {
         </div>
 
         <div class="flex-1 flex items-center justify-center bg-neutral-800 h-full">
-          <MermaidPreview content={props.content} />
+          <MermaidPreview ref={props.ref!} content={props.content} />
         </div>
       </div>
     </div>

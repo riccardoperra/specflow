@@ -11,6 +11,10 @@ globalStyle("button[data-cui=button]", {
   lineHeight: 1,
 });
 
+globalStyle("button, role[button]", {
+  cursor: "default",
+});
+
 export const bgBrand = style({
   backgroundColor: themeVars.brand,
   color: themeVars.foreground,

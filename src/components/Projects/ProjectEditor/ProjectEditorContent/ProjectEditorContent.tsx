@@ -4,6 +4,7 @@ import { Match, Show, Switch } from "solid-js";
 import { ProjectPageView } from "../../../../core/services/projects";
 import { DiagramEditor } from "../../../DiagramEditor/DiagramEditor";
 import { LoadingCircle } from "../../../../icons/LoadingCircle";
+import { PreviewState } from "../previewState";
 
 interface DiagramEditorContentProps {
   page: ProjectPageView;
@@ -12,6 +13,8 @@ interface DiagramEditorContentProps {
 }
 
 function DiagramEditorContent(props: DiagramEditorContentProps) {
+  const previewState = provideState(PreviewState);
+
   return (
     <div class="h-full w-full rounded-lg overflow-auto bg-neutral-900">
       <DiagramEditor
@@ -19,6 +22,7 @@ function DiagramEditorContent(props: DiagramEditorContentProps) {
         diagramType={(props.page.content as any).metadata.diagramType}
         onValueChange={props.onValueChange}
         onSaveShortcut={props.onSaveShortcut}
+        ref={(ref) => previewState.actions.setRef(ref)}
       />
     </div>
   );
