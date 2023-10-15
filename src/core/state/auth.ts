@@ -34,7 +34,13 @@ export const AuthState = defineSignal<User | null>(() => null)
         runWithOwner(owner, () =>
           createEffect(
             on(_, (user) => {
-              // navigate(user ? "/" : "/login");
+              navigate(
+                user
+                  ? window.location.pathname === "/login"
+                    ? "/"
+                    : window.location.pathname
+                  : "/login",
+              );
             }),
           ),
         );

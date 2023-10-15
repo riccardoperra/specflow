@@ -2,6 +2,7 @@ import { For, Show } from "solid-js";
 import { Link } from "@solidjs/router";
 import { ProjectView } from "../../../core/services/projects";
 import { Button } from "@codeui/kit";
+import { ShareIcon } from "../../../icons/ShareIcon";
 
 interface ProjectEditorHeaderProps {
   project: ProjectView;
@@ -34,7 +35,11 @@ export function ProjectEditorHeader(props: ProjectEditorHeaderProps) {
         </For>
       </div>
       <div class={"ml-auto"}>
-        <Button size={"sm"} theme={"primary"}>
+        <Button
+          leftIcon={<ShareIcon class={"w-4 h-4"} />}
+          size={"sm"}
+          theme={"primary"}
+        >
           Share
         </Button>
       </div>

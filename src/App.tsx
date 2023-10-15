@@ -7,7 +7,6 @@ import { AuthState } from "./core/state/auth";
 import "./global.css";
 import { Projects } from "./components/Projects/Projects";
 import { ProjectPage } from "./components/Projects/ProjectPage";
-import { ProjectSelectedPage } from "./components/Projects/ProjectSelectedPage";
 import { ProjectEditor } from "./components/Projects/ProjectEditor/ProjectEditor";
 
 const App: Component = () => {
@@ -16,7 +15,7 @@ const App: Component = () => {
   const Routes = useRoutes([
     {
       path: "/",
-      component: Home,
+      data: ({ navigate }) => navigate("/projects"),
     },
     {
       path: "/projects",
@@ -29,10 +28,6 @@ const App: Component = () => {
     {
       path: "/projects/:id",
       component: ProjectPage,
-    },
-    {
-      path: "projects/:id/page/:pageId",
-      component: ProjectSelectedPage,
     },
     {
       path: "/login",

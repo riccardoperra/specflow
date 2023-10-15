@@ -3,9 +3,9 @@ import { MermaidEditor } from "../Editor/MermaidEditor";
 
 interface DiagramEditorProps {
   content: string;
-  metadata: {
-    diagramType: string;
-  };
+  diagramType: string;
+  onValueChange: (value: string) => void;
+  onSaveShortcut: () => void;
 }
 
 export function DiagramEditor(props: DiagramEditorProps) {
@@ -14,10 +14,10 @@ export function DiagramEditor(props: DiagramEditorProps) {
       <div class="flex w-full h-full rounded-lg overflow-hidden shadow-lg">
         <div class="bg-[#181818] w-[35%] h-full px-2 p-4">
           <MermaidEditor
-            type={props.metadata.diagramType}
+            type={props.diagramType}
             value={props.content}
-            onValueChange={() => void 0}
-            onSave={() => void 0}
+            onValueChange={props.onValueChange}
+            onSave={props.onSaveShortcut}
           />
         </div>
 

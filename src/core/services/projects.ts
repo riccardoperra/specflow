@@ -32,3 +32,15 @@ export async function getProjectPage(
     .maybeSingle();
   return res.data;
 }
+
+export async function updateProjectContent(
+  id: string,
+  content: Record<string, any>,
+) {
+  console.log("updating id", id);
+  return supabase
+    .from("project_page")
+    .update({ content })
+    .eq("id", id)
+    .select();
+}

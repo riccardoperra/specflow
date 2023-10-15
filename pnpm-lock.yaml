@@ -56,6 +56,9 @@ dependencies:
   mermaid:
     specifier: ^10.5.0
     version: 10.5.0
+  rxjs:
+    specifier: ^7.8.1
+    version: 7.8.1
   solid-codemirror:
     specifier: ^2.3.0
     version: 2.3.0(@codemirror/state@6.2.1)(@codemirror/view@6.21.3)(solid-js@1.7.12)
