@@ -1,10 +1,12 @@
 import { defineStore } from "statebuilder";
 import {
+  ProjectPageView,
   ProjectView,
   updateProjectContent,
 } from "../../../core/services/projects";
 import { withProxyCommands } from "statebuilder/commands";
 import { debounceTime, from, switchMap, tap } from "rxjs";
+import { generateMermaidDiagramCode } from "../../../core/services/gpt";
 
 interface EditorState {
   activePageId: string | null;
@@ -16,7 +18,9 @@ type Commands = {
   setActivePage: string | null;
   setProjectView: ProjectView | null;
   updateProjectViewContent: { id: string; content: string };
+  updateProjectSettings: ProjectPageView;
   updateLoading: boolean;
+  triggerSave: boolean;
 };
 
 export const EditorState = defineStore<EditorState>(() => ({
@@ -50,6 +54,14 @@ export const EditorState = defineStore<EditorState>(() => ({
         "content",
         // TODO: fix type
         (v: any) => ({ ...v, content }),
+      ),
+    );
+    _.hold(_.commands.updateProjectSettings, ({ id, name, description }) =>
+      _.set(
+        "projectView",
+        "project_page",
+        (_) => _.id === id,
+        (v) => ({ ...v, name, description }),
       ),
     );
   })

@@ -1,4 +1,5 @@
-import { globalStyle } from "@vanilla-extract/css";
+import { globalStyle, style } from "@vanilla-extract/css";
+import { themeVars } from "@codeui/kit";
 
 globalStyle("html", {
   backgroundColor: "#111",
@@ -8,4 +9,9 @@ globalStyle("html", {
 globalStyle("button[data-cui=button]", {
   verticalAlign: "text-bottom",
   lineHeight: 1,
+});
+
+export const bgBrand = style({
+  backgroundColor: themeVars.brand,
+  color: themeVars.foreground,
 });

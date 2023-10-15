@@ -33,6 +33,19 @@ export async function getProjectPage(
   return res.data;
 }
 
+export async function updateProjectSettings(
+  id: string,
+  data: { name: string; description: string },
+) {
+  console.log("updating id", id);
+  return supabase
+    .from("project_page")
+    .update({ name: data.name, description: data.description })
+    .eq("id", id)
+    .select()
+    .single();
+}
+
 export async function updateProjectContent(
   id: string,
   content: Record<string, any>,

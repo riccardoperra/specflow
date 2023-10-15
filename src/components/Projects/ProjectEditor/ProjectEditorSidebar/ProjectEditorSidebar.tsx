@@ -4,6 +4,10 @@ import { ProjectView } from "../../../../core/services/projects";
 import { provideState } from "statebuilder";
 import { EditorState } from "../editorState";
 import { PresentationChart } from "../../../../icons/PresentationChart";
+import { Button, IconButton, themeVars } from "@codeui/kit";
+import { extractCssVar } from "../../../../core/utils/extractCssVar";
+import { bgBrand } from "../../../../global.css";
+import { createControlledDialog } from "../../../../core/utils/controlledDialog";
 
 interface ProjectEditorSidebarProps {
   project: ProjectView;
@@ -12,22 +16,33 @@ interface ProjectEditorSidebarProps {
 export function ProjectEditorSidebar(props: ProjectEditorSidebarProps) {
   const editorState = provideState(EditorState);
 
+  const controlledDialog = createControlledDialog();
+
   return (
     <div class={styles.sidebar}>
       <div class={"flex flex-col gap-2"}>
-        <h3 class={"text-sm font-semibold"}>Pages</h3>
+        <div class={"flex justify-between items-center"}>
+          <h3 class={"text-sm font-semibold"}>Pages</h3>
+          <IconButton
+            aria-label={"Add new page"}
+            size={"xs"}
+            theme={"secondary"}
+          >
+            +
+          </IconButton>
+        </div>
         <ul class={"flex flex-col gap-2"}>
           <For each={props.project.project_page}>
             {(page, index) => {
               const isActive = () => editorState.get.activePageId === page.id;
+              // TODO use vanilla extract
               return (
                 <li
                   class={
                     "px-4 py-1.5 hover:bg-neutral-700 rounded-md select-none transition-all ease-in-out"
                   }
                   classList={{
-                    "border-blue-600": isActive(),
-                    "border-neutral-700": !isActive(),
+                    [bgBrand]: isActive(),
                   }}
                   onClick={() => editorState.actions.setActivePage(page.id)}
                 >
