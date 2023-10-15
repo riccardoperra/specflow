@@ -16,11 +16,7 @@ export function ProjectEditorHeader(props: ProjectEditorHeaderProps) {
   ];
 
   return (
-    <nav
-      class={
-        "h-[56px] bg-[#151516] px-6 flex items-center gap-2 border-b border-b-neutral-700"
-      }
-    >
+    <nav class={"h-[56px] bg-[#151516] px-4 flex items-center gap-2"}>
       <div class={"flex gap-4 text-lg"}>
         <For each={links()}>
           {(link, index) => (

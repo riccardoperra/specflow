@@ -6,6 +6,6 @@ export const sidebar = style({
   flex: "0 0 280px",
   height: "100%",
   padding: themeTokens.spacing["4"],
-  borderRight: `1px solid ${themeVars.separator}`,
   paddingTop: themeTokens.spacing["2"],
+  backgroundColor: "#151516",
 });

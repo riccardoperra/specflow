@@ -79,16 +79,7 @@ export const EditorState = defineStore<EditorState>(() => ({
   })
   .extend((_) => {
     const [searchParams, setSearchParams] = useSearchParams();
-    // generateMermaidDiagramCode(
-    //   _.get.projectView!,
-    //   _.selectedPage()!,
-    //   "Generate a sequence diagram for an optimistic ui system. when the user write to the editor, we need to call a supabase api for update. the api should be debounced until the user stops to write for 5 seconds. After that, if the api returns an error, the ui should be reverted opening a toast.",
-    // ).then((result) => {
-    //   _.actions.updateProjectViewContent({
-    //     content: result.choices[0].text.trim(),
-    //     id: _.selectedPage()!.id,
-    //   });
-    // });
+
     createEffect(
       on(
         () => searchParams.pageId,

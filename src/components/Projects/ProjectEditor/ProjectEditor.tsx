@@ -7,6 +7,7 @@ import { provideState } from "statebuilder";
 import { EditorState } from "./editorState";
 import { ProjectEditorContent } from "./ProjectEditorContent/ProjectEditorContent";
 import { ProjectEditorToolbar } from "./ProjectEditorToolbar/ProjectEditorToolbar";
+import * as styles from "./ProjectEditor.css";
 
 export function ProjectEditor() {
   const params = useParams<{ id: string }>();
@@ -32,9 +33,11 @@ export function ProjectEditor() {
             <ProjectEditorHeader project={projectView} />
             <div class={"flex h-full"}>
               <ProjectEditorSidebar project={projectView} />
-              <div class={"flex-1 relative"}>
-                <ProjectEditorToolbar />
-                <ProjectEditorContent />
+              <div class={styles.content}>
+                <div class={styles.innerContent}>
+                  <ProjectEditorToolbar />
+                  <ProjectEditorContent />
+                </div>
               </div>
             </div>
           </div>

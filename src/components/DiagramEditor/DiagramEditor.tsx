@@ -13,7 +13,7 @@ interface DiagramEditorProps {
 export function DiagramEditor(props: DiagramEditorProps) {
   return (
     <div class={"h-full w-full"}>
-      <div class="flex w-full h-full rounded-lg overflow-hidden shadow-lg">
+      <div class="flex w-full h-full rounded-tl-2xl rounded-tr-2xl overflow-hidden shadow-lg">
         <div class="bg-[#181818] w-[35%] h-full px-2 p-4">
           <MermaidEditor
             type={props.diagramType}
