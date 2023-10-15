@@ -7,16 +7,14 @@ import {
 } from "@codeui/kit";
 import {
   ProjectPageView,
-  updateProjectContent,
   updateProjectSettings,
 } from "../../../../core/services/projects";
 import { makeAsyncAction } from "statebuilder/asyncAction";
 import { createStore, unwrap } from "solid-js/store";
-import { createEffect } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
+import { ControlledDialogProps } from "../../../../core/utils/controlledDialog";
 
-interface ProjectEditorPageSettingsDialogProps {
-  open: boolean;
-  onOpenChange: (value: boolean) => void;
+interface ProjectEditorPageSettingsDialogProps extends ControlledDialogProps {
   onSave: (projectPageView: ProjectPageView) => void;
   projectPage: ProjectPageView;
 }
@@ -29,6 +27,7 @@ interface Form {
 export function ProjectEditorPageSettingsDialog(
   props: ProjectEditorPageSettingsDialogProps,
 ) {
+  const [submitted, setSubmitted] = createSignal(false);
   const [form, setForm] = createStore<Form>({
     name: props.projectPage.name,
     description: props.projectPage.description ?? "",
@@ -43,7 +42,6 @@ export function ProjectEditorPageSettingsDialog(
   );
 
   const onSave = (projectPageView: ProjectPageView) => {
-    props.onOpenChange(false);
     props.onSave(projectPageView);
   };
 
@@ -53,14 +51,22 @@ export function ProjectEditorPageSettingsDialog(
       .catch(() => {
         // TODO add error toast
         alert("Error");
-      }),
+      })
+      .finally(() => props.onOpenChange(false)),
   );
+
+  const validations = {
+    name: {
+      state: () => (submitted() && !form.name ? "invalid" : undefined),
+      errorMessage: () => "The field is required",
+    },
+  };
 
   return (
     <Dialog
       size={"md"}
       title={"Page settings"}
-      open={saveAction.loading ? true : props.open}
+      open={saveAction.loading ? true : props.isOpen}
       onOpenChange={props.onOpenChange}
     >
       <DialogPanelContent>
@@ -70,6 +76,8 @@ export function ProjectEditorPageSettingsDialog(
             label={"Title"}
             size={"md"}
             value={form.name}
+            validationState={validations.name.state()}
+            errorMessage={validations.name.errorMessage()}
             onChange={(value) => setForm("name", value)}
           />
 
@@ -94,7 +102,17 @@ export function ProjectEditorPageSettingsDialog(
           <Button
             loading={saveAction.loading}
             theme={"primary"}
-            onClick={() => saveAction(unwrap(form))}
+            onClick={() => {
+              setSubmitted(true);
+              if (
+                Object.values(validations).some(
+                  ({ state }) => state() === "invalid",
+                )
+              ) {
+                return;
+              }
+              saveAction(unwrap(form));
+            }}
           >
             Save
           </Button>

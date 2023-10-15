@@ -23,6 +23,7 @@ type Commands = {
   updateLoading: boolean;
   triggerSave: boolean;
   addNewPage: ProjectPageView;
+  removePage: string;
 };
 
 export const EditorState = defineStore<EditorState>(() => ({
@@ -70,6 +71,11 @@ export const EditorState = defineStore<EditorState>(() => ({
       _.set("projectView", "project_page", (result) => [...result, page]);
       _.set("activePageId", page.id);
     });
+    _.hold(_.commands.removePage, (id) =>
+      _.set("projectView", "project_page", (pages) =>
+        pages.filter((page) => page.id !== id),
+      ),
+    );
   })
   .extend((_) => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -112,6 +118,16 @@ export const EditorState = defineStore<EditorState>(() => ({
           _.get.projectView?.project_page?.[0].id ?? null,
         );
       }
+    });
+
+    _.watchCommand([_.commands.removePage]).subscribe((command) => {
+      // TODO fix type
+      const deletedId = (command as any)["consumerValue"];
+      if (_.get.activePageId === deletedId) {
+        const pages = _.get.projectView?.project_page ?? [];
+        _.actions.setActivePage(pages[0]?.id);
+      }
+      console.log("remove id", command);
     });
 
     from(_.watchCommand([_.commands.updateProjectViewContent]))

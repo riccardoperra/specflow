@@ -34,6 +34,13 @@ export async function getProjectPage(
   return res.data;
 }
 
+export async function deleteProjectPage(
+  id: string,
+): Promise<ProjectPageView | null> {
+  const res = await supabase.from("project_page").delete().eq("id", id);
+  return res.data;
+}
+
 export async function createProjectPage(
   projectId: number,
   data: {
