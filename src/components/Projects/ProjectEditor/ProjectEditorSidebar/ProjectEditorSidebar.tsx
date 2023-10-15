@@ -4,10 +4,11 @@ import { ProjectView } from "../../../../core/services/projects";
 import { provideState } from "statebuilder";
 import { EditorState } from "../editorState";
 import { PresentationChart } from "../../../../icons/PresentationChart";
-import { Button, IconButton, themeVars } from "@codeui/kit";
-import { extractCssVar } from "../../../../core/utils/extractCssVar";
+import { IconButton } from "@codeui/kit";
 import { bgBrand } from "../../../../global.css";
 import { createControlledDialog } from "../../../../core/utils/controlledDialog";
+import { ProjectEditorNewPageDialog } from "../ProjectEditorNewPageDialog/ProjectEditorNewPageDialog";
+import { PlusIcon } from "../../../../icons/PlusIcon";
 
 interface ProjectEditorSidebarProps {
   project: ProjectView;
@@ -27,8 +28,14 @@ export function ProjectEditorSidebar(props: ProjectEditorSidebarProps) {
             aria-label={"Add new page"}
             size={"xs"}
             theme={"secondary"}
+            onClick={() =>
+              controlledDialog(ProjectEditorNewPageDialog, {
+                onSave: (result) => editorState.actions.addNewPage(result),
+                projectId: props.project.id,
+              })
+            }
           >
-            +
+            <PlusIcon class={"w-4 h-4"} />
           </IconButton>
         </div>
         <ul class={"flex flex-col gap-2"}>

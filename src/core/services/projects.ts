@@ -1,5 +1,6 @@
 import { supabase } from "../supabase";
 import { Database } from "../../types/supabase";
+import { DIAGRAMS } from "../constants/diagrams";
 
 export type ProjectPageView =
   Database["public"]["Tables"]["project_page"]["Row"];
@@ -31,6 +32,33 @@ export async function getProjectPage(
     .eq("id", id)
     .maybeSingle();
   return res.data;
+}
+
+export async function createProjectPage(
+  projectId: number,
+  data: {
+    name: string;
+    description: string;
+    diagramType: keyof typeof DIAGRAMS;
+  },
+) {
+  return supabase
+    .from("project_page")
+    .insert({
+      name: data.name,
+      description: data.description,
+      content: {
+        type: "diagram",
+        content: DIAGRAMS[data.diagramType].example,
+        metadata: {
+          diagramType: "sequenceDiagram",
+        },
+      },
+      project_id: projectId,
+      type: "diagram",
+    })
+    .select()
+    .single();
 }
 
 export async function updateProjectSettings(

@@ -7,7 +7,7 @@ import { provideState } from "statebuilder";
 import { EditorState } from "./editorState";
 import { ProjectEditorContent } from "./ProjectEditorContent/ProjectEditorContent";
 import { Button, Dialog, DialogPanelContent, TextField } from "@codeui/kit";
-import { ProjectEditorPageSettingsDialog } from "./ProjectEditorPageSettings/ProjectEditorPageSettingsDialog";
+import { ProjectEditorPageSettingsDialog } from "./ProjectEditorPageSettingsDialog/ProjectEditorPageSettingsDialog";
 
 export function ProjectEditor() {
   const params = useParams<{ id: string }>();
@@ -30,12 +30,12 @@ export function ProjectEditor() {
 
   return (
     <Suspense>
-      <Show when={projectView()}>
+      <Show when={projectView()} keyed={true}>
         {(projectView) => (
           <div class={"w-full flex flex-col"}>
-            <ProjectEditorHeader project={projectView()} />
+            <ProjectEditorHeader project={projectView} />
             <div class={"flex h-full"}>
-              <ProjectEditorSidebar project={projectView()} />
+              <ProjectEditorSidebar project={projectView} />
               <div class={"flex-1 relative"}>
                 <div class={"flex pr-6 pl-3 py-2 gap-2"}>
                   <div>

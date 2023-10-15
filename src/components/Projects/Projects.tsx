@@ -2,13 +2,10 @@ import { Link } from "@solidjs/router";
 import { createResource, For, Show } from "solid-js";
 import { getProjects } from "../../core/services/projects";
 import { Button } from "@codeui/kit";
+import { CurrentUserBadge } from "../UserBadge/CurrentUserBadge";
 
 export function Projects() {
-  const links = [
-    { path: "/projects", label: "Dashboard" },
-    { path: "/projects", label: "Project-1" },
-    { path: "/projects", label: "First item" },
-  ];
+  const links = [{ path: "/projects", label: "Dashboard" }];
 
   const [projects] = createResource(getProjects);
 
@@ -37,6 +34,9 @@ export function Projects() {
                 </>
               )}
             </For>
+            <div class={"ml-auto"}>
+              <CurrentUserBadge />
+            </div>
           </div>
         </div>
       </nav>

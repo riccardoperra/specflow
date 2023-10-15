@@ -29,6 +29,8 @@ export const AuthState = defineSignal<User | null>(() => null)
     const navigate = useNavigate();
     const owner = getOwner();
 
+    const currentUrl = () => window.location.href.split(window.origin)[1];
+
     context.hooks.onInit(() => {
       _.loadCurrentUser().then(() => {
         runWithOwner(owner, () =>
@@ -38,7 +40,7 @@ export const AuthState = defineSignal<User | null>(() => null)
                 user
                   ? window.location.pathname === "/login"
                     ? "/"
-                    : window.location.pathname
+                    : currentUrl()
                   : "/login",
               );
             }),
@@ -58,5 +60,19 @@ export const AuthState = defineSignal<User | null>(() => null)
       });
     });
 
-    return {};
+    return {
+      goToProfile() {
+        return navigate("/profile");
+      },
+      logout() {
+        return _.hanko.user
+          .logout()
+          .then(() => navigate("/login"))
+          .catch((e) => {
+            console.error("Error during logout:", e);
+            // TODO add toast
+            alert("Error while logout");
+          });
+      },
+    };
   });
