@@ -1,18 +1,14 @@
 import { UnauthorizedError, User } from "@teamhanko/hanko-elements";
-import { defineSignal, defineStore } from "statebuilder";
+import { defineStore } from "statebuilder";
 import { withProxyCommands } from "statebuilder/commands";
 import { useNavigate } from "@solidjs/router";
 import { withHanko } from "./hanko";
-import { createEffect, createSignal, on } from "solid-js";
+import { createEffect, createMemo, on } from "solid-js";
 import { cookieStorage } from "../utils/cookieStorage";
 import { supabase, supabaseCookieName } from "../supabase";
 import { signSupabaseToken } from "../services/auth";
-import {
-  ControlledDialogProps,
-  createControlledDialog,
-} from "../utils/controlledDialog";
+import { createControlledDialog } from "../utils/controlledDialog";
 import { ProfileDialog } from "../../components/Profile/ProfileDialog";
-import { Dialog } from "@kobalte/core";
 
 type AuthCommands = {
   setCurrent: User | null;
@@ -56,21 +52,17 @@ export const AuthState = defineStore<State>(() => ({
   }))
   .extend((_, context) => {
     const navigate = useNavigate();
-    const [supabaseAccessToken, setSupabaseAccessToken] = createSignal<
-      string | null
-    >(null);
-
-    const loggedIn = () => !!supabaseAccessToken() && !!_();
+    const loggedIn = () => !!_.get.supabaseAccessToken && !!_();
 
     context.hooks.onInit(() => {
       _.loadCurrentUser().then((user) => {
-        setSupabaseAccessToken(
+        _.actions.setSupabaseAccessToken(
           cookieStorage.getItem(supabaseCookieName, { path: "/" }),
         );
         _.actions.setCurrent(user ?? null);
         _.actions.setReady(true);
         if (!user) {
-          setSupabaseAccessToken(null);
+          _.actions.setSupabaseAccessToken(null);
           navigate("/login");
         }
       });
@@ -80,9 +72,9 @@ export const AuthState = defineStore<State>(() => ({
         _.loadCurrentUser().then((user) => {
           _.actions.setCurrent(user ?? null);
           signSupabaseToken(_.hanko.session.get())
-            .then(({ access_token }) => {
-              setSupabaseAccessToken(access_token);
-            })
+            .then(({ access_token }) =>
+              _.actions.setSupabaseAccessToken(access_token),
+            )
             .then(() => _.actions.setLoading(false))
             .then(() => navigate("/"));
         });
@@ -92,13 +84,13 @@ export const AuthState = defineStore<State>(() => ({
 
       createEffect(
         on(
-          supabaseAccessToken,
+          createMemo(() => _.get.supabaseAccessToken),
           (accessToken) => {
             const client = supabase;
             const originalHeaders = structuredClone(client["rest"]["headers"]);
             if (accessToken === null) {
               cookieStorage.removeItem(supabaseCookieName);
-              setSupabaseAccessToken(null);
+              _.actions.setSupabaseAccessToken(null);
               client["rest"].headers = originalHeaders;
             } else {
               const currentDate = new Date();
@@ -122,13 +114,13 @@ export const AuthState = defineStore<State>(() => ({
       );
 
       _.hanko.onSessionCreated((session) => {
-        setSupabaseAccessToken(session.jwt!);
+        _.actions.setSupabaseAccessToken(session.jwt!);
       });
       _.hanko.onSessionExpired(() => {
-        setSupabaseAccessToken(null);
+        _.actions.setSupabaseAccessToken(null);
       });
       _.hanko.onUserLoggedOut(() => {
-        setSupabaseAccessToken(null);
+        _.actions.setSupabaseAccessToken(null);
       });
     });
 
