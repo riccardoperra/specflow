@@ -31,14 +31,7 @@ export interface Database {
           name?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "project_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       project_page: {
         Row: {
@@ -49,6 +42,7 @@ export interface Database {
           name: string
           project_id: number
           type: string
+          user_id: string
         }
         Insert: {
           content: Json
@@ -58,6 +52,7 @@ export interface Database {
           name: string
           project_id: number
           type: string
+          user_id?: string
         }
         Update: {
           content?: Json
@@ -67,6 +62,7 @@ export interface Database {
           name?: string
           project_id?: number
           type?: string
+          user_id?: string
         }
         Relationships: [
           {
