@@ -10,6 +10,7 @@ import { createControlledDialog } from "../../../../core/utils/controlledDialog"
 import { provideState } from "statebuilder";
 import { EditorState } from "../editorState";
 import { PreviewState } from "../previewState";
+import { generateMermaidDiagramCode } from "../../../../core/services/gpt";
 
 export function ProjectEditorToolbar() {
   const editorState = provideState(EditorState);
@@ -46,6 +47,11 @@ export function ProjectEditorToolbar() {
   };
 
   const onGenerateWithAI = () => {
+    generateMermaidDiagramCode(
+      editorState.get.projectView!,
+      editorState.selectedPage()!,
+      "Example of optimistic ui with a sequence diagram",
+    ).then(console.log);
     // <Dialog
     //   open={openGenerateDialog()}
     //   title={`Generate diagram`}

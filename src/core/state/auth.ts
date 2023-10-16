@@ -28,6 +28,7 @@ export const AuthState = defineSignal<User | null>(() => null)
   }))
   .extend((_, context) => {
     const navigate = useNavigate();
+    const [loading, setLoading] = createSignal(false);
     const [ready, setReady] = createSignal(false);
     const [supabaseAccessToken, setSupabaseAccessToken] = createSignal<
       string | null
@@ -46,12 +47,14 @@ export const AuthState = defineSignal<User | null>(() => null)
       });
 
       _.hanko.onAuthFlowCompleted(() => {
+        setLoading(true);
         _.loadCurrentUser().then((user) => {
           _.actions.setCurrent(user ?? null);
           signSupabaseToken(_.hanko.session.get())
             .then(({ access_token }) => {
               setSupabaseAccessToken(access_token);
             })
+            .then(() => setLoading(false))
             .then(() => navigate("/"));
         });
       });
@@ -101,6 +104,7 @@ export const AuthState = defineSignal<User | null>(() => null)
 
     return {
       ready,
+      loading,
       goToProfile() {
         return navigate("/profile");
       },

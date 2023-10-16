@@ -1,11 +1,26 @@
 import { HankoAuth } from "../Hanko/HankoAuth";
 import { authContainer, backdrop, container, inner } from "./Auth.css";
+import { Show } from "solid-js";
+import { provideState } from "statebuilder";
+import { AuthState } from "../../core/state/auth";
+import { LoadingCircle } from "../../icons/LoadingCircle";
 
 export function Auth() {
+  const auth = provideState(AuthState);
   return (
     <div
       class={`w-full h-full flex items-center justify-center ${container} relative`}
     >
+      <Show when={auth.loading()}>
+        <div
+          class={
+            "absolute left-0 top-0 flex items-center justify-center w-full h-full z-50 bg-neutral-900/70"
+          }
+        >
+          <LoadingCircle class={"w-24 h-24"} />
+        </div>
+      </Show>
+
       <div class={`relative z-1 ${backdrop}`}>
         <div
           class={`rounded-3xl flex bg-neutral-950 items-stretch gap-4 ${inner}`}
