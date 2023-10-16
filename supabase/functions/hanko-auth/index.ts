@@ -31,6 +31,7 @@ Deno.serve(async (req) => {
     userId: session.userID,
     exp: new Date().setSeconds(session.expirationSeconds),
   };
+
   const token = jsonwebtoken.sign(payload, supabaseToken);
 
   return new Response(

@@ -1,6 +1,7 @@
 {
   "imports": {
-    "jwks-rsa": "https://esm.sh/jwks-rsa@3.1.0",
-    "jose": "https://deno.land/x/jose@v4.9.0/index.ts"
+    "jsonwebtoken": "https://esm.sh/jsonwebtoken@8.5.1",
+    "jose": "https://deno.land/x/jose@v4.9.0/index.ts",
+    "openai": "https://esm.sh/openai@4.12.1"
   }
 }
