@@ -20,6 +20,12 @@ export default defineConfig({
   ],
   server: {
     port: 3000,
+    cors: false,
+    proxy: {
+      "/functions": {
+        target: "http://localhost:54321",
+      },
+    },
   },
   build: {
     target: "esnext",
