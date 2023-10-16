@@ -30,8 +30,8 @@ dependencies:
     specifier: ^6.21.3
     version: 6.21.3
   '@codeui/kit':
-    specifier: ^0.0.25
-    version: 0.0.25(solid-js@1.7.12)(vite@4.4.11)
+    specifier: ^0.0.26
+    version: 0.0.26(solid-js@1.7.12)(vite@4.4.11)
   '@kobalte/core':
     specifier: ^0.11.0
     version: 0.11.0(solid-js@1.7.12)
@@ -397,6 +397,13 @@ packages:
     dependencies:
       regenerator-runtime: 0.14.0
 
+  /@babel/runtime@7.23.2:
+    resolution: {integrity: sha512-mM8eg4yl5D6i3lu2QKPuPH4FArvJ8KhTofbE7jwMUv9KX5mBvwPAqnV3MlyBNqdp9RyRKP6Yck8TrfYrPvX3bg==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: 0.14.0
+    dev: false
+
   /@babel/template@7.22.15:
     resolution: {integrity: sha512-QPErUVm4uyJa60rkI73qneDacvdvzxshT3kksGqlGWYdOTIUOwJ7RDUL8sGqslY1uXWSL6xMFKEXDS3ox2uF0w==}
     engines: {node: '>=6.9.0'}
@@ -691,8 +698,8 @@ packages:
       w3c-keyname: 2.2.8
     dev: false
 
-  /@codeui/kit@0.0.25(solid-js@1.7.12)(vite@4.4.11):
-    resolution: {integrity: sha512-QLmr/thlFWwOD/hALKg/3H1uhB/+dv2CJ5VTzmjoaVC9mS3bdjtKw9CZACv6BG4fBx/gtH1XTV1KeMwyfpJDIA==}
+  /@codeui/kit@0.0.26(solid-js@1.7.12)(vite@4.4.11):
+    resolution: {integrity: sha512-biG9+0+E1UGx3H3jT1gbvYGwIPjVCTYwouLGiOiS2MLjHyrR04a0mXgSOcvBZtMzlfJYLCqVOKQprtr8kothkg==}
     peerDependencies:
       solid-js: ^1.7.0
     dependencies:
@@ -4334,7 +4341,7 @@ packages:
     resolution: {integrity: sha512-Sz2Lkdxz6F2Pgnpi9U5Ng/WdWAUZxmHrNPoVlm3aAemxoy2Qy7LGjQg4uf8qKelDAUW94F4np3iH2YPf2qefcQ==}
     engines: {node: '>=10'}
     dependencies:
-      '@babel/runtime': 7.23.1
+      '@babel/runtime': 7.23.2
     dev: false
 
   /postcss-import@15.1.0(postcss@8.4.31):

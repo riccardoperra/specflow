@@ -10,12 +10,20 @@ import {
   DialogPanelContent,
   DialogPanelFooter,
   Select,
+  TextArea,
   TextField,
 } from "@codeui/kit";
 import { makeAsyncAction } from "statebuilder/asyncAction";
 import { ControlledDialogProps } from "../../../../core/utils/controlledDialog";
 import { DIAGRAMS } from "../../../../core/constants/diagrams";
 import { createSignal } from "solid-js";
+import { SparklesIcon } from "../../../../icons/SparklesIcon";
+import {
+  generateMermaidDiagramCode,
+  generateNewMermaidDiagramCode,
+} from "../../../../core/services/gpt";
+import { provideState } from "statebuilder";
+import { EditorState } from "../editorState";
 
 interface ProjectEditorPageSettingsDialogProps extends ControlledDialogProps {
   onSave: (projectPageView: ProjectPageView) => void;
@@ -31,6 +39,7 @@ interface Form {
 export function ProjectEditorNewPageDialog(
   props: ProjectEditorPageSettingsDialogProps,
 ) {
+  const editorState = provideState(EditorState);
   const [submitted, setSubmitted] = createSignal(false);
   const [form, setForm] = createStore<Form>({
     name: "",
@@ -58,6 +67,26 @@ export function ProjectEditorNewPageDialog(
       }),
   );
 
+  const generateWithAI = makeAsyncAction((data: Form) => {
+    return generateNewMermaidDiagramCode(
+      editorState.get.projectView!,
+      data,
+      data.description,
+    ).then((result) => {
+      return createProjectPage(props.projectId, {
+        name: form.name,
+        description: form.description,
+        diagramType: form.diagramType as keyof typeof DIAGRAMS,
+        content: result.choices[0].text.trim(),
+      })
+        .then((result) => onSave(result.data!))
+        .catch(() => {
+          // TODO add error toast
+          alert("Error");
+        });
+    });
+  });
+
   const diagramsOptions = createSelectOptions(
     Object.entries(DIAGRAMS).map(([k, v]) => ({
       label: v.name,
@@ -79,7 +108,7 @@ export function ProjectEditorNewPageDialog(
 
   return (
     <Dialog
-      size={"md"}
+      size={"xl"}
       title={"Create new page"}
       open={saveAction.loading ? true : props.isOpen}
       onOpenChange={props.onOpenChange}
@@ -97,14 +126,6 @@ export function ProjectEditorNewPageDialog(
             onChange={(value) => setForm("name", value)}
           />
 
-          <TextField
-            placeholder={"Enter a description"}
-            label={"Description"}
-            value={form.description}
-            size={"lg"}
-            onChange={(value) => setForm("description", value)}
-          />
-
           <Select
             {...diagramsOptions.props()}
             {...diagramsOptions.controlled(
@@ -119,7 +140,18 @@ export function ProjectEditorNewPageDialog(
             aria-label={"Template diagram"}
             validationState={validations.templateDiagram.state()}
             errorMessage={validations.templateDiagram.errorMessage()}
-            modal={true}
+          />
+
+          <TextArea
+            placeholder={"Enter a description"}
+            label={"Description"}
+            options={{ autoResize: true }}
+            slotClasses={{
+              input: "min-h-[150px]",
+            }}
+            value={form.description}
+            size={"lg"}
+            onChange={(value) => setForm("description", value)}
           />
         </div>
       </DialogPanelContent>
@@ -133,7 +165,20 @@ export function ProjectEditorNewPageDialog(
             Cancel
           </Button>
           <Button
-            loading={saveAction.loading}
+            loading={generateWithAI.loading}
+            theme={"tertiary"}
+            leftIcon={<SparklesIcon />}
+            onClick={() => {
+              setSubmitted(true);
+              if (formValid()) {
+                generateWithAI(unwrap(form));
+              }
+            }}
+          >
+            Generate with AI
+          </Button>
+          <Button
+            loading={saveAction.loading || generateWithAI.loading}
             theme={"primary"}
             onClick={() => {
               setSubmitted(true);

@@ -46,24 +46,6 @@ export function ProjectEditorToolbar() {
     });
   };
 
-  const onGenerateWithAI = () => {
-    generateMermaidDiagramCode(
-      editorState.get.projectView!,
-      editorState.selectedPage()!,
-      "Example of optimistic ui with a sequence diagram",
-    ).then(console.log);
-    // <Dialog
-    //   open={openGenerateDialog()}
-    //   title={`Generate diagram`}
-    //   size={"lg"}
-    //   onOpenChange={(value) => setOpenGenerateDialog(value)}
-    // >
-    //   <DialogPanelContent>
-    //     <TextField label={"Description"} />
-    //   </DialogPanelContent>
-    // </Dialog>
-  };
-
   return (
     <div class={"flex pr-6 pl-3 py-2 gap-2"}>
       <div class={"flex gap-2"}>
@@ -74,14 +56,6 @@ export function ProjectEditorToolbar() {
           onClick={onEditDetails}
         >
           Edit details
-        </Button>
-        <Button
-          size={"xs"}
-          theme={"secondary"}
-          leftIcon={<SparklesIcon class={"h-4 w-4"} />}
-          onClick={onGenerateWithAI}
-        >
-          Generate with AI
         </Button>
         <Button
           size={"xs"}

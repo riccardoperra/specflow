@@ -1,5 +1,5 @@
 import { UnauthorizedError, User } from "@teamhanko/hanko-elements";
-import { defineSignal } from "statebuilder";
+import { defineSignal, defineStore } from "statebuilder";
 import { withProxyCommands } from "statebuilder/commands";
 import { useNavigate } from "@solidjs/router";
 import { withHanko } from "./hanko";
@@ -7,16 +7,44 @@ import { createEffect, createSignal, on } from "solid-js";
 import { cookieStorage } from "../utils/cookieStorage";
 import { supabase, supabaseCookieName } from "../supabase";
 import { signSupabaseToken } from "../services/auth";
+import {
+  ControlledDialogProps,
+  createControlledDialog,
+} from "../utils/controlledDialog";
+import { ProfileDialog } from "../../components/Profile/ProfileDialog";
+import { Dialog } from "@kobalte/core";
 
 type AuthCommands = {
   setCurrent: User | null;
+  setLoading: boolean;
+  setReady: boolean;
+  setSupabaseAccessToken: string | null;
   forceLogout: void;
 };
 
-export const AuthState = defineSignal<User | null>(() => null)
-  .extend(withProxyCommands<AuthCommands>())
+interface State {
+  user: User | null;
+  loading: boolean;
+  ready: boolean;
+  supabaseAccessToken: string | null;
+}
+
+export const AuthState = defineStore<State>(() => ({
+  loading: false,
+  ready: false,
+  supabaseAccessToken: null,
+  user: null,
+}))
+  .extend(withProxyCommands<AuthCommands>({ devtools: { storeName: "auth" } }))
   .extend(withHanko())
-  .extend((_) => _.hold(_.commands.setCurrent, (user) => _.set(() => user)))
+  .extend((_) => {
+    _.hold(_.commands.setCurrent, (user) => _.set("user", () => user));
+    _.hold(_.commands.setLoading, (loading) => _.set("loading", () => loading));
+    _.hold(_.commands.setReady, (ready) => _.set("ready", () => ready));
+    _.hold(_.commands.setSupabaseAccessToken, (token) =>
+      _.set("supabaseAccessToken", () => token),
+    );
+  })
   .extend((_) => ({
     loadCurrentUser() {
       return _.getCurrentUser().catch((e) => {
@@ -28,8 +56,6 @@ export const AuthState = defineSignal<User | null>(() => null)
   }))
   .extend((_, context) => {
     const navigate = useNavigate();
-    const [loading, setLoading] = createSignal(false);
-    const [ready, setReady] = createSignal(false);
     const [supabaseAccessToken, setSupabaseAccessToken] = createSignal<
       string | null
     >(null);
@@ -38,23 +64,26 @@ export const AuthState = defineSignal<User | null>(() => null)
 
     context.hooks.onInit(() => {
       _.loadCurrentUser().then((user) => {
-        setSupabaseAccessToken(cookieStorage.getItem(supabaseCookieName));
+        setSupabaseAccessToken(
+          cookieStorage.getItem(supabaseCookieName, { path: "/" }),
+        );
         _.actions.setCurrent(user ?? null);
-        setReady(true);
+        _.actions.setReady(true);
         if (!user) {
+          setSupabaseAccessToken(null);
           navigate("/login");
         }
       });
 
       _.hanko.onAuthFlowCompleted(() => {
-        setLoading(true);
+        _.actions.setLoading(true);
         _.loadCurrentUser().then((user) => {
           _.actions.setCurrent(user ?? null);
           signSupabaseToken(_.hanko.session.get())
             .then(({ access_token }) => {
               setSupabaseAccessToken(access_token);
             })
-            .then(() => setLoading(false))
+            .then(() => _.actions.setLoading(false))
             .then(() => navigate("/"));
         });
       });
@@ -80,6 +109,7 @@ export const AuthState = defineSignal<User | null>(() => null)
               cookieStorage.setItem(supabaseCookieName, accessToken, {
                 expires: expirationDate.getTime(),
                 secure: true,
+                path: "/",
               });
               client["rest"].headers = {
                 ...client["rest"].headers,
@@ -102,11 +132,11 @@ export const AuthState = defineSignal<User | null>(() => null)
       });
     });
 
+    const controlledDialog = createControlledDialog();
+
     return {
-      ready,
-      loading,
       goToProfile() {
-        return navigate("/profile");
+        controlledDialog(ProfileDialog, {});
       },
       loggedIn,
       logout() {

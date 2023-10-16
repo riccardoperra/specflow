@@ -11,7 +11,7 @@ export function Auth() {
     <div
       class={`w-full h-full flex items-center justify-center ${container} relative`}
     >
-      <Show when={auth.loading()}>
+      <Show when={auth.get.loading}>
         <div
           class={
             "absolute left-0 top-0 flex items-center justify-center w-full h-full z-50 bg-neutral-900/70"

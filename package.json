@@ -31,7 +31,7 @@
     "@codemirror/lint": "^6.4.2",
     "@codemirror/state": "^6.2.1",
     "@codemirror/view": "^6.21.3",
-    "@codeui/kit": "^0.0.25",
+    "@codeui/kit": "^0.0.26",
     "@kobalte/core": "^0.11.0",
     "@lezer/highlight": "^1.1.6",
     "@solid-primitives/storage": "^2.1.1",

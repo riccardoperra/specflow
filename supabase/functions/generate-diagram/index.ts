@@ -18,12 +18,14 @@ export const generatePrompt = (
        Alice->>+John: John, can you hear me?
        John-->>-Alice: Hi Alice, I can hear you!
        John-->>-Alice: I feel great!
+     CONSIDER this is only an example of a sequence diagram and you MAY NOT USE the same participants or the same diagramType.
      All mermaid generated code MUST HAVE the type of the diagram as the first line. 
      Mermaid DOES NOT support special characters like "\\n" or "\\s" or "\\b."
-     YOU SHOULD USE the language used by the user in it's prompt.
-     YOU MUST GENERATE only the code using Mermaid syntax for a ${diagramType} diagram. No explanation or introduction.
     `.trim(),
-    `Diagram description from the user: ${prompt}`,
+    `Diagram description from the user: ${prompt}.
+     YOU MUST GENERATE only the code using Mermaid syntax for a ${diagramType} diagram. No explanation or introduction.
+     YOU MUST FOLLOW prompt description by the user. Use the project description only as a context for actors etc.
+    `.trim(),
   ];
 };
 
@@ -38,7 +40,7 @@ interface Request {
 Deno.serve(async (req) => {
   const token = Deno.env.get("OPENAI_TOKEN");
   const { pageName, projectDescription, projectName, prompt, sequenceDiagram } =
-    req.json() as Request;
+    (await req.json()) as Request;
 
   const completionConfig = {
     model: "gpt-3.5-turbo-instruct",
@@ -50,7 +52,6 @@ Deno.serve(async (req) => {
       sequenceDiagram,
     ),
     max_tokens: 1000,
-    temperature: 0,
     stream: false,
   };
 

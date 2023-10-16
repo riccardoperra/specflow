@@ -60,7 +60,11 @@ export function MermaidPreview(props: MermaidPreviewProps) {
           </div>
         )}
       </Show>
-      <div ref={props.ref} id={id} class={"bg-neutral-800"} />
+      <div
+        ref={props.ref}
+        id={id}
+        class={"bg-neutral-800 h-full w-full flex items-center justify-center"}
+      />
     </div>
   );
 }

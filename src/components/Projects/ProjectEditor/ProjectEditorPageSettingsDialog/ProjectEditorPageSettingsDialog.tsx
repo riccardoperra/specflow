@@ -3,6 +3,7 @@ import {
   Dialog,
   DialogPanelContent,
   DialogPanelFooter,
+  TextArea,
   TextField,
 } from "@codeui/kit";
 import {
@@ -81,10 +82,11 @@ export function ProjectEditorPageSettingsDialog(
             onChange={(value) => setForm("name", value)}
           />
 
-          <TextField
+          <TextArea
             placeholder={"Enter a description"}
             label={"Description"}
             size={"md"}
+            options={{ autoResize: true }}
             value={form.description}
             onChange={(value) => setForm("description", value)}
           />

@@ -47,6 +47,7 @@ export async function createProjectPage(
     name: string;
     description: string;
     diagramType: keyof typeof DIAGRAMS;
+    content?: string;
   },
 ) {
   return supabase
@@ -56,7 +57,7 @@ export async function createProjectPage(
       description: data.description,
       content: {
         type: "diagram",
-        content: DIAGRAMS[data.diagramType].example,
+        content: data.content || DIAGRAMS[data.diagramType].example,
         metadata: {
           diagramType: "sequenceDiagram",
         },
