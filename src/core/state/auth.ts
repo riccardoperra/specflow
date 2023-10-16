@@ -1,9 +1,12 @@
-import { Hanko, UnauthorizedError, User } from "@teamhanko/hanko-elements";
+import { UnauthorizedError, User } from "@teamhanko/hanko-elements";
 import { defineSignal } from "statebuilder";
 import { withProxyCommands } from "statebuilder/commands";
 import { useNavigate } from "@solidjs/router";
 import { withHanko } from "./hanko";
-import { createEffect, getOwner, on, runWithOwner } from "solid-js";
+import { createEffect, createSignal, on } from "solid-js";
+import { cookieStorage } from "../utils/cookieStorage";
+import { supabase, supabaseCookieName } from "../supabase";
+import { signSupabaseToken } from "../services/auth";
 
 type AuthCommands = {
   setCurrent: User | null;
@@ -16,54 +19,92 @@ export const AuthState = defineSignal<User | null>(() => null)
   .extend((_) => _.hold(_.commands.setCurrent, (user) => _.set(() => user)))
   .extend((_) => ({
     loadCurrentUser() {
-      return _.getCurrentUser()
-        .then(_.actions.setCurrent)
-        .catch((e) => {
-          if (e instanceof UnauthorizedError) {
-            _.actions.setCurrent(null);
-          }
-        });
+      return _.getCurrentUser().catch((e) => {
+        if (e instanceof UnauthorizedError) {
+          return null;
+        }
+      });
     },
   }))
   .extend((_, context) => {
     const navigate = useNavigate();
-    const owner = getOwner();
+    const [ready, setReady] = createSignal(false);
+    const [supabaseAccessToken, setSupabaseAccessToken] = createSignal<
+      string | null
+    >(null);
 
-    const currentUrl = () => window.location.href.split(window.origin)[1];
+    const loggedIn = () => !!supabaseAccessToken() && !!_();
 
     context.hooks.onInit(() => {
-      _.loadCurrentUser().then(() => {
-        runWithOwner(owner, () =>
-          createEffect(
-            on(_, (user) => {
-              navigate(
-                user
-                  ? window.location.pathname === "/login"
-                    ? "/"
-                    : currentUrl()
-                  : "/login",
-              );
-            }),
-          ),
-        );
+      _.loadCurrentUser().then((user) => {
+        setSupabaseAccessToken(cookieStorage.getItem(supabaseCookieName));
+        _.actions.setCurrent(user ?? null);
+        setReady(true);
+        if (!user) {
+          navigate("/login");
+        }
       });
 
       _.hanko.onAuthFlowCompleted(() => {
-        _.loadCurrentUser();
-
-        _.watchCommand([_.commands.setCurrent]).subscribe((command) => {
-          const user = _();
-          if (!user) {
-            navigate("/login");
-          }
+        _.loadCurrentUser().then((user) => {
+          _.actions.setCurrent(user ?? null);
+          signSupabaseToken(_.hanko.session.get())
+            .then(({ access_token }) => {
+              setSupabaseAccessToken(access_token);
+            })
+            .then(() => navigate("/"));
         });
+      });
+
+      // Supabase sync token integration
+
+      createEffect(
+        on(
+          supabaseAccessToken,
+          (accessToken) => {
+            const client = supabase;
+            const originalHeaders = structuredClone(client["rest"]["headers"]);
+            if (accessToken === null) {
+              cookieStorage.removeItem(supabaseCookieName);
+              setSupabaseAccessToken(null);
+              client["rest"].headers = originalHeaders;
+            } else {
+              const currentDate = new Date();
+              const expirationDate = new Date(
+                currentDate.getTime() +
+                  _.hanko.session.get().expirationSeconds * 1000,
+              );
+              cookieStorage.setItem(supabaseCookieName, accessToken, {
+                expires: expirationDate.getTime(),
+                secure: true,
+              });
+              client["rest"].headers = {
+                ...client["rest"].headers,
+                Authorization: `Bearer ${accessToken}`,
+              };
+            }
+          },
+          { defer: true },
+        ),
+      );
+
+      _.hanko.onSessionCreated((session) => {
+        setSupabaseAccessToken(session.jwt!);
+      });
+      _.hanko.onSessionExpired(() => {
+        setSupabaseAccessToken(null);
+      });
+      _.hanko.onUserLoggedOut(() => {
+        setSupabaseAccessToken(null);
       });
     });
 
     return {
+      ready,
       goToProfile() {
         return navigate("/profile");
       },
+      loggedIn,
       logout() {
         return _.hanko.user
           .logout()
