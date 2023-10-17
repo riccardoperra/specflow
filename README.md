@@ -1,3 +1,13 @@
+## SpecFlow
+
+SpecFlow is an online tool which allows to everyone in the tech field (mostly devs and analysts) to store and centralize the project specification.
+
+In SpecFlow, users can manage their projects, write markdown like documentation and generate diagrams such as sequence diagrams, ER, Mind maps etc. 
+
+In SpecFlow, users can use AI as an assistant to generate the content they need to show.
+
+In SpecFlow, users can share their project pages with all members of the team, assuring that everyone has all necessary information for their work.
+
 ## Usage
 
 Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
