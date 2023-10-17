@@ -72,7 +72,6 @@ export const TIPTAP_PLUGINS = [
     nested: true,
   }),
   Markdown.configure({
-    html: false,
     transformCopiedText: true,
     transformPastedText: true,
   }),
