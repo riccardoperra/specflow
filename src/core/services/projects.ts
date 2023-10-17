@@ -41,6 +41,30 @@ export async function deleteProjectPage(
   return res.data;
 }
 
+export async function createProjectPageText(
+  projectId: number,
+  data: {
+    name: string;
+    content?: string;
+  },
+) {
+  return supabase
+    .from("project_page")
+    .insert({
+      name: data.name,
+      description: "",
+      content: {
+        type: "page",
+        content: "",
+        metadata: {},
+      },
+      project_id: projectId,
+      type: "page",
+    })
+    .select()
+    .single();
+}
+
 export async function createProjectPage(
   projectId: number,
   data: {

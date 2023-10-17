@@ -5,6 +5,7 @@ import { ProjectPageView } from "../../../../core/services/projects";
 import { DiagramEditor } from "../../../DiagramEditor/DiagramEditor";
 import { LoadingCircle } from "../../../../icons/LoadingCircle";
 import { PreviewState } from "../previewState";
+import { PageEditor } from "../../../PageEditor/PageEditor";
 
 interface DiagramEditorContentProps {
   page: ProjectPageView;
@@ -28,6 +29,19 @@ function DiagramEditorContent(props: DiagramEditorContentProps) {
   );
 }
 
+function PageEditorContent(props: DiagramEditorContentProps) {
+  return (
+    <div class="h-full w-full rounded-lg overflow-auto bg-neutral-900">
+      <PageEditor
+        content={(props.page.content as any).content}
+        diagramType={(props.page.content as any).metadata.diagramType}
+        onValueChange={props.onValueChange}
+        onSaveShortcut={props.onSaveShortcut}
+      />
+    </div>
+  );
+}
+
 export function ProjectEditorContent() {
   const editorState = provideState(EditorState);
 
@@ -44,6 +58,18 @@ export function ProjectEditorContent() {
           <Switch>
             <Match when={selectedPage.type === "diagram"}>
               <DiagramEditorContent
+                onSaveShortcut={() => void 0}
+                onValueChange={(content) => {
+                  editorState.actions.updateProjectViewContent({
+                    id: selectedPage.id,
+                    content,
+                  });
+                }}
+                page={selectedPage}
+              />
+            </Match>
+            <Match when={selectedPage.type === "page"}>
+              <PageEditorContent
                 onSaveShortcut={() => void 0}
                 onValueChange={(content) => {
                   editorState.actions.updateProjectViewContent({

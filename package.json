@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "gen:types": "supabase gen types typescript --project-id \"byxdpolwzavnqnqtyqbs\" --schema public > src/types/supabase.ts"
+    "gen:types": "supabase gen types typescript --project-id \"byxdpolwzavnqnqtyqbs\" --schema public > src/types/supabase.ts",
+    "supabase:serve:functions": "supabase start && supabase functions serve --env-file=./supabase/.env.local --no-verify-jwt"
   },
   "license": "MIT",
   "devDependencies": {
@@ -27,6 +28,7 @@
     "@codemirror/commands": "^6.3.0",
     "@codemirror/lang-javascript": "^6.2.1",
     "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/lang-markdown": "^6.2.2",
     "@codemirror/language": "^6.9.1",
     "@codemirror/lint": "^6.4.2",
     "@codemirror/state": "^6.2.1",
