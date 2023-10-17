@@ -12,7 +12,7 @@ export const parseColor = (hex: string) => {
 export const highlightStyle: HighlightStyle = HighlightStyle.define([
   {
     tag: [t.comment],
-    color: parseColor(tokens.palette["Grey-90"]),
+    color: parseColor(tokens.palette["Gray 90"]),
   },
   {
     tag: [t.link],
@@ -56,21 +56,37 @@ export const highlightStyle: HighlightStyle = HighlightStyle.define([
   },
   {
     tag: [t.variableName],
-    color: parseColor(
-      tokens["text-attributes"]["identifier.variable.local"].fgColor
-    ),
+    color: parseColor(tokens["text-attributes"]["identifier.variable"].fgColor),
   },
   {
     tag: [t.propertyName],
     color: parseColor(tokens["text-attributes"].keyword.fgColor),
+  },
+  {
+    tag: [t.heading],
+    color: parseColor(tokens["text-attributes"]["markup.heading"].fgColor),
+    fontWeight: "medium",
+  },
+  {
+    tag: [t.link],
+    color: parseColor(tokens["text-attributes"]["markup.href"].fgColor),
+    fontStyle: "italic",
+  },
+  {
+    tag: [t.quote],
+    color: parseColor(tokens["text-attributes"]["markup.code.block"].fgColor),
+  },
+  {
+    tag: [t.list],
+    color: parseColor(tokens["text-attributes"]["markup.code.block"].fgColor),
   },
 ]);
 
 export const colors = EditorView.theme(
   {
     "&": {
-      color: parseColor(tokens.palette["Grey-120"]),
-      background: parseColor(tokens.palette["Grey-10"]),
+      color: parseColor(tokens.palette["Gray 120"]),
+      background: parseColor(tokens.palette["Gray 10"]),
       fontSize: "15px",
     },
     "&.cm-editor.cm-focused": {
@@ -99,11 +115,11 @@ export const colors = EditorView.theme(
     "&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection":
       {
         backgroundColor: parseColor(
-          tokens["text-attributes"]["editor.selection"].bgColor
+          tokens["text-attributes"]["editor.selection"].bgColor,
         ),
       },
     "&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket": {
-      backgroundColor: parseColor(tokens.colors["editor.braceHighlight.fill"]),
+      backgroundColor: parseColor(tokens.colors["editor.folded.fill"]),
     },
     ".cm-line.cm-activeLine": {
       backgroundColor: parseColor(tokens.colors["editor.currentLine.fill"]),
@@ -157,7 +173,7 @@ export const colors = EditorView.theme(
   },
   {
     dark: true,
-  }
+  },
 );
 
 export const theme: Extension[] = [colors, syntaxHighlighting(highlightStyle)];

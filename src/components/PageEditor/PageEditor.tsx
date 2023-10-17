@@ -1,6 +1,7 @@
-import { MermaidPreview } from "./MermaidPreview";
-import { Ref } from "solid-js";
+import { Ref, Show } from "solid-js";
 import { MarkdownEditor } from "../Editor/MarkdownEditor";
+import { PageEditorPreview } from "./PageEditorPreview";
+import { previewMode } from "../Projects/ProjectEditor/ProjectEditorToolbar/ProjectEditorToolbar";
 
 interface DiagramEditorProps {
   content: string;
@@ -13,8 +14,14 @@ interface DiagramEditorProps {
 export function PageEditor(props: DiagramEditorProps) {
   return (
     <div class={"h-full w-full"}>
-      <div class="flex w-full h-full rounded-tl-2xl rounded-tr-2xl overflow-hidden shadow-lg">
-        <div class="bg-[#181818] w-[35%] h-full px-2 p-4">
+      <div
+        class="grid overflow-hidden h-full"
+        classList={{
+          "grid-cols-1": previewMode() === "editor",
+          "grid-cols-2": previewMode() === "editor-with-preview",
+        }}
+      >
+        <div class="bg-[#181818] flex-1 h-full px-0 overflow-auto br-1 border-l-neutral-600">
           <MarkdownEditor
             type={props.diagramType}
             value={props.content}
@@ -23,9 +30,11 @@ export function PageEditor(props: DiagramEditorProps) {
           />
         </div>
 
-        {/*<div class="flex-1 flex items-center justify-center bg-neutral-800 h-full">*/}
-        {/*  <MermaidPreview ref={props.ref!} content={props.content} />*/}
-        {/*</div>*/}
+        <Show when={previewMode() === "editor-with-preview"}>
+          <div class="flex-1 bg-[#181818] w-full h-full p-8 px-6 overflow-auto">
+            <PageEditorPreview content={props.content} />
+          </div>
+        </Show>
       </div>
     </div>
   );
