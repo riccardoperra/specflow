@@ -60,7 +60,7 @@ export function MermaidPreview(props: MermaidPreviewProps) {
   return (
     <div
       ref={element}
-      class={"w-full h-full  overflow-auto place-items-center"}
+      class={"w-full h-full overflow-hidden place-items-center"}
     >
       <Show when={errorMessage()}>
         {(errorMessage) => (
@@ -73,7 +73,7 @@ export function MermaidPreview(props: MermaidPreviewProps) {
           </div>
         )}
       </Show>
-      <div ref={props.ref} id={id} class={"bg-neutral-800 cursor-move"} />
+      <div ref={props.ref} id={id} class={"bg-neutral-800"} />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { PreviewState } from "../previewState";
 import { PageEditor } from "../../../PageEditor/PageEditor";
 
 interface DiagramEditorContentProps {
+  previewMode: string;
   page: ProjectPageView;
   onValueChange: (value: string) => void;
   onSaveShortcut: () => void;
@@ -17,29 +18,27 @@ function DiagramEditorContent(props: DiagramEditorContentProps) {
   const previewState = provideState(PreviewState);
 
   return (
-    <div class="h-full w-full rounded-lg overflow-auto bg-neutral-900">
-      <DiagramEditor
-        pageId={props.page.id}
-        content={(props.page.content as any).content}
-        diagramType={(props.page.content as any).metadata.diagramType}
-        onValueChange={props.onValueChange}
-        onSaveShortcut={props.onSaveShortcut}
-        ref={(ref) => previewState.actions.setRef(ref)}
-      />
-    </div>
+    <DiagramEditor
+      previewMode={props.previewMode}
+      pageId={props.page.id}
+      content={(props.page.content as any).content}
+      diagramType={(props.page.content as any).metadata.diagramType}
+      onValueChange={props.onValueChange}
+      onSaveShortcut={props.onSaveShortcut}
+      ref={(ref) => previewState.actions.setRef(ref)}
+    />
   );
 }
 
 function PageEditorContent(props: DiagramEditorContentProps) {
   return (
-    <div class="h-full w-full overflow-auto bg-neutral-900">
-      <PageEditor
-        content={(props.page.content as any).content}
-        diagramType={(props.page.content as any).metadata.diagramType}
-        onValueChange={props.onValueChange}
-        onSaveShortcut={props.onSaveShortcut}
-      />
-    </div>
+    <PageEditor
+      previewMode={props.previewMode}
+      content={(props.page.content as any).content}
+      diagramType={(props.page.content as any).metadata.diagramType}
+      onValueChange={props.onValueChange}
+      onSaveShortcut={props.onSaveShortcut}
+    />
   );
 }
 
@@ -56,32 +55,36 @@ export function ProjectEditorContent() {
 
       <Show when={editorState.selectedPage()} keyed={true}>
         {(selectedPage) => (
-          <Switch>
-            <Match when={selectedPage.type === "diagram"}>
-              <DiagramEditorContent
-                onSaveShortcut={() => void 0}
-                onValueChange={(content) => {
-                  editorState.actions.updateProjectViewContent({
-                    id: selectedPage.id,
-                    content,
-                  });
-                }}
-                page={selectedPage}
-              />
-            </Match>
-            <Match when={selectedPage.type === "page"}>
-              <PageEditorContent
-                onSaveShortcut={() => void 0}
-                onValueChange={(content) => {
-                  editorState.actions.updateProjectViewContent({
-                    id: selectedPage.id,
-                    content,
-                  });
-                }}
-                page={selectedPage}
-              />
-            </Match>
-          </Switch>
+          <div class={"h-full w-full overflow-auto bg-neutral-900"}>
+            <Switch>
+              <Match when={selectedPage.type === "diagram"}>
+                <DiagramEditorContent
+                  previewMode={editorState.get.previewMode}
+                  onSaveShortcut={() => void 0}
+                  onValueChange={(content) => {
+                    editorState.actions.updateProjectViewContent({
+                      id: selectedPage.id,
+                      content,
+                    });
+                  }}
+                  page={selectedPage}
+                />
+              </Match>
+              <Match when={selectedPage.type === "page"}>
+                <PageEditorContent
+                  previewMode={editorState.get.previewMode}
+                  onSaveShortcut={() => void 0}
+                  onValueChange={(content) => {
+                    editorState.actions.updateProjectViewContent({
+                      id: selectedPage.id,
+                      content,
+                    });
+                  }}
+                  page={selectedPage}
+                />
+              </Match>
+            </Switch>
+          </div>
         )}
       </Show>
     </div>

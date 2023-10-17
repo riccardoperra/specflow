@@ -13,6 +13,7 @@ interface EditorState {
   activePageId: string | null;
   projectView: ProjectView | null;
   pendingUpdate: boolean;
+  previewMode: "editor-with-preview" | "editor" | "preview";
 }
 
 type Commands = {
@@ -24,12 +25,14 @@ type Commands = {
   triggerSave: boolean;
   addNewPage: ProjectPageView;
   removePage: string;
+  setPreviewMode: EditorState["previewMode"] | (string & {});
 };
 
 export const EditorState = defineStore<EditorState>(() => ({
   activePageId: null,
   projectView: null,
   pendingUpdate: false,
+  previewMode: "editor-with-preview",
 }))
   .extend(
     withProxyCommands<Commands>({
@@ -75,6 +78,9 @@ export const EditorState = defineStore<EditorState>(() => ({
       _.set("projectView", "project_page", (pages) =>
         pages.filter((page) => page.id !== id),
       ),
+    );
+    _.hold(_.commands.setPreviewMode, (payload) =>
+      _.set("previewMode", payload as EditorState["previewMode"]),
     );
   })
   .extend((_) => {

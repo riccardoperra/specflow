@@ -3,7 +3,7 @@ import { CogIcon } from "../../../../icons/CogIcon";
 import { TrashIcon } from "../../../../icons/TrashIcon";
 import { ProjectEditorPageSettingsDialog } from "../ProjectEditorPageSettingsDialog/ProjectEditorPageSettingsDialog";
 import { ConfirmDialog } from "../../../ConfirmDialog/ConfirmDialog";
-import { createRoot, createSignal } from "solid-js";
+import { createSignal } from "solid-js";
 import { deleteProjectPage } from "../../../../core/services/projects";
 import { createControlledDialog } from "../../../../core/utils/controlledDialog";
 import { provideState } from "statebuilder";
@@ -15,10 +15,6 @@ import {
 } from "../../../SegmentedControl/SegmentedControl";
 import { CodeIcon } from "../../../../icons/CodeIcon";
 import { PresentationChart } from "../../../../icons/PresentationChart";
-
-export const [previewMode, setPreviewMode] = createRoot(() =>
-  createSignal<string>("editor-with-preview"),
-);
 
 export function ProjectEditorToolbar() {
   const editorState = provideState(EditorState);
@@ -78,11 +74,20 @@ export function ProjectEditorToolbar() {
         </Button>
       </div>
       <div class={"absolute mx-auto h-[32px] left-[50%] -translate-x-[50%]"}>
-        <SegmentedControl onChange={setPreviewMode} value={previewMode()}>
+        <SegmentedControl
+          onChange={(value) => editorState.actions.setPreviewMode(value)}
+          value={editorState.get.previewMode}
+        >
           <SegmentedControlItem value={"editor"}>
             <CodeIcon class={"w-4 h-4"} />
           </SegmentedControlItem>
           <SegmentedControlItem value={"editor-with-preview"}>
+            <div class={"flex gap-2"}>
+              <CodeIcon class={"w-4 h-4"} />
+              <PresentationChart class={"w-4 h-4"} />
+            </div>
+          </SegmentedControlItem>
+          <SegmentedControlItem value={"preview"}>
             <PresentationChart class={"w-4 h-4"} />
           </SegmentedControlItem>
         </SegmentedControl>

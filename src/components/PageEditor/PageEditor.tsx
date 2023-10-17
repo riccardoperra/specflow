@@ -1,10 +1,10 @@
 import { createEffect, Ref, Show } from "solid-js";
 import { MarkdownEditor } from "../Editor/MarkdownEditor";
 import { PageEditorPreview } from "./PageEditorPreview";
-import { previewMode } from "../Projects/ProjectEditor/ProjectEditorToolbar/ProjectEditorToolbar";
 import Split, { SplitInstance } from "split-grid";
 
 interface DiagramEditorProps {
+  previewMode: string;
   content: string;
   diagramType: string;
   onValueChange: (value: string) => void;
@@ -15,7 +15,7 @@ interface DiagramEditorProps {
 export function PageEditor(props: DiagramEditorProps) {
   let split: SplitInstance;
   createEffect(() => {
-    const mode = previewMode();
+    const mode = props.previewMode;
     if (split) {
       split.destroy(true);
     }
@@ -37,25 +37,34 @@ export function PageEditor(props: DiagramEditorProps) {
       <div
         class="overflow-hidden h-full relative"
         classList={{
-          "w-full": previewMode() === "editor",
+          "w-full": props.previewMode !== "editor-with-preview",
           "grid grid-cols-[1fr_5px_1fr]":
-            previewMode() === "editor-with-preview",
+            props.previewMode === "editor-with-preview",
         }}
       >
-        <div
-          class="bg-[#181818] h-full px-0 overflow-auto"
-          id={"page-editor-panel-editor"}
+        <Show
+          when={["editor", "editor-with-preview"].includes(props.previewMode)}
         >
-          <MarkdownEditor
-            type={props.diagramType}
-            value={props.content}
-            onValueChange={props.onValueChange}
-            onSave={props.onSaveShortcut}
-          />
-        </div>
+          <div
+            class="bg-[#181818] h-full px-0 overflow-auto"
+            id={"page-editor-panel-editor"}
+          >
+            <MarkdownEditor
+              type={props.diagramType}
+              value={props.content}
+              onValueChange={props.onValueChange}
+              onSave={props.onSaveShortcut}
+            />
+          </div>
+        </Show>
 
-        <Show when={previewMode() === "editor-with-preview"}>
+        <Show when={props.previewMode === "editor-with-preview"}>
           <div class="gutter-col gutter-col-1"></div>
+        </Show>
+
+        <Show
+          when={["editor-with-preview", "preview"].includes(props.previewMode)}
+        >
           <div
             class="bg-[#181818] h-full p-8 px-6 overflow-auto relative"
             id={"page-editor-panel-preview"}
