@@ -19,6 +19,7 @@ export const innerContent = style({
   flexDirection: "column",
   borderRadius: "22px 0 22px 22px",
   borderTop: `1px solid #252525`,
+  minHeight: 0,
   "@media": {
     "(min-width: 768px)": {
       borderRadius: "22px 22px 0 0",

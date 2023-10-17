@@ -31,7 +31,7 @@ function DiagramEditorContent(props: DiagramEditorContentProps) {
 
 function PageEditorContent(props: DiagramEditorContentProps) {
   return (
-    <div class="h-full w-full rounded-lg overflow-auto bg-neutral-900">
+    <div class="h-full w-full overflow-auto bg-neutral-900">
       <PageEditor
         content={(props.page.content as any).content}
         diagramType={(props.page.content as any).metadata.diagramType}
@@ -46,7 +46,7 @@ export function ProjectEditorContent() {
   const editorState = provideState(EditorState);
 
   return (
-    <div class={"w-full h-full relative"}>
+    <div class={"w-full h-full min-h-0 relative"}>
       <Show when={editorState.get.pendingUpdate}>
         <div class={"absolute right-4 top-4"}>
           <LoadingCircle />
