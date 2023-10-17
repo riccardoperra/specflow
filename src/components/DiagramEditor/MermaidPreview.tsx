@@ -1,8 +1,10 @@
 import { createEffect, createSignal, on, onMount, Ref, Show } from "solid-js";
 
 import mermaid from "mermaid";
+import panzoom, { PanZoom } from "panzoom";
 
 interface MermaidPreviewProps {
+  id: string;
   content: string;
   ref?: Ref<HTMLDivElement>;
 }
@@ -11,8 +13,12 @@ export function MermaidPreview(props: MermaidPreviewProps) {
   const [errorMessage, setErrorMessage] = createSignal<string | null>(null);
   const id = "id-1";
   let element!: HTMLDivElement;
+  let panzoomInstance: PanZoom;
 
   const render = async (content: string) => {
+    if (panzoomInstance) {
+      panzoomInstance.dispose();
+    }
     const result: Error | boolean = await mermaid
       .parse(content)
       .then((_) => _)
@@ -20,11 +26,20 @@ export function MermaidPreview(props: MermaidPreviewProps) {
 
     if (result === true) {
       setErrorMessage(null);
-      document.querySelector(`#${id}`)!.textContent = content;
-      document.querySelector(`#${id}`)!.removeAttribute("data-processed");
-      mermaid.run({
-        nodes: [document.querySelector(`#${id}`)!],
-      });
+      const svgContainer = document.querySelector(`#${id}`)! as HTMLElement;
+      svgContainer.textContent = content;
+      svgContainer.removeAttribute("data-processed");
+      mermaid
+        .run({
+          nodes: [svgContainer],
+        })
+        .then(() => {
+          queueMicrotask(() => {
+            panzoomInstance = panzoom(svgContainer.firstChild as HTMLElement, {
+              autocenter: true,
+            });
+          });
+        });
     } else if (result instanceof Error) {
       setErrorMessage(result.message);
     }
@@ -45,9 +60,7 @@ export function MermaidPreview(props: MermaidPreviewProps) {
   return (
     <div
       ref={element}
-      class={
-        "w-full h-full flex justify-center overflow-auto relative place-items-center"
-      }
+      class={"w-full h-full  overflow-auto place-items-center"}
     >
       <Show when={errorMessage()}>
         {(errorMessage) => (
@@ -60,11 +73,7 @@ export function MermaidPreview(props: MermaidPreviewProps) {
           </div>
         )}
       </Show>
-      <div
-        ref={props.ref}
-        id={id}
-        class={"bg-neutral-800 h-full w-full flex items-center justify-center"}
-      />
+      <div ref={props.ref} id={id} class={"bg-neutral-800 cursor-move"} />
     </div>
   );
 }

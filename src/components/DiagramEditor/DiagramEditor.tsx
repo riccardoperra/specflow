@@ -3,6 +3,7 @@ import { MermaidEditor } from "../Editor/MermaidEditor";
 import { Ref } from "solid-js";
 
 interface DiagramEditorProps {
+  pageId: string;
   content: string;
   diagramType: string;
   onValueChange: (value: string) => void;
@@ -24,7 +25,11 @@ export function DiagramEditor(props: DiagramEditorProps) {
         </div>
 
         <div class="flex-1 flex items-center justify-center bg-neutral-800 h-full">
-          <MermaidPreview ref={props.ref!} content={props.content} />
+          <MermaidPreview
+            id={props.pageId}
+            ref={props.ref!}
+            content={props.content}
+          />
         </div>
       </div>
     </div>

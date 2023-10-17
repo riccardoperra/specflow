@@ -19,6 +19,7 @@ function DiagramEditorContent(props: DiagramEditorContentProps) {
   return (
     <div class="h-full w-full rounded-lg overflow-auto bg-neutral-900">
       <DiagramEditor
+        pageId={props.page.id}
         content={(props.page.content as any).content}
         diagramType={(props.page.content as any).metadata.diagramType}
         onValueChange={props.onValueChange}

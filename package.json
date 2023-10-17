@@ -56,6 +56,7 @@
     "mermaid": "^10.5.0",
     "modern-screenshot": "^4.4.32",
     "openai": "^4.12.1",
+    "panzoom": "^9.4.3",
     "rxjs": "^7.8.1",
     "solid-codemirror": "^2.3.0",
     "solid-js": "^1.7.6",
