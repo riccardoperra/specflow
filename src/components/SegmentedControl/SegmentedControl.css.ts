@@ -51,7 +51,7 @@ export const segment = style([
   {
     height: "100%",
     position: "relative",
-    display: "inline-flex",
+    display: "flex",
     alignItems: "center",
     justifyContent: "center",
     flexGrow: 1,

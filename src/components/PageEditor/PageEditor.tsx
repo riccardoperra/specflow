@@ -21,7 +21,7 @@ export function PageEditor(props: DiagramEditorProps) {
           "grid-cols-2": previewMode() === "editor-with-preview",
         }}
       >
-        <div class="bg-[#181818] flex-1 h-full px-0 overflow-auto br-1 border-l-neutral-600">
+        <div class="bg-[#181818] flex-1 h-full px-0 overflow-auto">
           <MarkdownEditor
             type={props.diagramType}
             value={props.content}
@@ -31,6 +31,12 @@ export function PageEditor(props: DiagramEditorProps) {
         </div>
 
         <Show when={previewMode() === "editor-with-preview"}>
+          <div
+            class={
+              "h-full w-[1px] bg-neutral-700 absolute left-[50%] -translate-x-[50%]"
+            }
+          />
+
           <div class="flex-1 bg-[#181818] w-full h-full p-8 px-6 overflow-auto">
             <PageEditorPreview content={props.content} />
           </div>
