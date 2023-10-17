@@ -100,10 +100,10 @@ export function ProjectEditorSidebar(props: ProjectEditorSidebarProps) {
                       <div class={"flex items-center gap-3"}>
                         <Switch>
                           <Match when={page.type === "diagram"}>
-                            <PresentationChart class={"w-4 h-4"} />
+                            <PresentationChart class={"w-5 h-5"} />
                           </Match>
                           <Match when={page.type === "page"}>
-                            <DocumentTextIcon class={"w-4 h-4"} />
+                            <DocumentTextIcon class={"w-5 h-5"} />
                           </Match>
                         </Switch>
                         <h1
