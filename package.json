@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "gen:types": "supabase gen types typescript --project-id \"byxdpolwzavnqnqtyqbs\" --schema public > src/types/supabase.ts"
+    "gen:types": "supabase gen types typescript --project-id \"byxdpolwzavnqnqtyqbs\" --schema public > src/types/supabase.ts",
+    "supabase:serve:functions": "supabase start && supabase functions serve --env-file=./supabase/.env.local --no-verify-jwt"
   },
   "license": "MIT",
   "devDependencies": {
@@ -27,6 +28,7 @@
     "@codemirror/commands": "^6.3.0",
     "@codemirror/lang-javascript": "^6.2.1",
     "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/lang-markdown": "^6.2.2",
     "@codemirror/language": "^6.9.1",
     "@codemirror/lint": "^6.4.2",
     "@codemirror/state": "^6.2.1",
@@ -37,7 +39,17 @@
     "@solid-primitives/storage": "^2.1.1",
     "@solidjs/router": "^0.8.3",
     "@supabase/supabase-js": "^2.38.1",
+    "@tailwindcss/typography": "^0.5.10",
     "@teamhanko/hanko-elements": "^0.8.3",
+    "@tiptap/core": "^2.1.12",
+    "@tiptap/extension-horizontal-rule": "^2.1.12",
+    "@tiptap/extension-image": "^2.1.12",
+    "@tiptap/extension-link": "^2.1.12",
+    "@tiptap/extension-task-item": "^2.1.12",
+    "@tiptap/extension-task-list": "^2.1.12",
+    "@tiptap/extension-underline": "^2.1.12",
+    "@tiptap/pm": "^2.1.12",
+    "@tiptap/starter-kit": "^2.1.12",
     "@vanilla-extract/css": "^1.13.0",
     "codemirror-lang-mermaid": "^0.5.0",
     "idb-keyval": "^6.2.1",
@@ -47,6 +59,8 @@
     "rxjs": "^7.8.1",
     "solid-codemirror": "^2.3.0",
     "solid-js": "^1.7.6",
-    "statebuilder": "^0.4.3"
+    "split-grid": "^1.0.11",
+    "statebuilder": "^0.4.3",
+    "tiptap-markdown": "^0.8.2"
   }
 }

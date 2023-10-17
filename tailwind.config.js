@@ -6,5 +6,5 @@ module.exports = {
       sans: ["Manrope, sans-serif"],
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography")],
 };
