@@ -83,6 +83,7 @@ export function MarkdownEditor(props: VoidProps<JsonEditorProps>) {
     EditorView.theme({
       "&": {
         "min-width": "fit-content",
+        "max-width": "100%",
       },
       ".cm-scroller": {
         overflow: "hidden",

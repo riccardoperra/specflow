@@ -6,6 +6,7 @@ export const content = style({
   flex: 1,
   position: "relative",
   paddingLeft: themeTokens.spacing["1"],
+  minWidth: "1px",
 });
 
 export const innerContent = style({
