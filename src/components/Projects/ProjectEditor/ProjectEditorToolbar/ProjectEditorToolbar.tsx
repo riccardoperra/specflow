@@ -3,7 +3,7 @@ import { CogIcon } from "../../../../icons/CogIcon";
 import { TrashIcon } from "../../../../icons/TrashIcon";
 import { ProjectEditorPageSettingsDialog } from "../ProjectEditorPageSettingsDialog/ProjectEditorPageSettingsDialog";
 import { ConfirmDialog } from "../../../ConfirmDialog/ConfirmDialog";
-import { createSignal } from "solid-js";
+import { createRoot, createSignal } from "solid-js";
 import { deleteProjectPage } from "../../../../core/services/projects";
 import { createControlledDialog } from "../../../../core/utils/controlledDialog";
 import { provideState } from "statebuilder";
@@ -16,8 +16,8 @@ import {
 import { CodeIcon } from "../../../../icons/CodeIcon";
 import { PresentationChart } from "../../../../icons/PresentationChart";
 
-export const [previewMode, setPreviewMode] = createSignal<string>(
-  "editor-with-preview",
+export const [previewMode, setPreviewMode] = createRoot(() =>
+  createSignal<string>("editor-with-preview"),
 );
 
 export function ProjectEditorToolbar() {
@@ -78,7 +78,7 @@ export function ProjectEditorToolbar() {
         </Button>
       </div>
       <div class={"absolute mx-auto h-[32px] left-[50%] -translate-x-[50%]"}>
-        <SegmentedControl onChange={setPreviewMode}>
+        <SegmentedControl onChange={setPreviewMode} value={previewMode()}>
           <SegmentedControlItem value={"editor"}>
             <CodeIcon class={"w-4 h-4"} />
           </SegmentedControlItem>

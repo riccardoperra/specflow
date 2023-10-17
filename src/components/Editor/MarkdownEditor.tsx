@@ -6,6 +6,7 @@ import {
   createLazyCompartmentExtension,
 } from "solid-codemirror";
 import {
+  EditorView,
   highlightActiveLine,
   highlightActiveLineGutter,
   KeyBinding,
@@ -78,6 +79,16 @@ export function MarkdownEditor(props: VoidProps<JsonEditorProps>) {
   }, editorView);
 
   createExtension(theme);
+  createExtension(() =>
+    EditorView.theme({
+      "&": {
+        "min-width": "fit-content",
+      },
+      ".cm-scroller": {
+        overflow: "hidden",
+      },
+    }),
+  );
 
   return (
     <>

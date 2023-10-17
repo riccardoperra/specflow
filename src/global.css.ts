@@ -1,5 +1,5 @@
 import { globalStyle, style } from "@vanilla-extract/css";
-import { themeVars } from "@codeui/kit";
+import { themeTokens, themeVars } from "@codeui/kit";
 
 globalStyle("html", {
   backgroundColor: "#111",
@@ -21,18 +21,29 @@ export const bgBrand = style({
 });
 
 globalStyle("::-webkit-scrollbar", {
-  width: "6px", // Adjust the width as needed
+  width: "18px",
+  height: "18px",
 });
 
 globalStyle("::-webkit-scrollbar-track", {
-  background: themeVars.accent4,
+  backgroundColor: "transparent",
+});
+
+globalStyle("::-webkit-scrollbar-corner", {
+  backgroundColor: themeVars.accent6,
+  borderRadius: themeTokens.radii.full,
+  backgroundClip: "content-box",
+  border: "6px solid transparent",
 });
 
 globalStyle("::-webkit-scrollbar-thumb", {
-  background: "gray",
-  borderRadius: "6px", // Half the width for a circular thumb
+  backgroundColor: themeVars.accent6,
+  borderRadius: themeTokens.radii.full,
+  border: "6px solid transparent",
+  backgroundClip: "content-box",
+  transition: "background-color .2s",
 });
 
 globalStyle("::-webkit-scrollbar-thumb:hover", {
-  background: "darkgray",
+  backgroundColor: themeVars.accent8,
 });

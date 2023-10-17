@@ -1,7 +1,8 @@
-import { Ref, Show } from "solid-js";
+import { createEffect, Ref, Show } from "solid-js";
 import { MarkdownEditor } from "../Editor/MarkdownEditor";
 import { PageEditorPreview } from "./PageEditorPreview";
 import { previewMode } from "../Projects/ProjectEditor/ProjectEditorToolbar/ProjectEditorToolbar";
+import Split, { SplitInstance } from "split-grid";
 
 interface DiagramEditorProps {
   content: string;
@@ -12,16 +13,39 @@ interface DiagramEditorProps {
 }
 
 export function PageEditor(props: DiagramEditorProps) {
+  let split: SplitInstance;
+  createEffect(() => {
+    const mode = previewMode();
+    if (split) {
+      split.destroy(true);
+    }
+    if (mode === "editor") {
+    } else if (mode === "editor-with-preview") {
+      split = Split({
+        columnGutters: [
+          {
+            track: 1,
+            element: document.querySelector(".gutter-col-1")!,
+          },
+        ],
+      });
+    }
+  });
+
   return (
     <div class={"h-full w-full"}>
       <div
-        class="grid overflow-hidden h-full"
+        class="overflow-hidden h-full relative"
         classList={{
-          "grid-cols-1": previewMode() === "editor",
-          "grid-cols-2": previewMode() === "editor-with-preview",
+          "w-full": previewMode() === "editor",
+          "grid grid-cols-[1fr_5px_1fr]":
+            previewMode() === "editor-with-preview",
         }}
       >
-        <div class="bg-[#181818] flex-1 h-full px-0 overflow-auto">
+        <div
+          class="bg-[#181818] h-full px-0 overflow-auto"
+          id={"page-editor-panel-editor"}
+        >
           <MarkdownEditor
             type={props.diagramType}
             value={props.content}
@@ -31,13 +55,11 @@ export function PageEditor(props: DiagramEditorProps) {
         </div>
 
         <Show when={previewMode() === "editor-with-preview"}>
+          <div class="gutter-col gutter-col-1"></div>
           <div
-            class={
-              "h-full w-[1px] bg-neutral-700 absolute left-[50%] -translate-x-[50%]"
-            }
-          />
-
-          <div class="flex-1 bg-[#181818] w-full h-full p-8 px-6 overflow-auto">
+            class="bg-[#181818] h-full p-8 px-6 overflow-auto relative"
+            id={"page-editor-panel-preview"}
+          >
             <PageEditorPreview content={props.content} />
           </div>
         </Show>

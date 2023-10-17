@@ -56,15 +56,16 @@ export const AuthState = defineStore<State>(() => ({
 
     context.hooks.onInit(() => {
       _.loadCurrentUser().then((user) => {
-        _.actions.setSupabaseAccessToken(
-          cookieStorage.getItem(supabaseCookieName, { path: "/" }),
-        );
-        _.actions.setCurrent(user ?? null);
-        _.actions.setReady(true);
         if (!user) {
           _.actions.setSupabaseAccessToken(null);
           navigate("/login");
+        } else {
+          _.actions.setSupabaseAccessToken(
+            cookieStorage.getItem(supabaseCookieName, { path: "/" }),
+          );
+          _.actions.setCurrent(user ?? null);
         }
+        _.actions.setReady(true);
       });
 
       _.hanko.onAuthFlowCompleted(() => {

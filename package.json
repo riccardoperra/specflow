@@ -59,6 +59,7 @@
     "rxjs": "^7.8.1",
     "solid-codemirror": "^2.3.0",
     "solid-js": "^1.7.6",
+    "split-grid": "^1.0.11",
     "statebuilder": "^0.4.3",
     "tiptap-markdown": "^0.8.2"
   }
