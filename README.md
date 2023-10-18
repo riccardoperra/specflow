@@ -1,6 +1,6 @@
 ## SpecFlow
 
-SpecFlow is an online tool which allows to everyone in the tech field (mostly devs and analysts) to store and centralize the project specification.
+SpecFlow is an online tool made for the Hanko hackathon. It allows to everyone in the tech field (mostly devs and analysts) to store and centralize the project specs and documentation.
 
 In SpecFlow, users can manage their projects, write markdown like documentation and generate diagrams such as sequence diagrams, ER, Mind maps etc. 
 
@@ -36,6 +36,18 @@ In SpecFlow, users can share their project pages with all members of the team, a
 - [ ] Export page to md
 - [ ] Sync file with File System API
 - [ ] Add responsive layout for mobile/tablet
+
+## Tech stack
+
+SpecFlow tech stack is mainly composed by these technologies:
+
+- [Hanko](https://hanko.io)
+- [Supabase](https://supabase.com) (Edge Functions and Database)
+- [SolidJS](https://github.com/solidjs/solid)
+- [Vanilla-Extract](https://vanilla-extract.style/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [CodeMirror6](https://codemirror.net)
+- [TipTap Editor](https://tiptap.dev)
 
 
 ## Usage
