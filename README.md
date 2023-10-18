@@ -22,7 +22,8 @@ In SpecFlow, users can share their project pages with all members of the team, a
 - [ ] Add profile component
 - [X] Hanko authorization token integration with supabase
 - [ ] Hanko sign with GitHub
-- [ ] Improve functions to sign token for supabase      
+- [ ] Improve functions to sign token for supabase
+           
 **Features**
 - [ ] Project CRUD with supabase security policy
 - [X] Project page CRUD with supabase security policy
