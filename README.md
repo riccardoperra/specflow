@@ -10,12 +10,15 @@ In SpecFlow, users can share their project pages with all members of the team, a
 
 ### Roadmap
 
+**Bootstrap**
+- [ ] Add README
+- [ ] Add contributions page
+- [ ] Add MSW to run locally withouth  DB/Auth
 **Hanko**
 - [X] Add auth component
 - [ ] Add profile component
 - [X] Hanko authorization token integration with supabase
 - [ ] Hanko sign with GitHub
-
 **Features**
 - [ ] Project CRUD with supabase security policy
 - [X] Project page CRUD with supabase security policy
@@ -23,6 +26,11 @@ In SpecFlow, users can share their project pages with all members of the team, a
 - [X] Allows to use mermaid to generate diagram with a real-time preview
 - [X] Generate diagrams with OpenAI
 - [ ] Generate page markdown content with OpenAI
+- [ ] Share link
+- [ ] Export mermaid diagram to image
+- [ ] Export page to md
+- [ ] Sync file with File System API
+- [ ] Add responsive layout for mobile/tablet
 
 
 ## Usage
