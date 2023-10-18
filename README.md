@@ -13,15 +13,15 @@ In SpecFlow, users can share their project pages with all members of the team, a
 **Hanko**
 - [X] Add auth component
 - [ ] Add profile component
-- [ ] Hanko authorization token integration with supabase
+- [X] Hanko authorization token integration with supabase
 - [ ] Hanko sign with GitHub
 
 **Features**
 - [ ] Project CRUD with supabase security policy
-- [ ] Project page CRUD with supabase security policy
-- [ ] Allows to write markdown like pages
-- [ ] Allows to use mermaid to generate diagram with a real-time preview
-- [ ] Generate diagrams with OpenAI
+- [X] Project page CRUD with supabase security policy
+- [X] Allows to write markdown like pages
+- [X] Allows to use mermaid to generate diagram with a real-time preview
+- [X] Generate diagrams with OpenAI
 - [ ] Generate page markdown content with OpenAI
 
 
