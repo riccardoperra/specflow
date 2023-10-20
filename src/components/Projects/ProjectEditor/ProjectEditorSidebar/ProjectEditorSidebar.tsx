@@ -1,5 +1,5 @@
 import * as styles from "./ProjectEditorSidebar.css";
-import { For, Match, Switch } from "solid-js";
+import { For, getOwner, Match, Switch } from "solid-js";
 import { ProjectView } from "../../../../core/services/projects";
 import { provideState } from "statebuilder";
 import { EditorState } from "../editorState";
@@ -13,11 +13,8 @@ import {
   IconButton,
 } from "@codeui/kit";
 import { bgBrand } from "../../../../global.css";
-import { createControlledDialog } from "../../../../core/utils/controlledDialog";
-import { ProjectEditorNewPageDialog } from "../ProjectEditorNewPageDialog/ProjectEditorNewPageDialog";
 import { PlusIcon } from "../../../../icons/PlusIcon";
 import { As } from "@kobalte/core";
-import { ProjectEditorNewDiagramDialog } from "../ProjectEditorNewPageDialog/ProjectEditorNewDiagramDialog";
 import { DocumentTextIcon } from "../../../../icons/DocumentTextIcon";
 
 interface ProjectEditorSidebarProps {
@@ -26,9 +23,7 @@ interface ProjectEditorSidebarProps {
 
 export function ProjectEditorSidebar(props: ProjectEditorSidebarProps) {
   const editorState = provideState(EditorState);
-
-  const controlledDialog = createControlledDialog();
-
+  const owner = getOwner();
   return (
     <div class={styles.sidebar}>
       <div class={"flex flex-col gap-2"}>
@@ -50,24 +45,16 @@ export function ProjectEditorSidebar(props: ProjectEditorSidebarProps) {
               <DropdownMenuContent>
                 <DropdownMenuItem
                   rightSlot={<DocumentTextIcon />}
-                  onClick={() => {
-                    controlledDialog(ProjectEditorNewPageDialog, {
-                      onSave: (result) =>
-                        editorState.actions.addNewPage(result),
-                      projectId: props.project.id,
-                    });
-                  }}
+                  onClick={() =>
+                    editorState.openNewPageDialog(owner!, props.project.id)
+                  }
                 >
                   New page
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   rightSlot={<PresentationChart />}
                   onClick={() =>
-                    controlledDialog(ProjectEditorNewDiagramDialog, {
-                      onSave: (result) =>
-                        editorState.actions.addNewPage(result),
-                      projectId: props.project.id,
-                    })
+                    editorState.openNewDiagramDialog(owner!, props.project.id)
                   }
                 >
                   <span>New diagram</span>

@@ -7,7 +7,10 @@ import {
 import { withProxyCommands } from "statebuilder/commands";
 import { debounceTime, from, switchMap, tap } from "rxjs";
 import { useSearchParams } from "@solidjs/router";
-import { createEffect, on } from "solid-js";
+import { createEffect, on, Owner, runWithOwner } from "solid-js";
+import { createControlledDialog } from "../../../core/utils/controlledDialog";
+import { ProjectEditorNewPageDialog } from "./ProjectEditorNewPageDialog/ProjectEditorNewPageDialog";
+import { ProjectEditorNewDiagramDialog } from "./ProjectEditorNewPageDialog/ProjectEditorNewDiagramDialog";
 
 interface EditorState {
   activePageId: string | null;
@@ -46,14 +49,14 @@ export const EditorState = defineStore<EditorState>(() => ({
     },
   }))
   .extend((_) => {
-    _.hold(_.commands.setActivePage, (payload) =>
-      _.set("activePageId", payload),
+    _.hold(_.commands.setActivePage, (payload, { set }) =>
+      set("activePageId", payload),
     );
-    _.hold(_.commands.setProjectView, (payload) =>
-      _.set("projectView", payload),
+    _.hold(_.commands.setProjectView, (payload, { set }) =>
+      set("projectView", payload),
     );
-    _.hold(_.commands.updateProjectViewContent, ({ id, content }) =>
-      _.set(
+    _.hold(_.commands.updateProjectViewContent, ({ id, content }, { set }) =>
+      set(
         "projectView",
         "project_page",
         (_) => _.id === id,
@@ -62,20 +65,22 @@ export const EditorState = defineStore<EditorState>(() => ({
         (v: any) => ({ ...v, content }),
       ),
     );
-    _.hold(_.commands.updateProjectSettings, ({ id, name, description }) =>
-      _.set(
-        "projectView",
-        "project_page",
-        (_) => _.id === id,
-        (v) => ({ ...v, name, description }),
-      ),
+    _.hold(
+      _.commands.updateProjectSettings,
+      ({ id, name, description }, { set }) =>
+        set(
+          "projectView",
+          "project_page",
+          (_) => _.id === id,
+          (v) => ({ ...v, name, description }),
+        ),
     );
-    _.hold(_.commands.addNewPage, (page) => {
-      _.set("projectView", "project_page", (result) => [...result, page]);
-      _.set("activePageId", page.id);
+    _.hold(_.commands.addNewPage, (page, { set }) => {
+      set("projectView", "project_page", (result) => [...result, page]);
+      set("activePageId", page.id);
     });
-    _.hold(_.commands.removePage, (id) =>
-      _.set("projectView", "project_page", (pages) =>
+    _.hold(_.commands.removePage, (id, { set }) =>
+      set("projectView", "project_page", (pages) =>
         pages.filter((page) => page.id !== id),
       ),
     );
@@ -124,7 +129,6 @@ export const EditorState = defineStore<EditorState>(() => ({
         const pages = _.get.projectView?.project_page ?? [];
         _.actions.setActivePage(pages[0]?.id);
       }
-      console.log("remove id", command);
     });
 
     from(_.watchCommand([_.commands.updateProjectViewContent]))
@@ -139,4 +143,24 @@ export const EditorState = defineStore<EditorState>(() => ({
         tap(() => _.set("pendingUpdate", false)),
       )
       .subscribe();
+  })
+  .extend((_) => {
+    return {
+      openNewPageDialog(owner: Owner, projectId: number) {
+        return runWithOwner(owner, () => {
+          return createControlledDialog()(ProjectEditorNewPageDialog, {
+            onSave: (result) => _.actions.addNewPage(result),
+            projectId,
+          });
+        });
+      },
+      openNewDiagramDialog(owner: Owner, projectId: number) {
+        return runWithOwner(owner, () => {
+          return createControlledDialog()(ProjectEditorNewDiagramDialog, {
+            onSave: (result) => _.actions.addNewPage(result),
+            projectId,
+          });
+        });
+      },
+    };
   });

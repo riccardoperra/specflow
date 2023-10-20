@@ -8,6 +8,8 @@ import { EditorState } from "./editorState";
 import { ProjectEditorContent } from "./ProjectEditorContent/ProjectEditorContent";
 import { ProjectEditorToolbar } from "./ProjectEditorToolbar/ProjectEditorToolbar";
 import * as styles from "./ProjectEditor.css";
+import { LoadingCircleWithBackdrop } from "../../../icons/LoadingCircle";
+import { ProjectEditorNoPagesContent } from "./ProjectEditorNoPagesContent/ProjectEditorNoPagesContent";
 
 export function ProjectEditor() {
   const params = useParams<{ id: string }>();
@@ -26,7 +28,7 @@ export function ProjectEditor() {
   });
 
   return (
-    <Suspense>
+    <Suspense fallback={<LoadingCircleWithBackdrop width={32} height={32} />}>
       <Show when={projectView()} keyed={true}>
         {(projectView) => (
           <div class={"w-full flex flex-col"}>
@@ -35,8 +37,15 @@ export function ProjectEditor() {
               <ProjectEditorSidebar project={projectView} />
               <div class={styles.content}>
                 <div class={styles.innerContent}>
-                  <ProjectEditorToolbar />
-                  <ProjectEditorContent />
+                  <Show
+                    fallback={
+                      <ProjectEditorNoPagesContent projectView={projectView} />
+                    }
+                    when={editorState.selectedPage()}
+                  >
+                    <ProjectEditorToolbar />
+                    <ProjectEditorContent />
+                  </Show>
                 </div>
               </div>
             </div>
