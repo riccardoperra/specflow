@@ -1,7 +1,7 @@
 import { makePlugin } from "statebuilder";
 import { Hanko, register } from "@teamhanko/hanko-elements";
 
-const hankoApi = "https://d884cc0b-f00e-4798-9f0f-5d7645539864.hanko.io";
+const hankoApi = import.meta.env.HANKO_API_URL;
 const hanko = new Hanko(hankoApi);
 register(hankoApi).then((r) => {});
 
