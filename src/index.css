@@ -13,34 +13,3 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
-/*TODO IMPROVE*/
-
-.gutter {
-    background-color: theme("colors.neutral.600");
-    background-repeat: no-repeat;
-    background-position: 50%;
-    width: 2px !important;
-}
-
-.gutter.gutter-horizontal {
-    cursor: col-resize;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 2px 1fr;
-}
-
-.gutter-col {
-    grid-row: 1/-1;
-    cursor: col-resize;
-    background-color: theme("colors.neutral.600");
-    background-repeat: no-repeat;
-    background-position: 50%;
-    width: 5px !important;
-}
-
-.gutter-col-1 {
-    grid-column: 2;
-}

@@ -98,7 +98,7 @@ export function MarkdownEditor(props: VoidProps<JsonEditorProps>) {
           "background-color": "#181818",
           width: "100%",
         }}
-        class={"w-full h-full overflow-auto"}
+        class={"w-full h-full"}
         ref={ref}
       />
     </>
