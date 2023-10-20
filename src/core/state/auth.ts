@@ -5,7 +5,7 @@ import { useNavigate } from "@solidjs/router";
 import { withHanko } from "./hanko";
 import { createEffect, createMemo, on } from "solid-js";
 import { cookieStorage } from "../utils/cookieStorage";
-import { supabase, supabaseCookieName } from "../supabase";
+import { patchSupabaseRestClient, supabaseCookieName } from "../supabase";
 import { signSupabaseToken } from "../services/auth";
 import { createControlledDialog } from "../utils/controlledDialog";
 import { ProfileDialog } from "../../components/Profile/ProfileDialog";
@@ -55,18 +55,33 @@ export const AuthState = defineStore<State>(() => ({
     const loggedIn = () => !!_.get.supabaseAccessToken && !!_();
 
     context.hooks.onInit(() => {
-      _.loadCurrentUser().then((user) => {
-        if (!user) {
-          _.actions.setSupabaseAccessToken(null);
-          navigate("/login");
-        } else {
-          _.actions.setSupabaseAccessToken(
-            cookieStorage.getItem(supabaseCookieName, { path: "/" }),
-          );
-          _.actions.setCurrent(user ?? null);
-        }
-        _.actions.setReady(true);
-      });
+      if (import.meta.env.VITE_ENABLE_AUTH_MOCK) {
+        _.loadCurrentUser().then((user) => {
+          return signSupabaseToken({
+            userID: user!.id,
+            jwt: undefined,
+            expirationSeconds: 0,
+          }).then(({ access_token }) => {
+            patchSupabaseRestClient(access_token);
+            _.actions.setCurrent(user!);
+            _.actions.setSupabaseAccessToken(access_token);
+            _.actions.setReady(true);
+          });
+        });
+      } else {
+        _.loadCurrentUser().then((user) => {
+          if (!user) {
+            _.actions.setSupabaseAccessToken(null);
+            navigate("/login");
+          } else {
+            _.actions.setSupabaseAccessToken(
+              cookieStorage.getItem(supabaseCookieName, { path: "/" }),
+            );
+            _.actions.setCurrent(user ?? null);
+          }
+          _.actions.setReady(true);
+        });
+      }
 
       _.hanko.onAuthFlowCompleted(() => {
         _.actions.setLoading(true);
@@ -86,37 +101,32 @@ export const AuthState = defineStore<State>(() => ({
       });
 
       // Supabase sync token integration
-
-      createEffect(
-        on(
-          createMemo(() => _.get.supabaseAccessToken),
-          (accessToken) => {
-            const client = supabase;
-            const originalHeaders = structuredClone(client["rest"]["headers"]);
-            if (accessToken === null) {
-              cookieStorage.removeItem(supabaseCookieName);
-              _.actions.setSupabaseAccessToken(null);
-              client["rest"].headers = originalHeaders;
-            } else {
-              const currentDate = new Date();
-              const expirationDate = new Date(
-                currentDate.getTime() +
-                  _.hanko.session.get().expirationSeconds * 1000,
-              );
-              cookieStorage.setItem(supabaseCookieName, accessToken, {
-                expires: expirationDate.getTime(),
-                secure: true,
-                path: "/",
-              });
-              client["rest"].headers = {
-                ...client["rest"].headers,
-                Authorization: `Bearer ${accessToken}`,
-              };
-            }
-          },
-          { defer: true },
-        ),
-      );
+      if (!import.meta.env.VITE_ENABLE_AUTH_MOCK) {
+        createEffect(
+          on(
+            createMemo(() => _.get.supabaseAccessToken),
+            (accessToken) => {
+              patchSupabaseRestClient(accessToken);
+              if (accessToken === null) {
+                cookieStorage.removeItem(supabaseCookieName);
+                _.actions.setSupabaseAccessToken(null);
+              } else {
+                const currentDate = new Date();
+                const expirationDate = new Date(
+                  currentDate.getTime() +
+                    _.hanko.session.get().expirationSeconds * 1000,
+                );
+                cookieStorage.setItem(supabaseCookieName, accessToken, {
+                  expires: expirationDate.getTime(),
+                  secure: true,
+                  path: "/",
+                });
+              }
+            },
+            { defer: true },
+          ),
+        );
+      }
 
       _.hanko.onSessionCreated((session) => {
         _.actions.setSupabaseAccessToken(session.jwt!);
