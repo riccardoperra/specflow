@@ -2,13 +2,17 @@ import { UnauthorizedError, User } from "@teamhanko/hanko-elements";
 import { defineStore } from "statebuilder";
 import { withProxyCommands } from "statebuilder/commands";
 import { useNavigate } from "@solidjs/router";
-import { withHanko } from "./hanko";
+import { withHanko, withHankoContext } from "./hanko";
 import { createEffect, createMemo, on } from "solid-js";
-import { cookieStorage } from "../utils/cookieStorage";
-import { patchSupabaseRestClient, supabaseCookieName } from "../supabase";
+import {
+  getSupabaseCookie,
+  patchSupabaseRestClient,
+  syncSupabaseTokenFromHankoSession,
+} from "../supabase";
 import { signSupabaseToken } from "../services/auth";
 import { createControlledDialog } from "../utils/controlledDialog";
 import { ProfileDialog } from "../../components/Profile/ProfileDialog";
+import { MOCK_AUTH_CONTEXT_KEY } from "./constants";
 
 type AuthCommands = {
   setCurrent: User | null;
@@ -25,12 +29,19 @@ interface State {
   supabaseAccessToken: string | null;
 }
 
-export const AuthState = defineStore<State>(() => ({
-  loading: false,
-  ready: false,
-  supabaseAccessToken: null,
-  user: null,
-}))
+const enableAuthMock = import.meta.env.VITE_ENABLE_AUTH_MOCK;
+
+function initialState() {
+  return {
+    loading: false,
+    ready: false,
+    supabaseAccessToken: null,
+    user: null,
+  };
+}
+
+export const AuthState = defineStore<State>(initialState)
+  .extend(withHankoContext(enableAuthMock))
   .extend(withProxyCommands<AuthCommands>({ devtools: { storeName: "auth" } }))
   .extend(withHanko())
   .extend((_) => {
@@ -51,11 +62,14 @@ export const AuthState = defineStore<State>(() => ({
     },
   }))
   .extend((_, context) => {
+    const enableMock =
+      context.metadata.get(MOCK_AUTH_CONTEXT_KEY) ?? (false as boolean);
     const navigate = useNavigate();
     const loggedIn = () => !!_.get.supabaseAccessToken && !!_();
 
     context.hooks.onInit(() => {
-      if (import.meta.env.VITE_ENABLE_AUTH_MOCK) {
+      // TODO: clean up code?
+      if (enableMock) {
         _.loadCurrentUser().then((user) => {
           return signSupabaseToken({
             userID: user!.id,
@@ -74,9 +88,7 @@ export const AuthState = defineStore<State>(() => ({
             _.actions.setSupabaseAccessToken(null);
             navigate("/login");
           } else {
-            _.actions.setSupabaseAccessToken(
-              cookieStorage.getItem(supabaseCookieName, { path: "/" }),
-            );
+            _.actions.setSupabaseAccessToken(getSupabaseCookie());
             _.actions.setCurrent(user ?? null);
           }
           _.actions.setReady(true);
@@ -100,33 +112,16 @@ export const AuthState = defineStore<State>(() => ({
         });
       });
 
-      // Supabase sync token integration
-      if (!import.meta.env.VITE_ENABLE_AUTH_MOCK) {
-        createEffect(
-          on(
-            createMemo(() => _.get.supabaseAccessToken),
-            (accessToken) => {
-              patchSupabaseRestClient(accessToken);
-              if (accessToken === null) {
-                cookieStorage.removeItem(supabaseCookieName);
-                _.actions.setSupabaseAccessToken(null);
-              } else {
-                const currentDate = new Date();
-                const expirationDate = new Date(
-                  currentDate.getTime() +
-                    _.hanko.session.get().expirationSeconds * 1000,
-                );
-                cookieStorage.setItem(supabaseCookieName, accessToken, {
-                  expires: expirationDate.getTime(),
-                  secure: true,
-                  path: "/",
-                });
-              }
-            },
-            { defer: true },
-          ),
-        );
-      }
+      createEffect(
+        on(
+          createMemo(() => _.get.supabaseAccessToken),
+          (accessToken) => {
+            patchSupabaseRestClient(accessToken);
+            syncSupabaseTokenFromHankoSession(accessToken, _.session());
+          },
+          { defer: true },
+        ),
+      );
 
       _.hanko.onSessionCreated((session) => {
         _.actions.setSupabaseAccessToken(session.jwt!);

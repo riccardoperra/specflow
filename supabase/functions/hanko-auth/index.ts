@@ -30,12 +30,12 @@ Deno.serve(async (req) => {
   const skipAuth = Deno.env.get("SKIP_AUTH") ?? false;
   if (skipAuth) {
     console.log(`Bypassing authentication flow. SKIP_AUTH=true`);
-    const secret = "super-secret-jwt-token-with-at-least-32-characters-long";
+    const jwtSecret = "super-secret-jwt-token-with-at-least-32-characters-long";
     const payload = {
       userId: session.userID,
       exp: new Date().setHours(24),
     };
-    const token = jsonwebtoken.sign(payload, secret);
+    const token = jsonwebtoken.sign(payload, jwtSecret);
     return buildSuccessResponse(token);
   }
 

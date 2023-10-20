@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "../types/supabase";
 import { cookieStorage } from "./utils/cookieStorage";
+import { SessionDetail } from "@teamhanko/hanko-elements";
 
 export const supabaseCookieName = "sb-token";
 
@@ -32,5 +33,28 @@ export function patchSupabaseRestClient(accessToken: string | null) {
     };
   } else {
     client["rest"].headers = originalHeaders;
+  }
+}
+
+export function getSupabaseCookie() {
+  return cookieStorage.getItem(supabaseCookieName, { path: "/" });
+}
+
+export function syncSupabaseTokenFromHankoSession(
+  accessToken: string | null,
+  session: SessionDetail,
+) {
+  if (accessToken === null) {
+    cookieStorage.removeItem(supabaseCookieName);
+  } else {
+    const currentDate = new Date();
+    const expirationDate = new Date(
+      currentDate.getTime() + session.expirationSeconds * 1000,
+    );
+    cookieStorage.setItem(supabaseCookieName, accessToken, {
+      expires: expirationDate.getTime(),
+      secure: true,
+      path: "/",
+    });
   }
 }
