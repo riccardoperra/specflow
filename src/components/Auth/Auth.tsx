@@ -17,7 +17,7 @@ export function Auth() {
             "absolute left-0 top-0 flex items-center justify-center w-full h-full z-50 bg-neutral-900/70"
           }
         >
-          <LoadingCircle class={"w-24 h-24"} />
+          <LoadingCircle width={32} height={32} />
         </div>
       </Show>
 

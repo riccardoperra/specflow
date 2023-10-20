@@ -7,7 +7,7 @@ import {
 import { withProxyCommands } from "statebuilder/commands";
 import { debounceTime, from, switchMap, tap } from "rxjs";
 import { useSearchParams } from "@solidjs/router";
-import { createEffect, on, Owner, runWithOwner } from "solid-js";
+import { createEffect, on, runWithOwner } from "solid-js";
 import { createControlledDialog } from "../../../core/utils/controlledDialog";
 import { ProjectEditorNewPageDialog } from "./ProjectEditorNewPageDialog/ProjectEditorNewPageDialog";
 import { ProjectEditorNewDiagramDialog } from "./ProjectEditorNewPageDialog/ProjectEditorNewDiagramDialog";
@@ -146,7 +146,7 @@ export const EditorState = defineStore<EditorState>(() => ({
   })
   .extend((_) => {
     return {
-      openNewPageDialog(owner: Owner, projectId: number) {
+      openNewPageDialog(owner: any, projectId: number) {
         return runWithOwner(owner, () => {
           return createControlledDialog()(ProjectEditorNewPageDialog, {
             onSave: (result) => _.actions.addNewPage(result),
@@ -154,7 +154,7 @@ export const EditorState = defineStore<EditorState>(() => ({
           });
         });
       },
-      openNewDiagramDialog(owner: Owner, projectId: number) {
+      openNewDiagramDialog(owner: any, projectId: number) {
         return runWithOwner(owner, () => {
           return createControlledDialog()(ProjectEditorNewDiagramDialog, {
             onSave: (result) => _.actions.addNewPage(result),

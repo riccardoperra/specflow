@@ -68,32 +68,16 @@ export const AuthState = defineStore<State>(initialState)
     const loggedIn = () => !!_.get.supabaseAccessToken && !!_();
 
     context.hooks.onInit(() => {
-      // TODO: clean up code?
-      if (enableMock) {
-        _.loadCurrentUser().then((user) => {
-          return signSupabaseToken({
-            userID: user!.id,
-            jwt: undefined,
-            expirationSeconds: 0,
-          }).then(({ access_token }) => {
-            patchSupabaseRestClient(access_token);
-            _.actions.setCurrent(user!);
-            _.actions.setSupabaseAccessToken(access_token);
-            _.actions.setReady(true);
-          });
-        });
-      } else {
-        _.loadCurrentUser().then((user) => {
-          if (!user) {
-            _.actions.setSupabaseAccessToken(null);
-            navigate("/login");
-          } else {
-            _.actions.setSupabaseAccessToken(getSupabaseCookie());
-            _.actions.setCurrent(user ?? null);
-          }
-          _.actions.setReady(true);
-        });
-      }
+      _.loadCurrentUser().then((user) => {
+        if (!user) {
+          _.actions.setSupabaseAccessToken(null);
+          navigate("/login");
+        } else {
+          _.actions.setSupabaseAccessToken(getSupabaseCookie());
+          _.actions.setCurrent(user ?? null);
+        }
+        _.actions.setReady(true);
+      });
 
       _.hanko.onAuthFlowCompleted(() => {
         _.actions.setLoading(true);
