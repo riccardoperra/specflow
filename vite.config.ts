@@ -25,6 +25,9 @@ export default defineConfig({
       "/functions": {
         target: "http://localhost:54321",
       },
+      "/rest": {
+        target: "http://localhost:54321",
+      },
     },
   },
   build: {

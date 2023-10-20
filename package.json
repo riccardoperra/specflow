@@ -14,6 +14,7 @@
   "devDependencies": {
     "@vanilla-extract/vite-plugin": "^3.9.0",
     "autoprefixer": "^10.4.16",
+    "msw": "0.0.0-fetch.rc-24",
     "postcss": "^8.4.31",
     "prettier": "^3.0.3",
     "solid-devtools": "^0.27.3",
@@ -33,7 +34,7 @@
     "@codemirror/lint": "^6.4.2",
     "@codemirror/state": "^6.2.1",
     "@codemirror/view": "^6.21.3",
-    "@codeui/kit": "^0.0.26",
+    "@codeui/kit": "^0.0.27",
     "@kobalte/core": "^0.11.0",
     "@lezer/highlight": "^1.1.6",
     "@solid-primitives/storage": "^2.1.1",
@@ -63,5 +64,8 @@
     "split-grid": "^1.0.11",
     "statebuilder": "^0.4.3",
     "tiptap-markdown": "^0.8.2"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }
