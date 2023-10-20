@@ -3,11 +3,19 @@ import { createResource, For, Show } from "solid-js";
 import { getProjects } from "../../core/services/projects";
 import { Button } from "@codeui/kit";
 import { CurrentUserBadge } from "../UserBadge/CurrentUserBadge";
+import { createControlledDialog } from "../../core/utils/controlledDialog";
+import { NewProjectDialog } from "./NewProjectDialog/NewProjectDialog";
 
 export function Projects() {
   const links = [{ path: "/projects", label: "Dashboard" }];
 
-  const [projects] = createResource(getProjects);
+  const [projects, { refetch }] = createResource(getProjects);
+
+  const controlledDialog = createControlledDialog();
+
+  const onCreateProject = () => {
+    controlledDialog(NewProjectDialog, { onSave: refetch });
+  };
 
   return (
     <div class={"flex flex-col w-full"}>
@@ -44,11 +52,13 @@ export function Projects() {
       <div class={"container mx-auto px-8 py-4 mt-12"}>
         <div class={"flex justify-between items-center"}>
           <h1 class={"text-2xl font-bold"}>My projects</h1>
-          <Button theme={"primary"}>Create project</Button>
+          <Button theme={"primary"} onClick={onCreateProject}>
+            Create project
+          </Button>
         </div>
 
         <div class={"mt-4"}>
-          <div class={"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"}>
+          <div class={"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"}>
             <For each={projects()}>
               {(project) => (
                 <Link

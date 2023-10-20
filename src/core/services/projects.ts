@@ -48,7 +48,7 @@ export async function createNewProject(name: string, description: string) {
       name: name,
       description,
     })
-    .select()
+    .select("*, project_page(*)")
     .single();
 }
 

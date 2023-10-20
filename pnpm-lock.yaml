@@ -33,8 +33,8 @@ dependencies:
     specifier: ^6.21.3
     version: 6.21.3
   '@codeui/kit':
-    specifier: ^0.0.26
-    version: 0.0.26(solid-js@1.7.12)(vite@4.4.11)
+    specifier: ^0.0.27
+    version: 0.0.27(solid-js@1.7.12)(vite@4.4.11)
   '@kobalte/core':
     specifier: ^0.11.0
     version: 0.11.0(solid-js@1.7.12)
@@ -798,8 +798,8 @@ packages:
       w3c-keyname: 2.2.8
     dev: false
 
-  /@codeui/kit@0.0.26(solid-js@1.7.12)(vite@4.4.11):
-    resolution: {integrity: sha512-biG9+0+E1UGx3H3jT1gbvYGwIPjVCTYwouLGiOiS2MLjHyrR04a0mXgSOcvBZtMzlfJYLCqVOKQprtr8kothkg==}
+  /@codeui/kit@0.0.27(solid-js@1.7.12)(vite@4.4.11):
+    resolution: {integrity: sha512-DSwiZQtYhm53bve1Noa6BcMnWsZQmpCSbaYUtVKVwg0z1wVEraLJJTFyy+dw+4BpJgzS2lNGg/Lgn0ZhquttvQ==}
     peerDependencies:
       solid-js: ^1.7.0
     dependencies:
