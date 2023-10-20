@@ -4,23 +4,20 @@ import { cookieStorage } from "./utils/cookieStorage";
 
 export const supabaseCookieName = "sb-token";
 
-const { CLIENT_SUPABASE_URL, CLIENT_SUPABASE_KEY } = import.meta.env;
+const supabaseUrl = import.meta.env.CLIENT_SUPABASE_URL;
+const supabaseKey = import.meta.env.CLIENT_SUPABASE_KEY;
 
-export const supabase = createClient<Database>(
-  CLIENT_SUPABASE_URL,
-  CLIENT_SUPABASE_KEY,
-  {
-    auth: {
-      storage: undefined,
-      detectSessionInUrl: false,
-      autoRefreshToken: false,
-      persistSession: false,
-      storageKey: undefined,
-    },
-    global: {
-      headers: {
-        Authorization: `Bearer ${cookieStorage.getItem(supabaseCookieName)}`,
-      },
+export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
+  auth: {
+    storage: undefined,
+    detectSessionInUrl: false,
+    autoRefreshToken: false,
+    persistSession: false,
+    storageKey: undefined,
+  },
+  global: {
+    headers: {
+      Authorization: `Bearer ${cookieStorage.getItem(supabaseCookieName)}`,
     },
   },
-);
+});
