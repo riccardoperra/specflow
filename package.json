@@ -8,12 +8,14 @@
     "build": "vite build",
     "serve": "vite preview",
     "gen:types": "supabase gen types typescript --project-id \"byxdpolwzavnqnqtyqbs\" --schema public > src/types/supabase.ts",
-    "supabase:serve:functions": "supabase start && supabase functions serve --env-file=./supabase/.env.local --no-verify-jwt"
+    "supabase:serve:functions": "supabase start && supabase functions serve --env-file=./supabase/.env.local --no-verify-jwt",
+    "supabase:dev:deploy": "supabase functions serve --env-file=./supabase/.env.local --no-verify-jwt"
   },
   "license": "MIT",
   "devDependencies": {
     "@vanilla-extract/vite-plugin": "^3.9.0",
     "autoprefixer": "^10.4.16",
+    "msw": "0.0.0-fetch.rc-24",
     "postcss": "^8.4.31",
     "prettier": "^3.0.3",
     "solid-devtools": "^0.27.3",
@@ -63,5 +65,8 @@
     "split-grid": "^1.0.11",
     "statebuilder": "^0.4.3",
     "tiptap-markdown": "^0.8.2"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }

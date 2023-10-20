@@ -41,6 +41,17 @@ export async function deleteProjectPage(
   return res.data;
 }
 
+export async function createNewProject(name: string, description: string) {
+  return supabase
+    .from("project")
+    .insert({
+      name: name,
+      description,
+    })
+    .select()
+    .single();
+}
+
 export async function createProjectPageText(
   projectId: number,
   data: {
