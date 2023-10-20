@@ -4,8 +4,9 @@ import { cookieStorage } from "./utils/cookieStorage";
 
 export const supabaseCookieName = "sb-token";
 
-const supabaseUrl = import.meta.env.CLIENT_SUPABASE_URL;
-const supabaseKey = import.meta.env.CLIENT_SUPABASE_KEY;
+console.log(import.meta);
+const supabaseUrl = import.meta.env.VITE_CLIENT_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_CLIENT_SUPABASE_KEY;
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
   auth: {
