@@ -77,7 +77,11 @@ export const AuthState = defineStore<State>(() => ({
               _.actions.setSupabaseAccessToken(access_token),
             )
             .then(() => _.actions.setLoading(false))
-            .then(() => navigate("/"));
+            .then(() => navigate("/"))
+            .catch(() => {
+              _.actions.setLoading(false);
+              return _.hanko.user.logout().then(() => navigate("/login"));
+            });
         });
       });
 

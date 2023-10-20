@@ -4,6 +4,7 @@
 
 import jsonwebtoken from "jsonwebtoken";
 import * as jose from "jose";
+import { corsHeaders } from "../_shared/cors.ts";
 
 console.log("Hello from Functions!");
 
@@ -16,6 +17,12 @@ interface RequestBody {
 }
 
 Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response(JSON.stringify({ status: "ok" }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   const { session } = (await req.json()) as RequestBody;
   console.log(
     `Generating token for ${session.userID} with exp at ${session.expirationSeconds}`,
@@ -39,7 +46,7 @@ Deno.serve(async (req) => {
       access_token: token,
     }),
     {
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     },
   );
 });

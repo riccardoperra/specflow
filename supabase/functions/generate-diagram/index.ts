@@ -2,6 +2,8 @@
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 
+import { corsHeaders } from "../_shared/cors.ts";
+
 export const generatePrompt = (
   projectName: string,
   projectDescription: string,
@@ -38,6 +40,10 @@ interface Request {
 }
 
 Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
   const token = Deno.env.get("OPENAI_TOKEN");
   const { pageName, projectDescription, projectName, prompt, sequenceDiagram } =
     (await req.json()) as Request;
@@ -58,6 +64,7 @@ Deno.serve(async (req) => {
   return fetch("https://api.openai.com/v1/completions", {
     method: "POST",
     headers: {
+      ...corsHeaders,
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
