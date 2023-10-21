@@ -11,7 +11,7 @@ In SpecFlow, users can use AI as an assistant to generate the content they need 
 In SpecFlow, users can share their project pages with all members of the team, assuring that everyone has all necessary
 information for their work.
 
-## Tech stack
+## 🤖 Tech stack
 
 SpecFlow tech stack is mainly composed by these technologies:
 
@@ -24,7 +24,7 @@ SpecFlow tech stack is mainly composed by these technologies:
 - [TipTap Editor](https://tiptap.dev)
 - [Mock Service Worker (next release)](https://mswjs.io/)
 
-## Hanko integration details
+## 🔐 Hanko integration details
 
 SpecFlow is a single-page application which integrates Hanko as a main authentication flow. All related code which
 handles
@@ -158,3 +158,7 @@ If the variable `VITE_ENABLE_AUTH_MOCK` is true, you can login with two differen
 ## Local development
 
 Follow the [local_development.md](docs/local_development.md) guide for more information.
+
+## License
+
+MIT © [Riccardo Perra](https://github.com/riccardoperra)
