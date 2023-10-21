@@ -118,11 +118,12 @@ sequenceDiagram
     Supabase Edge Functions ->> Supabase Edge Functions: Verify Hanko jwt token
     Supabase Edge Functions ->> Supabase Edge Functions: Sign new jwt token containing the hanko user_id.
     Note right of Supabase Edge Functions: Signing a token for supabase is needed to integrate the db RLS policies.
-    Supabase Edge Functions -->> Client: Returns access token for supabase and set cookie "sb-token"
+    Supabase Edge Functions -->> Client: Returns access token for supabase
     deactivate Supabase Edge Functions
     deactivate Supabase Edge Functions
     activate Client
     Client ->> Client: Patch supabase client Authorization header
+    Client ->> Client: Set "sb-token" session cookie
     Client ->> Supabase Database: Call /rest/ api to do some operations
     note over Client, Supabase Database: Will pass the token received from the supabase edge function
     deactivate Client

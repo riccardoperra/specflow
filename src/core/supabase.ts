@@ -47,6 +47,14 @@ export function syncSupabaseTokenFromHankoSession(
   if (accessToken === null) {
     cookieStorage.removeItem(supabaseCookieName);
   } else {
-    // Cookie is now automatically set by the edge function
+    const currentDate = new Date();
+    const expirationDate = new Date(
+      currentDate.getTime() + session.expirationSeconds * 1000,
+    );
+    cookieStorage.setItem(supabaseCookieName, accessToken, {
+      expires: expirationDate.getTime(),
+      secure: true,
+      path: "/",
+    });
   }
 }

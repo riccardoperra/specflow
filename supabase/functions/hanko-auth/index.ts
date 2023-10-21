@@ -3,11 +3,12 @@
 // This enables autocomplete, go to definition, etc.
 
 import jsonwebtoken from "jsonwebtoken";
-import { getCookies, setCookie } from "cookie";
 import * as jose from "jose";
 import { corsHeaders } from "../_shared/cors.ts";
 
 Deno.serve(async (req) => {
+  const path = "specflow.netlify.app";
+  console.log(req.headers.get("host"));
   if (req.method === "OPTIONS") {
     return new Response(JSON.stringify({ status: "ok" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -45,7 +46,6 @@ Deno.serve(async (req) => {
       new URL(`${hankoApiUrl}/.well-known/jwks.json`),
     );
     const data = await jose.jwtVerify(hankoToken, JWKS);
-    console.log(data);
     const payload = {
       exp: data.payload.exp,
       userId: data.payload.sub,
@@ -53,7 +53,10 @@ Deno.serve(async (req) => {
     const token = jsonwebtoken.sign(payload, supabaseToken);
     return buildSuccessResponse(token, data.payload.exp!);
   } catch (e) {
-    throw e;
+    return new Response(JSON.stringify({ code: 401, message: e.message }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 401,
+    });
   }
 });
 
@@ -71,21 +74,13 @@ function buildPayload(exp: number, sub: string) {
 }
 
 function buildSuccessResponse(token: string, exp: number) {
-  const response = new Response(JSON.stringify({ access_token: token }), {
-    headers: {
-      ...corsHeaders,
-      "Content-Type": "application/json",
+  return new Response(
+    JSON.stringify({ access_token: token, expiration_date: exp }),
+    {
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json",
+      },
     },
-  });
-
-  setCookie(response.headers, {
-    name: "sb-token",
-    value: token,
-    path: "/",
-    // httpOnly: true,
-    secure: true,
-    maxAge: exp,
-  });
-
-  return response;
+  );
 }
