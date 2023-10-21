@@ -3,6 +3,7 @@
 // This enables autocomplete, go to definition, etc.
 
 import jsonwebtoken from "jsonwebtoken";
+import { setCookie } from "cookie";
 import * as jose from "jose";
 import { corsHeaders } from "../_shared/cors.ts";
 
@@ -31,12 +32,14 @@ Deno.serve(async (req) => {
   if (skipAuth) {
     console.log(`Bypassing authentication flow. SKIP_AUTH=true`);
     const jwtSecret = "super-secret-jwt-token-with-at-least-32-characters-long";
+    const exp = new Date();
+    exp.setHours(24);
     const payload = {
       userId: session.userID,
-      exp: new Date().setHours(24),
+      exp: exp.getTime(),
     };
     const token = jsonwebtoken.sign(payload, jwtSecret);
-    return buildSuccessResponse(token);
+    return buildSuccessResponse(token, exp);
   }
 
   console.log(
@@ -47,29 +50,39 @@ Deno.serve(async (req) => {
     const JWKS = jose.createRemoteJWKSet(
       new URL(`${hankoApiUrl}/.well-known/jwks.json`),
     );
-
     const data = await jose.jwtVerify(session.jwt, JWKS);
-
     const payload = {
       ...data.payload,
       userId: session.userID,
     };
-
     const token = jsonwebtoken.sign(payload, supabaseToken);
-
-    return buildSuccessResponse(token);
+    return buildSuccessResponse(token, new Date(data.payload.exp!));
   } catch (e) {
     throw e;
   }
 });
 
-function buildSuccessResponse(token: string) {
-  return new Response(
+function buildSuccessResponse(token: string, expirationDate: Date) {
+  const response = new Response(
     JSON.stringify({
       access_token: token,
     }),
     {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json",
+      },
     },
   );
+
+  setCookie(response.headers, {
+    name: "sb-token",
+    value: token,
+    path: "/",
+    // httpOnly: true,
+    secure: true,
+    expires: expirationDate,
+  });
+
+  return response;
 }

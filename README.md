@@ -72,10 +72,9 @@ sequenceDiagram
     activate Supabase Edge Functions
     Supabase Edge Functions->>Supabase Edge Functions: Verify jwt token
     deactivate Supabase Edge Functions
-    Supabase Edge Functions-->>Client: Returns new access token
+    Supabase Edge Functions-->>Client: Returns new access token and set cookie "sb-token"
     deactivate Supabase Edge Functions
     activate Client
-    Client->>Client: Set new cookie "sb-token" to store the given token
     Client->>Client: Patch supabase client Authorization header 
     Client->>Supabase Database: Call /rest/ api to do some operations
     note over Client, Supabase Database: Will pass the token received from the supabase edge function

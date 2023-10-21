@@ -37,7 +37,7 @@ export function patchSupabaseRestClient(accessToken: string | null) {
 }
 
 export function getSupabaseCookie() {
-  return cookieStorage.getItem(supabaseCookieName, { path: "/" });
+  return cookieStorage.getItem(supabaseCookieName, { path: "/", secure: true });
 }
 
 export function syncSupabaseTokenFromHankoSession(
@@ -47,14 +47,6 @@ export function syncSupabaseTokenFromHankoSession(
   if (accessToken === null) {
     cookieStorage.removeItem(supabaseCookieName);
   } else {
-    const currentDate = new Date();
-    const expirationDate = new Date(
-      currentDate.getTime() + session.expirationSeconds * 1000,
-    );
-    cookieStorage.setItem(supabaseCookieName, accessToken, {
-      expires: expirationDate.getTime(),
-      secure: true,
-      path: "/",
-    });
+    // Cookie is now automatically set by the edge function
   }
 }
