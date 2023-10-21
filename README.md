@@ -27,13 +27,13 @@ SpecFlow tech stack is mainly composed by these technologies:
 
 ### Table of contents
 
-- [1. Preparing the environment](#preparing-environment)
-- [2. Connect Hanko](#init-hanko)
-- [3. Initialize supabase](#init-supabase)
-    - [3.1 Connect an external instance](#connect-to-external-instance)
-    - [3.2 Connect to a local instance](#supabase-connect-to-local-instance)
-    - [3.3 Setup environment variables](#supabase-setup-environment-variables)
-- [4. Enable mocks for client-side authentication flow (optional)](#enable-mocks-for-client-side-auth-flow)
+- [1. Preparing the environment](#1-preparing-the-environment)
+- [2. Connect Hanko](#2-init-hanko)
+- [3. Initialize supabase](#3-initialize-supabase)
+    - [3.1 Connect an external instance](#31-connect-an-external-instance)
+    - [3.2 Connect to a local instance](#32-connect-to-a-local-instance)
+    - [3.3 Setup environment variables](#33-setup-environment-variables)
+- [4. Enable mocks for client-side authentication flow (optional)](#4-enable-mocks-for-client-side-authentication-flow-optional)
 
 ### 1. Preparing the environment
 
