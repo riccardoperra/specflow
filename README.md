@@ -40,21 +40,27 @@ the authentication is in these files:
 ### Authentication flow
 
 Supabase Database comes with a useful RSL policy which allows to restrict the access from our data using custom rules.
-Since we need that each user can operate only inside the project he has authorization we need to somehow make supabase
+Since we need that each user can operate only inside it's projects, we need to somehow make supabase
 understand who is making the requests.
 
-In a traditional flow, the user_id of a supabase user could have been used, but SpecFlow integrates Hanko as a custom
-authentication system.
-
-Since Hanko **will replace supabase authentication**, after the sign-in in the UI we need to extract the data we need
+Since Hanko **is replacing** supabase auth, after the sign-in in the UI we need to extract the data we need
 from Hanko's JWT, and sign our own to send to Supabase.
 
 We can do that using hanko `authFlowCompleted` event, which gets called once the user authenticates through the UI.
+
+```typescript
+hanko.onAuthFlowCompleted(() => {
+  supabase.functions.invoke("hanko-auth", {body: {token: session.jwt}})
+});
+```
+
 After that event we will call the supabase edge function
 in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts)
 to validate Hanko JWT token retrieving their JWKS config, then sign ourselves a new token for supabase.
 
 ```ts
+import * as jose from 'https://deno.land/x/jose@v4.9.0/index.ts';
+
 const hankoApiUrl = Deno.env.get("HANKO_API_URL");
 // 1. ✅ Retrieves Hanko JWKS configuration
 const JWKS = jose.createRemoteJWKSet(
@@ -68,17 +74,21 @@ const payload = {
 };
 // 3. ✅ Sign new token for supabase using it's private key
 const supabaseToken = Deno.env.get("PRIVATE_KEY_SUPABASE");
-const token = jsonwebtoken.sign(payload, supabaseToken)
+const secret = new TextEncoder().encode(supabaseToken);
+const token = await jose.SignJWT(payload)
+  .setExpirationTime(data.payload.exp)
+  .setProtectedHeader({alg: "HS256"}) // Supabase uses a different algorithm
+  .sign(new TextEncoder().encode(secret));
 ```
 
 Our payload for the JWT will contain the user's identifier from Hanko and the same expiration date.
 
 > [!IMPORTANT]
-> We are signing this JWT using Supabase's signing secret token, so it will be able to check its authenticity for
-> security reason. This is a crucial step which obviously for security reasons cannot be done on the client side.
+> We are signing this JWT using Supabase's signing secret token, so it will be able to check its authenticity.
+> This is a crucial step which obviously for security reasons cannot be done on the client side.
 
-Once that each supabase fetch call should include our custom token which contains the Hanko **userId**. Next, thanks to a *
-*postgres function** we can extract the userId from the jwt in order to know which user is authenticated.
+Once that each supabase fetch call should include our custom token which contains the Hanko **userId**. Next, thanks to
+a **postgres function** we can extract the userId from the jwt in order to know which user is authenticated.
 
 ```sql
 create
@@ -139,16 +149,13 @@ The mocking handlers are all present in the [src/mocks/hanko-handlers.ts](src/mo
 If the variable `VITE_ENABLE_AUTH_MOCK` is true, you can login with two different users.
 
 - User1:
-    - email: user1@example.com
-    - password: // can be anything
+    - email: **user1@example.com**
+    - password: **password**
 
 - User2:
-    - email: user2@example.com
-    - password: // can be anything
-
-> [!IMPORTANT]
-> Password can be anything because there is no login data check implementation in the current handlers.
-
+    - email: **user2@example.com**
+    - password: **password**
+  
 ## Local development
 
 ### Table of contents

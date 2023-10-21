@@ -82,12 +82,15 @@ const userInfoByEmail = http.post<
 const login = http.post<{}, { user_id: string; password: string }>(
   `${hankoUrl}/password/login`,
   async ({ request }) => {
-    const { user_id } = await request.json();
+    const { user_id, password } = await request.json();
     logger.info(`[MSW/Hanko] Login flow for user ${user_id}`);
     const user = findUserById(user_id);
     logger.success(`[MSW/Hanko] User ${user_id} found`, { user });
     if (!user) {
       return buildHankoNotFoundResponse();
+    }
+    if (user.password !== password) {
+      return buildHankoNotAuthorizedResponse();
     }
     return HttpResponse.json(null, {
       headers: {

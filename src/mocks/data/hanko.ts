@@ -13,17 +13,20 @@ interface UserInfo {
   id: string;
   email: string;
   emailId: string;
+  password: string;
 }
 
 export const hankoUsers = {
   user1: {
     id: "311b0b77-41c1-4750-a316-0b4c9e7cb1b3",
     email: "user1@example.com",
+    password: "password",
     emailId: crypto.randomUUID(),
   },
   user2: {
     id: "a405e378-066d-45f4-88b5-55d375064e4",
     email: "user2@example.com",
+    password: "password",
     emailId: crypto.randomUUID(),
   },
 } as Record<string, UserInfo>;
