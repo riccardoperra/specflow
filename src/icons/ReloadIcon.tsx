@@ -1,3 +1,5 @@
+import { JSX } from "solid-js";
+
 export function ReloadIcon(props: JSX.IntrinsicElements["svg"]) {
   return (
     <svg

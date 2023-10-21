@@ -34,7 +34,7 @@ export async function generateMermaidDiagramCode(
     projectDescription: project.description,
     pageName: page.name,
     // TODO fix type
-    diagramType: page.content["metadata"]["diagramType"],
+    diagramType: (page.content as any)["metadata"]["diagramType"],
     prompt,
   };
   return fetch("/functions/v1/generate-diagram", {

@@ -20,12 +20,13 @@ const hankoUrl = import.meta.env.VITE_HANKO_API_URL as string;
 
 const getWellKnownConfig = http.get<{}, {}, HankoConfigResponse>(
   `${hankoUrl}/.well-known/config`,
-  () => {
+  async () => {
     return HttpResponse.json({
       password: { enabled: true, min_password_length: 0 },
       emails: { require_verification: false, max_num_of_addresses: 5 },
       account: { allow_deletion: true, allow_signup: false },
       providers: [],
+      use_enterprise: false,
     });
   },
 );

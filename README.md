@@ -31,11 +31,10 @@ handles
 the authentication is in these files:
 
 - [auth.ts](src/core/state/auth.ts): Handles auth state and sync with supabase instance
-- [Auth.tsx](src/components/Auth/Auth.tsx) / [HankoAuth.tsx](src/components/Hanko/HankoAuth.tsx): Auth page and hanko
-  web component integration with custom styling
-- [Profile.tsx](src/components/Profile/ProfileDialog.tsx) / [HankoProfile.tsx](src/components/Hanko/HankoProfile.tsx):
-  Profile page and hanko
-  web component integration with custom styling
+- [Auth.tsx](src/components/Auth/Auth.tsx): Auth page
+- [Profile.tsx](src/components/Profile/ProfileDialog.tsx)
+- [HankoAuth.tsx/HankoProfile.tsx](src/components/Hanko):
+  Profile and hanko auth web component integration with custom styling
 
 ### Authentication flow
 
@@ -155,7 +154,7 @@ If the variable `VITE_ENABLE_AUTH_MOCK` is true, you can login with two differen
 - User2:
     - email: **user2@example.com**
     - password: **password**
-  
+
 ## Local development
 
 ### Table of contents
