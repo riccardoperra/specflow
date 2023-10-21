@@ -30,14 +30,18 @@ create table
     constraint project_page_project_id_fkey foreign key (project_id) references project (id) on delete cascade
 ) tablespace pg_default;
 
-CREATE POLICY "Allows all operations" ON "public"."project"
+CREATE POLICY "Allows all operations" ON public.project
     AS PERMISSIVE FOR ALL
     TO public
     USING ((auth.user_id() = user_id))
     WITH CHECK ((auth.user_id() = user_id));
 
-CREATE POLICY "Allows all operations" ON "public"."project_page"
+ALTER TABLE public.project ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allows all operations" ON public.project_page
     AS PERMISSIVE FOR ALL
     TO public
     USING ((auth.user_id() = user_id))
     WITH CHECK ((auth.user_id() = user_id));
+
+ALTER TABLE public.project_page ENABLE ROW LEVEL SECURITY;
