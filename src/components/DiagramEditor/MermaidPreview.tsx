@@ -35,9 +35,12 @@ export function MermaidPreview(props: MermaidPreviewProps) {
         })
         .then(() => {
           queueMicrotask(() => {
-            panzoomInstance = panzoom(svgContainer.firstChild as HTMLElement, {
+            panzoomInstance = panzoom(svgContainer.firstChild as SVGElement, {
               autocenter: true,
             });
+            (svgContainer.firstChild as SVGElement).classList.add(
+              "cursor-move",
+            );
           });
         });
     } else if (result instanceof Error) {
