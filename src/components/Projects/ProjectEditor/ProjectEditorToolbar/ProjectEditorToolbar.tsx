@@ -3,7 +3,7 @@ import { CogIcon } from "../../../../icons/CogIcon";
 import { TrashIcon } from "../../../../icons/TrashIcon";
 import { ProjectEditorPageSettingsDialog } from "../ProjectEditorPageSettingsDialog/ProjectEditorPageSettingsDialog";
 import { ConfirmDialog } from "../../../ConfirmDialog/ConfirmDialog";
-import { createSignal } from "solid-js";
+import { createSignal, Match, Switch } from "solid-js";
 import { deleteProjectPage } from "../../../../core/services/projects";
 import { createControlledDialog } from "../../../../core/utils/controlledDialog";
 import { provideState } from "statebuilder";
@@ -15,6 +15,8 @@ import {
 } from "../../../SegmentedControl/SegmentedControl";
 import { CodeIcon } from "../../../../icons/CodeIcon";
 import { PresentationChart } from "../../../../icons/PresentationChart";
+import { DiagramActionToolbar } from "./DiagramActionToolbar";
+import { PageActionToolbar } from "./PageActionToolbar";
 
 export function ProjectEditorToolbar() {
   const editorState = provideState(EditorState);
@@ -92,27 +94,15 @@ export function ProjectEditorToolbar() {
           </SegmentedControlItem>
         </SegmentedControl>
       </div>
-      <div class={"ml-auto flex gap-2"}>
-        <Button
-          style={{ height: "100%" }}
-          onClick={() => editorState.actions.triggerSave(true)}
-          size={"xs"}
-          class={"h-full"}
-          theme={"secondary"}
-        >
-          Save
-        </Button>
-
-        <Button
-          style={{ height: "100%" }}
-          onClick={() => previewState.openToExternalWindow()}
-          loading={previewState.openToExternalWindow.loading}
-          size={"xs"}
-          class={"h-full"}
-          theme={"tertiary"}
-        >
-          Open
-        </Button>
+      <div class={"ml-auto flex"}>
+        <Switch>
+          <Match when={editorState.selectedPage()?.type === "diagram"}>
+            <DiagramActionToolbar />
+          </Match>
+          <Match when={editorState.selectedPage()?.type === "page"}>
+            <PageActionToolbar />
+          </Match>
+        </Switch>
       </div>
     </div>
   );
