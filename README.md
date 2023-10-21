@@ -41,10 +41,22 @@ the authentication is in these files:
 
 Since hanko will replace supabase authentication, once hanko trigger the `authFlowCompleted` event, the system will call
 the edge function in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts) in order to retrieve the
-Hanko JWKS, validate the given token in the body and stack a new token complaint to supabase to use the row level
-security policies.
+Hanko JWKS, validate the token in the body and sign a new token for supabase.
 
-Once the edge function returns the access_token for supabase, the supabase fetch client is patched with the new token.
+> [!IMPORTANT]
+> That step it's necessary to provide to supabase the hanko user_id which is calling the api's. Then in supabase we can
+> retrieve
+> the user_id directly from the jwt via functions.
+
+```sql
+create or replace function auth.user_id() returns text as
+$$
+select nullif(current_setting('request.jwt.claims', true)::json ->> 'userId', '')::text;
+$$ language sql stable;
+```
+
+Once the edge function returns the access_token for supabase, the supabase fetch client is patched in order to put it
+in every rest request.
 
 The supabase database schema is visible through the initial migration which will define all functions, tables and rls.
 
@@ -72,9 +84,11 @@ sequenceDiagram
     Hanko Server -->> Supabase Edge Functions: Returns configuration
     deactivate Hanko Server
     activate Supabase Edge Functions
-    Supabase Edge Functions ->> Supabase Edge Functions: Verify jwt token
+    Supabase Edge Functions ->> Supabase Edge Functions: Verify Hanko jwt token
+    Supabase Edge Functions ->> Supabase Edge Functions: Sign new jwt token containing the hanko user_id.
+    Note right of Supabase Edge Functions: Signing a token for supabase is needed to integrate the db RLS policies.
+    Supabase Edge Functions -->> Client: Returns access token for supabase and set cookie "sb-token"
     deactivate Supabase Edge Functions
-    Supabase Edge Functions -->> Client: Returns new access token and set cookie "sb-token"
     deactivate Supabase Edge Functions
     activate Client
     Client ->> Client: Patch supabase client Authorization header
@@ -98,11 +112,12 @@ User1:
 - password: // can be anything
 
 User2:
+
 - email: user2@example.com
 - password: // can be anything
 
 > [!IMPORTANT]
-Password can be anything because there is no login data check implementation in the current handlers.
+> Password can be anything because there is no login data check implementation in the current handlers.
 
 ## Local development
 
@@ -116,6 +131,7 @@ Password can be anything because there is no login data check implementation in 
     - [3.3 Setup environment variables](#33-setup-environment-variables)
 - [4. Enable mocks for client-side authentication flow (optional)](#4-enable-mocks-for-client-side-authentication-flow-optional)
 - [5. Run the dev servers](#5-run-the-dev-servers)
+
 ### 1. Preparing the environment
 
 This repository uses [pnpm](https://pnpm.io/it/). You need to install **pnpm 8**
@@ -217,7 +233,8 @@ pnpm supabase:serve:functions
 ```
 
 > [!IMPORTANT]
-Supabase functions need some environment variables to run correctly (without mocks).
+> Supabase functions need some environment variables to run correctly (without mocks).
+
 ```dotenv
 # supabase/.env.local
 HANKO_API_URL=https://f4****-4802-49ad-8e0b-3d3****ab32.hanko.io
@@ -226,40 +243,8 @@ OPENAI_TOKEN=<string>
 SKIP_AUTH=<true|false>
 ```
 
-
-
 To run the application locally, you can run the `dev` command.
 
 ```bash
 pnpm dev
 ```
-
-### Roadmap
-
-**Bootstrap**
-
-- [ ] Add README
-- [ ] Add contributions page
-- [ ] Add MSW to run locally withouth DB/Auth
-
-**Hanko**
-
-- [X] Add auth component
-- [ ] Add profile component
-- [X] Hanko authorization token integration with supabase
-- [ ] Hanko sign with GitHub
-- [ ] Improve functions to sign token for supabase
-
-**Features**
-
-- [ ] Project CRUD with supabase security policy
-- [X] Project page CRUD with supabase security policy
-- [X] Allows to write markdown like pages
-- [X] Allows to use mermaid to generate diagram with a real-time preview
-- [X] Generate diagrams with OpenAI
-- [ ] Generate page markdown content with OpenAI
-- [ ] Share link
-- [ ] Export mermaid diagram to image
-- [ ] Export page to md
-- [ ] Sync file with File System API
-- [ ] Add responsive layout for mobile/tablet
