@@ -39,6 +39,7 @@
     "@formatjs/intl-relativetimeformat": "^11.2.7",
     "@kobalte/core": "^0.11.1",
     "@lezer/highlight": "^1.1.6",
+    "@solid-primitives/media": "^2.2.5",
     "@solid-primitives/storage": "^2.1.1",
     "@solidjs/router": "^0.8.3",
     "@supabase/supabase-js": "^2.38.2",

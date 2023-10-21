@@ -5,22 +5,25 @@ import { Button, IconButton } from "@codeui/kit";
 import { ShareIcon } from "../../../icons/ShareIcon";
 import { CurrentUserBadge } from "../../UserBadge/CurrentUserBadge";
 import { LeftArrowIcon } from "../../../icons/LeftArrowIcon";
+import { createBreakpoints } from "../../../core/utils/breakpoint";
 
 interface ProjectEditorHeaderProps {
   project: ProjectView;
 }
 
 export function ProjectEditorHeader(props: ProjectEditorHeaderProps) {
-  const links = () => [
-    { path: "/projects", label: "My projects" },
-    { path: null, label: props.project?.name },
-  ];
+  const breakpoints = createBreakpoints();
+  const links = () =>
+    [
+      breakpoints.sm ? { path: "/projects", label: "My projects" } : null,
+      { path: null, label: props.project?.name },
+    ].filter(Boolean);
 
   const navigate = useNavigate();
 
   return (
     <nav class={"h-[56px] bg-[#151516] px-4 flex items-center gap-2"}>
-      <div class={"flex gap-4 text-lg items-center"}>
+      <div class={"flex gap-4 text-sm md:text-lg items-center"}>
         <IconButton
           theme={"secondary"}
           size={"xs"}

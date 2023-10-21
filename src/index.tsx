@@ -5,6 +5,8 @@ import "./index.css";
 import App from "./App";
 import { Router } from "@solidjs/router";
 import { StateProvider } from "statebuilder";
+import { setupWorker } from "msw/browser";
+import { handlers } from "./mocks/handler";
 
 const root = document.getElementById("root");
 
@@ -17,27 +19,20 @@ if (isDev && !(root instanceof HTMLElement)) {
   );
 }
 
-(isDev && enableAuthMock
-  ? Promise.all([import("msw/browser"), import("./mocks/handler")]).then(
-      ([{ setupWorker }, { handlers }]) => {
-        const worker = setupWorker(...handlers);
-        if (import.meta.hot) {
-          import.meta.hot.accept(() => {
-            worker.resetHandlers(...handlers);
-          });
-        }
-        return worker.start();
-      },
-    )
-  : { then: (fn: () => void) => fn() }
-).then(() => {
-  render(() => {
-    return (
-      <Router>
-        <StateProvider>
-          <App />
-        </StateProvider>
-      </Router>
-    );
-  }, root!);
-});
+const worker = setupWorker(...handlers);
+if (import.meta.hot) {
+  import.meta.hot.accept(() => {
+    worker.resetHandlers(...handlers);
+  });
+}
+worker.start();
+
+render(() => {
+  return (
+    <Router>
+      <StateProvider>
+        <App />
+      </StateProvider>
+    </Router>
+  );
+}, root!);

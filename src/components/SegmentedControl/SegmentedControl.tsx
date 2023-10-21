@@ -9,7 +9,12 @@ interface SegmentedControlItemProps extends Tabs.TabsTriggerProps {
 export function SegmentedControlItem(props: SegmentedControlItemProps) {
   // TODO: merge classes
   const [local, others] = splitProps(props, ["class"]);
-  return <Tabs.Trigger class={styles.segment} {...others} />;
+  return (
+    <Tabs.Trigger
+      class={[styles.segment, local.class].filter(Boolean).join(" ")}
+      {...others}
+    />
+  );
 }
 
 type SegmentedControlProps = Omit<Tabs.TabsRootProps, "orientation">;

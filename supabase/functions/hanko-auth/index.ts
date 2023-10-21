@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
       exp: data.payload.exp,
       userId: data.payload.sub,
     };
-    const token = await buildSupabaseToken(payload, payload.exp!, supabaseToken);
+    const token = await buildSupabaseToken(payload, payload.exp!  , supabaseToken);
     return buildSuccessResponse(token, data.payload.exp!);
   } catch (e) {
     return new Response(

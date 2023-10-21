@@ -16,6 +16,7 @@ import { bgBrand } from "../../../../global.css";
 import { PlusIcon } from "../../../../icons/PlusIcon";
 import { As } from "@kobalte/core";
 import { DocumentTextIcon } from "../../../../icons/DocumentTextIcon";
+import { createBreakpoints } from "../../../../core/utils/breakpoint";
 
 interface ProjectEditorSidebarProps {
   project: ProjectView;

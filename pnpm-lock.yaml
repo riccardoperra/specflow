@@ -44,6 +44,9 @@ dependencies:
   '@lezer/highlight':
     specifier: ^1.1.6
     version: 1.1.6
+  '@solid-primitives/media':
+    specifier: ^2.2.5
+    version: 2.2.5(solid-js@1.8.3)
   '@solid-primitives/storage':
     specifier: ^2.1.1
     version: 2.1.1(solid-js@1.8.3)

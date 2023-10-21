@@ -19,7 +19,7 @@ export function CurrentUserBadge() {
       <DropdownMenuTrigger asChild>
         <As component={"div"} class={styles.badge}>
           <UserCircle class={"w-5 h-5"} />
-          {auth.get.user?.email}
+          <span class={"hidden sm:block"}>{auth.get.user?.email}</span>
         </As>
       </DropdownMenuTrigger>
       <DropdownMenuPortal>
