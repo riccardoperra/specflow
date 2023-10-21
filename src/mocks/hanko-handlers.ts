@@ -1,64 +1,141 @@
 import { http, HttpResponse } from "msw";
 import { buildMockAccessToken } from "./data/access-token";
+import {
+  buildHankoNotAuthorizedResponse,
+  buildHankoNotFoundResponse,
+  buildUser,
+  findUserByEmail,
+  findUserById,
+  getUserByCookies,
+  type HankoConfigResponse,
+  type HankoCurrentUserResponse,
+  type HankoEmailResponse,
+  type HankoNotFoundResponse,
+  type HankoUnauthorizedResponse,
+  type HankoUserInfoResponse,
+} from "./data/hanko";
+import { logger } from "./data/log";
 
-const userId = "311b0b77-41c1-4750-a316-0b4c9e7cb1b3";
-const emailId = crypto.randomUUID();
-const userEmail = "test@example.com";
-const hankoUrl = import.meta.env.VITE_HANKO_API_URL;
+const hankoUrl = import.meta.env.VITE_HANKO_API_URL as string;
 
-export const hankoHandlers = [
-  http.get(`${hankoUrl}/me`, () =>
-    HttpResponse.json({
-      id: userId,
-    }),
-  ),
-  http.get(`${hankoUrl}/users/${userId}`, () => {
+const getWellKnownConfig = http.get<{}, {}, HankoConfigResponse>(
+  `${hankoUrl}/.well-known/config`,
+  () => {
     return HttpResponse.json({
-      id: userId,
-      email: userEmail,
-      webauthn_credentials: null,
-      updated_at: "2023-10-09T18:24:56.190105Z",
-      created_at: "2023-10-09T18:24:56.189997Z",
+      password: { enabled: true, min_password_length: 0 },
+      emails: { require_verification: false, max_num_of_addresses: 5 },
+      account: { allow_deletion: true, allow_signup: false },
+      providers: [],
     });
-  }),
-  http.post(`${hankoUrl}/user`, () => {
-    return HttpResponse.json({
-      id: userId,
-      email_id: emailId,
-      has_webauthn_credential: false,
-      verified: true,
-    });
-  }),
-  http.post(`${hankoUrl}/password/login`, async () => {
+  },
+);
+
+const me = http.get<
+  {},
+  {},
+  HankoCurrentUserResponse | HankoUnauthorizedResponse
+>(`${hankoUrl}/me`, async ({ cookies }) => {
+  const user = getUserByCookies(cookies);
+  if (!user) {
+    return buildHankoNotAuthorizedResponse();
+  }
+  logger.success(`[MSW/Hanko] Found user ${user.id} from cookies`, {
+    user,
+  });
+  return HttpResponse.json({
+    id: user.id,
+  });
+});
+
+const usersByUserId = http.get(`${hankoUrl}/users/:userId`, ({ params }) => {
+  const { userId } = params;
+  const user = buildUser(findUserById(userId as string));
+  if (!user) {
+    return HttpResponse.json(
+      { code: 404, message: "Not Found" } as unknown as null,
+      { status: 404 },
+    );
+  }
+  return HttpResponse.json(user);
+});
+
+const userInfoByEmail = http.post<
+  {},
+  { email: string },
+  HankoUserInfoResponse | HankoNotFoundResponse
+>(`${hankoUrl}/user`, async ({ request }) => {
+  const { email } = await request.json();
+  logger.info(`[MSW/Hanko] Retrieving user by email: ${email}`);
+  const user = buildUser(findUserByEmail(email));
+  if (!user) {
+    return buildHankoNotFoundResponse();
+  }
+  logger.success(`[MSW/Hanko] User ${user.id} found`, { user });
+  return HttpResponse.json({
+    id: user.id,
+    email_id: user.email,
+    verified: true,
+    has_webauthn_credential: true,
+  });
+});
+
+const login = http.post<{}, { user_id: string; password: string }>(
+  `${hankoUrl}/password/login`,
+  async ({ request }) => {
+    const { user_id } = await request.json();
+    logger.info(`[MSW/Hanko] Login flow for user ${user_id}`);
+    const user = findUserById(user_id);
+    logger.success(`[MSW/Hanko] User ${user_id} found`, { user });
+    if (!user) {
+      return buildHankoNotFoundResponse();
+    }
     return HttpResponse.json(null, {
       headers: {
-        "X-Auth-Token": buildMockAccessToken(userId),
+        "X-Auth-Token": buildMockAccessToken(user.id),
         "X-Session-Lifetime": "3600",
       },
     });
-  }),
-  http.get(`${hankoUrl}/.well-known/config`, () => {
-    return HttpResponse.json({
-      password: { enabled: true, min_password_length: 8 },
-      emails: { require_verification: false, max_num_of_addresses: 5 },
-      account: { allow_deletion: true, allow_signup: false },
-    });
-  }),
-  http.post(`${hankoUrl}/logout`, () => {
-    return HttpResponse.text(null, { status: 204 });
-  }),
-  http.get(`${hankoUrl}/emails`, () => {
-    return HttpResponse.json([
-      {
-        id: emailId,
-        address: userEmail,
-        is_verified: true,
-        is_primary: true,
-        identity: null,
-      },
-    ]);
-  }),
-  http.get(`${hankoUrl}/webauthn/credentials`, () => {
+  },
+);
+
+const logout = http.post(`${hankoUrl}/logout`, () => {
+  return HttpResponse.text(null, { status: 204 });
+});
+
+const getCurrentUserEmails = http.get<
+  {},
+  {},
+  HankoUnauthorizedResponse | HankoEmailResponse[]
+>(`${hankoUrl}/emails`, ({ cookies }) => {
+  const user = getUserByCookies(cookies);
+  if (!user) {
+    return buildHankoNotAuthorizedResponse();
+  }
+  return HttpResponse.json([
+    {
+      id: user.emailId,
+      address: user.email,
+      is_verified: true,
+      is_primary: true,
+      identity: null,
+    } as {} as HankoEmailResponse,
+  ]);
+});
+
+const getCurrentUserCredentials = http.get(
+  `${hankoUrl}/webauthn/credentials`,
+  () => {
     return HttpResponse.json([]);
-  }),
+  },
+);
+
+export const hankoHandlers = [
+  me,
+  usersByUserId,
+  userInfoByEmail,
+  login,
+  getWellKnownConfig,
+  logout,
+  getCurrentUserEmails,
+  getCurrentUserCredentials,
 ];

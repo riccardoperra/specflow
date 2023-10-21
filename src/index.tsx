@@ -20,7 +20,13 @@ if (isDev && !(root instanceof HTMLElement)) {
 (isDev && enableAuthMock
   ? Promise.all([import("msw/browser"), import("./mocks/handler")]).then(
       ([{ setupWorker }, { handlers }]) => {
-        return setupWorker(...handlers).start();
+        const worker = setupWorker(...handlers);
+        if (import.meta.hot) {
+          import.meta.hot.accept(() => {
+            worker.resetHandlers(...handlers);
+          });
+        }
+        return worker.start();
       },
     )
   : { then: (fn: () => void) => fn() }
