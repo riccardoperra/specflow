@@ -23,6 +23,65 @@ SpecFlow tech stack is mainly composed by these technologies:
 - [CodeMirror6](https://codemirror.net)
 - [TipTap Editor](https://tiptap.dev)
 
+## Hanko integration details
+
+SpecFlow is a single-page application which integrates Hanko as a main authentication flow. All related code which
+handles
+the authentication is in these files:
+
+- [auth.ts](src/core/state/auth.ts): Handles auth state and sync with supabase instance
+- [Auth.tsx](src/components/Auth/Auth.tsx) / [HankoAuth.tsx](src/components/Hanko/HankoAuth.tsx): Auth page and hanko
+  web component integration with custom styling
+- [Profile.tsx](src/components/Profile/ProfileDialog.tsx) / [HankoProfile.tsx](src/components/Hanko/HankoProfile.tsx):
+  Profile page and hanko
+  web component integration with custom styling
+
+Since hanko will replace supabase authentication, once hanko trigger the `authFlowCompleted` event, the system will call
+the edge function in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts) in order to retrieve the
+Hanko JWKS, validate the given token in the body and stack a new token complaint to supabase to use the row level
+security policies.
+
+Once the edge function returns the access_token for supabase, the supabase fetch client is patched with the new token.
+
+
+The supabase database schema is visible through the initial migration which will define all functions, tables and rls.
+
+[20231020190554_schema_init.sql](supabase/migrations/20231020190554_schema_init.sql)
+
+Here a sequence diagram of an in-depth detail of the client side authentication flow (this is made with SpecFlow 😉)
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Hanko Server
+    participant Supabase Edge Functions
+    participant Supabase Database
+    Client->>Hanko Server: Authentication Flow
+    activate Client
+    activate Hanko Server
+    Hanko Server-->>Client:  Set user session and "hanko" cookie
+    deactivate Hanko Server
+    Client->>Supabase Edge Functions: /functions/v1/hanko-auth
+    activate Supabase Edge Functions
+    Note right of Client: Pass session info like jwt, userId
+    Supabase Edge Functions->>Hanko Server: Retrieves JWKS configuration
+    activate Hanko Server
+    Note over Supabase Edge Functions, Hanko Server: <hankoUrl>/.well-known/jwks.json
+    Hanko Server-->>Supabase Edge Functions:Returns configuration
+    deactivate Hanko Server
+    activate Supabase Edge Functions
+    Supabase Edge Functions->>Supabase Edge Functions: Verify jwt token
+    deactivate Supabase Edge Functions
+    Supabase Edge Functions-->>Client: Returns new access token
+    deactivate Supabase Edge Functions
+    activate Client
+    Client->>Client: Set new cookie "sb-token" to store the given token
+    Client->>Client: Patch supabase client Authorization header 
+    Client->>Supabase Database: Call /rest/ api to do some operations
+    note over Client, Supabase Database: Will pass the token received from the supabase edge function
+    deactivate Client
+```
+
 ## Local development
 
 ### Table of contents
@@ -67,10 +126,10 @@ In order to init hanko authentication, you must sign-up to their website and reg
 
 https://www.hanko.io/
 
-> [!IMPORTANT] 
-Consider that Hanko does not currently support multiple app/redirect urls, so to integrate their
-frontend components you should add "http://localhost:3000" as the App URL in their Dashboard -> Settings -> General
-page.
+> [!IMPORTANT]
+> Consider that Hanko does not currently support multiple app/redirect urls, so to integrate their
+> frontend components you should add "http://localhost:3000" as the App URL in their Dashboard -> Settings -> General
+> page.
 
 You can follow their setup guide to init a new Hanko Cloud project: https://docs.hanko.io/setup-hanko-cloud
 

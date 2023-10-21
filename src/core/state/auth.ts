@@ -62,8 +62,6 @@ export const AuthState = defineStore<State>(initialState)
     },
   }))
   .extend((_, context) => {
-    const enableMock =
-      context.metadata.get(MOCK_AUTH_CONTEXT_KEY) ?? (false as boolean);
     const navigate = useNavigate();
     const loggedIn = () => !!_.get.supabaseAccessToken && !!_();
 
