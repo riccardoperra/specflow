@@ -6,7 +6,7 @@ export function signSupabaseToken(
 ): Promise<{ access_token: string }> {
   return supabase.functions
     .invoke("hanko-auth", {
-      body: { session },
+      body: { token: session.jwt },
     })
     .then((res) => res.data);
 }

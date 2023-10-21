@@ -39,14 +39,46 @@ the authentication is in these files:
 
 ### Authentication flow
 
-Since hanko will replace supabase authentication, once hanko trigger the `authFlowCompleted` event, the system will call
-the edge function in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts) in order to retrieve the
-Hanko JWKS, validate the token in the body and sign a new token for supabase.
+Supabase Database comes with a useful RSL policy which allows to restrict the access from our data using custom rules.
+Since we need that each user can operate only inside the project he has authorization we need to somehow make supabase
+understand who is making the requests.
+
+In a traditional flow, the user_id of a supabase user could have been used, but SpecFlow integrates Hanko as a custom
+authentication system.
+
+Since Hanko **will replace supabase authentication**, after the sign-in in the UI we need to extract the data we need
+from Hanko's JWT, and sign our own to send to Supabase.
+
+We can do that using hanko `authFlowCompleted` event, which gets called once the user authenticates through the UI.
+After that event we will call the supabase edge function
+in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts)
+to validate Hanko JWT token retrieving their JWKS config, then sign ourselves a new token for supabase.
+
+```ts
+const hankoApiUrl = Deno.env.get("HANKO_API_URL");
+// 1. ✅ Retrieves Hanko JWKS configuration
+const JWKS = jose.createRemoteJWKSet(
+  new URL(`${hankoApiUrl}/.well-known/jwks.json`),
+);
+// 2. ✅ Verify Hanko token
+const data = await jose.jwtVerify(session.jwt, JWKS);
+const payload = {
+  exp: data.payload.exp,
+  userId: data.payload.sub,
+};
+// 3. ✅ Sign new token for supabase using it's private key
+const supabaseToken = Deno.env.get("PRIVATE_KEY_SUPABASE");
+const token = jsonwebtoken.sign(payload, supabaseToken)
+```
+
+Our payload for the JWT will contain the user's identifier from Hanko and the same expiration date.
 
 > [!IMPORTANT]
-> That step it's necessary to provide to supabase the hanko user_id which is calling the api's. Then in supabase we can
-> retrieve
-> the user_id directly from the jwt via functions.
+> We are signing this JWT using Supabase's signing secret token, so it will be able to check its authenticity for
+> security reason. This is a crucial step which obviously for security reasons cannot be done on the client side.
+
+Once that each supabase fetch call should include our custom token which contains the Hanko **userId**. Next, thanks to a *
+*postgres function** we can extract the userId from the jwt in order to know which user is authenticated.
 
 ```sql
 create
@@ -57,14 +89,11 @@ $$
 language sql stable;
 ```
 
-Once the edge function returns the access_token for supabase, the supabase fetch client is patched in order to put it
-in every rest request.
-
-The supabase database schema is visible through the initial migration which will define all functions, tables and rls.
+The supabase database schema is up through the initial migration which will define all functions, tables and rls.
 
 [20231020190554_schema_init.sql](supabase/migrations/20231020190554_schema_init.sql)
 
-Here a sequence diagram of an in-depth detail of the client side authentication flow (this is made with SpecFlow 😉)
+Here a sequence diagram of an in-depth detail of the client side authentication flow (made with SpecFlow 😉)
 
 ```mermaid
 sequenceDiagram
