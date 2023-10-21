@@ -33,7 +33,7 @@ export function ProjectEditor() {
         {(projectView) => (
           <div class={"w-full flex flex-col"}>
             <ProjectEditorHeader project={projectView} />
-            <div class={"flex h-full min-h-0"}>
+            <div class={"flex h-full min-h-0 relative"}>
               <ProjectEditorSidebar project={projectView} />
               <div class={styles.content}>
                 <div class={styles.innerContent}>

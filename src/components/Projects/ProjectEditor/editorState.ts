@@ -17,6 +17,7 @@ interface EditorState {
   projectView: ProjectView | null;
   pendingUpdate: boolean;
   previewMode: "editor-with-preview" | "editor" | "preview";
+  showSidebar: boolean;
 }
 
 type Commands = {
@@ -29,6 +30,8 @@ type Commands = {
   addNewPage: ProjectPageView;
   removePage: string;
   setPreviewMode: EditorState["previewMode"] | (string & {});
+  setShowSidebar: boolean;
+  toggleSidebar: void;
 };
 
 export const EditorState = defineStore<EditorState>(() => ({
@@ -36,6 +39,7 @@ export const EditorState = defineStore<EditorState>(() => ({
   projectView: null,
   pendingUpdate: false,
   previewMode: "editor-with-preview",
+  showSidebar: true,
 }))
   .extend(
     withProxyCommands<Commands>({
@@ -86,6 +90,12 @@ export const EditorState = defineStore<EditorState>(() => ({
     );
     _.hold(_.commands.setPreviewMode, (payload) =>
       _.set("previewMode", payload as EditorState["previewMode"]),
+    );
+    _.hold(_.commands.setShowSidebar, (payload, { set }) =>
+      set("showSidebar", payload),
+    );
+    _.hold(_.commands.toggleSidebar, (payload, { set, state }) =>
+      set("showSidebar", !state.showSidebar),
     );
   })
   .extend((_) => {

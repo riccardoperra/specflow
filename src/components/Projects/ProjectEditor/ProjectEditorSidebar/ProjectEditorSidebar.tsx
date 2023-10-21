@@ -26,7 +26,10 @@ export function ProjectEditorSidebar(props: ProjectEditorSidebarProps) {
   const editorState = provideState(EditorState);
   const owner = getOwner();
   return (
-    <div class={styles.sidebar}>
+    <div
+      class={styles.sidebar}
+      data-visible={editorState.get.showSidebar ? "" : undefined}
+    >
       <div class={"flex flex-col gap-2"}>
         <div class={"flex justify-between items-center"}>
           <h3 class={"text-sm font-semibold"}>Pages</h3>

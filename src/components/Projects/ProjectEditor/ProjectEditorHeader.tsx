@@ -6,6 +6,9 @@ import { ShareIcon } from "../../../icons/ShareIcon";
 import { CurrentUserBadge } from "../../UserBadge/CurrentUserBadge";
 import { LeftArrowIcon } from "../../../icons/LeftArrowIcon";
 import { createBreakpoints } from "../../../core/utils/breakpoint";
+import { provideState } from "statebuilder";
+import { EditorState } from "./editorState";
+import { MenuBars3Icon } from "../../../icons/MenuBars3Icon";
 
 interface ProjectEditorHeaderProps {
   project: ProjectView;
@@ -20,10 +23,21 @@ export function ProjectEditorHeader(props: ProjectEditorHeaderProps) {
     ].filter(Boolean);
 
   const navigate = useNavigate();
+  const editorState = provideState(EditorState);
 
   return (
     <nav class={"h-[56px] bg-[#151516] px-4 flex items-center gap-2"}>
       <div class={"flex gap-4 text-sm md:text-lg items-center"}>
+        <IconButton
+          theme={"secondary"}
+          size={"xs"}
+          pill
+          aria-label={"Toggle sidebar"}
+          onClick={() => editorState.actions.toggleSidebar()}
+        >
+          <MenuBars3Icon />
+        </IconButton>
+
         <IconButton
           theme={"secondary"}
           size={"xs"}
