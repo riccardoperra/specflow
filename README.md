@@ -49,10 +49,12 @@ Hanko JWKS, validate the token in the body and sign a new token for supabase.
 > the user_id directly from the jwt via functions.
 
 ```sql
-create or replace function auth.user_id() returns text as
+create
+or replace function auth.user_id() returns text as
 $$
 select nullif(current_setting('request.jwt.claims', true)::json ->> 'userId', '')::text;
-$$ language sql stable;
+$$
+language sql stable;
 ```
 
 Once the edge function returns the access_token for supabase, the supabase fetch client is patched in order to put it
@@ -97,24 +99,22 @@ sequenceDiagram
     deactivate Client
 ```
 
-### Mocking Hanko
+### Mocking Hanko for local development
 
-SpecFlow integrates latest version of [MockServiceWorker](https://mswjs.io/) to mock locally (configurable via env vars)
-the entire Hanko authentication flow.
+SpecFlow integrates the latest version of [MockServiceWorker](https://mswjs.io/) to mock locally the entire Hanko
+authentication flow.
 
 The mocking handlers are all present in the [src/mocks/hanko-handlers.ts](src/mocks/hanko-handlers.ts) file.
 
-Thanks to MSW, you can login with two different users and test also the RSL policies of supabase.
+If the variable `VITE_ENABLE_AUTH_MOCK` is true, you can login with two different users.
 
-User1:
+- User1:
+    - email: user1@example.com
+    - password: // can be anything
 
-- email: user1@example.com
-- password: // can be anything
-
-User2:
-
-- email: user2@example.com
-- password: // can be anything
+- User2:
+    - email: user2@example.com
+    - password: // can be anything
 
 > [!IMPORTANT]
 > Password can be anything because there is no login data check implementation in the current handlers.
