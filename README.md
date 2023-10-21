@@ -22,6 +22,7 @@ SpecFlow tech stack is mainly composed by these technologies:
 - [TailwindCSS](https://tailwindcss.com/)
 - [CodeMirror6](https://codemirror.net)
 - [TipTap Editor](https://tiptap.dev)
+- [Mock Service Worker (next release)](https://mswjs.io/)
 
 ## Hanko integration details
 
@@ -36,13 +37,14 @@ the authentication is in these files:
   Profile page and hanko
   web component integration with custom styling
 
+### Authentication flow
+
 Since hanko will replace supabase authentication, once hanko trigger the `authFlowCompleted` event, the system will call
 the edge function in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts) in order to retrieve the
 Hanko JWKS, validate the given token in the body and stack a new token complaint to supabase to use the row level
 security policies.
 
 Once the edge function returns the access_token for supabase, the supabase fetch client is patched with the new token.
-
 
 The supabase database schema is visible through the initial migration which will define all functions, tables and rls.
 
@@ -56,30 +58,51 @@ sequenceDiagram
     participant Hanko Server
     participant Supabase Edge Functions
     participant Supabase Database
-    Client->>Hanko Server: Authentication Flow
+    Client ->> Hanko Server: Authentication Flow
     activate Client
     activate Hanko Server
-    Hanko Server-->>Client:  Set user session and "hanko" cookie
+    Hanko Server -->> Client: Set user session and "hanko" cookie
     deactivate Hanko Server
-    Client->>Supabase Edge Functions: /functions/v1/hanko-auth
+    Client ->> Supabase Edge Functions: /functions/v1/hanko-auth
     activate Supabase Edge Functions
     Note right of Client: Pass session info like jwt, userId
-    Supabase Edge Functions->>Hanko Server: Retrieves JWKS configuration
+    Supabase Edge Functions ->> Hanko Server: Retrieves JWKS configuration
     activate Hanko Server
     Note over Supabase Edge Functions, Hanko Server: <hankoUrl>/.well-known/jwks.json
-    Hanko Server-->>Supabase Edge Functions:Returns configuration
+    Hanko Server -->> Supabase Edge Functions: Returns configuration
     deactivate Hanko Server
     activate Supabase Edge Functions
-    Supabase Edge Functions->>Supabase Edge Functions: Verify jwt token
+    Supabase Edge Functions ->> Supabase Edge Functions: Verify jwt token
     deactivate Supabase Edge Functions
-    Supabase Edge Functions-->>Client: Returns new access token and set cookie "sb-token"
+    Supabase Edge Functions -->> Client: Returns new access token and set cookie "sb-token"
     deactivate Supabase Edge Functions
     activate Client
-    Client->>Client: Patch supabase client Authorization header 
-    Client->>Supabase Database: Call /rest/ api to do some operations
+    Client ->> Client: Patch supabase client Authorization header
+    Client ->> Supabase Database: Call /rest/ api to do some operations
     note over Client, Supabase Database: Will pass the token received from the supabase edge function
     deactivate Client
 ```
+
+### Mocking Hanko
+
+SpecFlow integrates latest version of [MockServiceWorker](https://mswjs.io/) to mock locally (configurable via env vars)
+the entire Hanko authentication flow.
+
+The mocking handlers are all present in the [src/mocks/hanko-handlers.ts](src/mocks/hanko-handlers.ts) file.
+
+Thanks to MSW, you can login with two different users and test also the RSL policies of supabase.
+
+User1:
+
+- email: user1@example.com
+- password: // can be anything
+
+User2:
+- email: user2@example.com
+- password: // can be anything
+
+> [!IMPORTANT]
+Password can be anything because there is no login data check implementation in the current handlers.
 
 ## Local development
 
@@ -92,7 +115,7 @@ sequenceDiagram
     - [3.2 Connect to a local instance](#32-connect-to-a-local-instance)
     - [3.3 Setup environment variables](#33-setup-environment-variables)
 - [4. Enable mocks for client-side authentication flow (optional)](#4-enable-mocks-for-client-side-authentication-flow-optional)
-
+- [5. Run the dev servers](#5-run-the-dev-servers)
 ### 1. Preparing the environment
 
 This repository uses [pnpm](https://pnpm.io/it/). You need to install **pnpm 8**
@@ -183,6 +206,32 @@ information about it in the [Hanko integration section](#hanko-integration-detai
 
 ```dotenv
 VITE_ENABLE_AUTH_MOCK=true
+```
+
+### 5. Run the dev servers
+
+Once everything is started, you can run the command `supabase:serve:functions` to run the lambda locally
+
+```bash
+pnpm supabase:serve:functions
+```
+
+> [!IMPORTANT]
+Supabase functions need some environment variables to run correctly (without mocks).
+```dotenv
+# supabase/.env.local
+HANKO_API_URL=https://f4****-4802-49ad-8e0b-3d3****ab32.hanko.io
+PRIVATE_KEY_SUPABASE=<string>
+OPENAI_TOKEN=<string>
+SKIP_AUTH=<true|false>
+```
+
+
+
+To run the application locally, you can run the `dev` command.
+
+```bash
+pnpm dev
 ```
 
 ### Roadmap
