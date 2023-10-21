@@ -35,6 +35,9 @@ dependencies:
   '@codeui/kit':
     specifier: ^0.0.27
     version: 0.0.27(solid-js@1.7.12)(vite@4.4.11)
+  '@formatjs/intl-relativetimeformat':
+    specifier: ^11.2.7
+    version: 11.2.7
   '@kobalte/core':
     specifier: ^0.11.0
     version: 0.11.0(solid-js@1.7.12)
@@ -1244,6 +1247,14 @@ packages:
   /@formatjs/intl-localematcher@0.4.2:
     resolution: {integrity: sha512-BGdtJFmaNJy5An/Zan4OId/yR9Ih1OojFjcduX/xOvq798OgWSyDtd6Qd5jqJXwJs1ipe4Fxu9+cshic5Ox2tA==}
     dependencies:
+      tslib: 2.6.2
+    dev: false
+
+  /@formatjs/intl-relativetimeformat@11.2.7:
+    resolution: {integrity: sha512-Faf71hROcX8SkqnuqG9KSXano4FP3xiqaeeGmK7ii8cvsMh8xAIVpQaBaXEMI1GvJIZPVlor7rUVdf4286Cz2w==}
+    dependencies:
+      '@formatjs/ecma402-abstract': 1.17.2
+      '@formatjs/intl-localematcher': 0.4.2
       tslib: 2.6.2
     dev: false
 

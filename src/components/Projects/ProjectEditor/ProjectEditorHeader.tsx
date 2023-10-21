@@ -1,9 +1,10 @@
 import { For, Show } from "solid-js";
-import { Link } from "@solidjs/router";
+import { Link, useNavigate } from "@solidjs/router";
 import { ProjectView } from "../../../core/services/projects";
-import { Button } from "@codeui/kit";
+import { Button, IconButton } from "@codeui/kit";
 import { ShareIcon } from "../../../icons/ShareIcon";
 import { CurrentUserBadge } from "../../UserBadge/CurrentUserBadge";
+import { LeftArrowIcon } from "../../../icons/LeftArrowIcon";
 
 interface ProjectEditorHeaderProps {
   project: ProjectView;
@@ -15,9 +16,21 @@ export function ProjectEditorHeader(props: ProjectEditorHeaderProps) {
     { path: null, label: props.project?.name },
   ];
 
+  const navigate = useNavigate();
+
   return (
     <nav class={"h-[56px] bg-[#151516] px-4 flex items-center gap-2"}>
-      <div class={"flex gap-4 text-lg"}>
+      <div class={"flex gap-4 text-lg items-center"}>
+        <IconButton
+          theme={"secondary"}
+          size={"xs"}
+          pill
+          aria-label={"Go back"}
+          onClick={() => navigate("/")}
+        >
+          <LeftArrowIcon />
+        </IconButton>
+
         <For each={links()}>
           {(link, index) => (
             <>

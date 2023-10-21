@@ -53,8 +53,8 @@ export function NewProjectDialog(props: NewProjectDialogProps) {
 
   return (
     <Dialog
-      size={"sm"}
-      title={"Create new page"}
+      size={"lg"}
+      title={"Create new project"}
       open={saveAction.loading ? true : props.isOpen}
       onOpenChange={props.onOpenChange}
     >

@@ -5,12 +5,17 @@ import { DIAGRAMS } from "../constants/diagrams";
 export type ProjectPageView =
   Database["public"]["Tables"]["project_page"]["Row"];
 
+export type Project = Database["public"]["Tables"]["project"]["Row"];
+
 export type ProjectView = Database["public"]["Tables"]["project"]["Row"] & {
   project_page: ProjectPageView[];
 };
 
 export async function getProjects() {
-  const res = await supabase.from("project").select("*");
+  const res = await supabase
+    .from("project")
+    .select("*")
+    .order("created_at", { ascending: false });
   return res.data ?? [];
 }
 

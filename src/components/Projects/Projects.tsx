@@ -7,6 +7,7 @@ import { createControlledDialog } from "../../core/utils/controlledDialog";
 import { NewProjectDialog } from "./NewProjectDialog/NewProjectDialog";
 import { LoadingCircleWithBackdrop } from "../../icons/LoadingCircle";
 import { ReloadIcon } from "../../icons/ReloadIcon";
+import { ProjectCard } from "./ProjectCard/ProjectCard";
 
 export function Projects() {
   const links = [{ path: "/projects", label: "Dashboard" }];
@@ -23,7 +24,7 @@ export function Projects() {
     <div class={"flex flex-col w-full"}>
       <nav
         class={
-          "h-[56px] bg-[#151516] px-6 flex items-center gap-2 border-b border-b-neutral-700"
+          "h-[56px] bg-[#151516] px-6 flex items-center gap-2 border-b border-b-neutral-700 flex-shrink-0"
         }
       >
         <div class={"container mx-auto"}>
@@ -45,8 +46,12 @@ export function Projects() {
         </div>
       </nav>
 
-      <div class={"container mx-auto py-4 mt-12"}>
-        <div class={"flex justify-between items-center"}>
+      <div
+        class={
+          "container mx-auto py-4 px-4 pr-2 md:px-0 md:mt-12 flex flex-col h-full overflow-auto"
+        }
+      >
+        <div class={"flex justify-between items-center flex-shrink-0"}>
           <h1 class={"text-2xl font-bold"}>My projects</h1>
           <div class={"flex gap-2"}>
             <IconButton
@@ -68,25 +73,7 @@ export function Projects() {
               fallback={<LoadingCircleWithBackdrop width={32} height={32} />}
             >
               <For each={projects()}>
-                {(project) => (
-                  <Link
-                    href={`/projects/${project.id}/editor`}
-                    class={
-                      "p-4 bg-neutral-800 hover:bg-neutral-700 border-b-2 rounded-md"
-                    }
-                  >
-                    <div class={"flex justify-between flex-start gap-2"}>
-                      <div class={"flex-1"}>
-                        <div class={"flex items-center gap-3"}>
-                          <h1 class={"text-lg"}>{project.name}</h1>
-                        </div>
-                        <h3 class={"text-sm text-neutral-400"}>
-                          {project.created_at}
-                        </h3>
-                      </div>
-                    </div>
-                  </Link>
-                )}
+                {(project) => <ProjectCard project={project} />}
               </For>
             </Suspense>
           </div>
