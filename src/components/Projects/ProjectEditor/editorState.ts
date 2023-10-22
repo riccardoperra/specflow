@@ -4,8 +4,16 @@ import {
   ProjectView,
   updateProjectContent,
 } from "../../../core/services/projects";
-import { withProxyCommands } from "statebuilder/commands";
-import { debounceTime, from, Subscription, switchMap, tap } from "rxjs";
+import { createCommand, withProxyCommands } from "statebuilder/commands";
+import {
+  debounceTime,
+  filter,
+  from,
+  observeOn,
+  queueScheduler,
+  switchMap,
+  tap,
+} from "rxjs";
 import { useSearchParams } from "@solidjs/router";
 import { createEffect, on, runWithOwner } from "solid-js";
 import { createControlledDialog } from "../../../core/utils/controlledDialog";
@@ -98,12 +106,14 @@ export const EditorState = defineStore<EditorState>(() => ({
     _.hold(_.commands.setShowSidebar, (payload, { set }) =>
       set("showSidebar", payload),
     );
-    _.hold(_.commands.toggleSidebar, (payload, { set, state }) =>
+    _.hold(_.commands.toggleSidebar, (_, { set, state }) =>
       set("showSidebar", !state.showSidebar),
     );
   })
   .extend((_) => {
     const [searchParams, setSearchParams] = useSearchParams();
+    const initNewPageFlow =
+      createCommand("initNewPageFlow").withPayload<void>();
 
     createEffect(
       on(
@@ -116,11 +126,16 @@ export const EditorState = defineStore<EditorState>(() => ({
       ),
     );
 
-    _.watchCommand([_.commands.setActivePage]).subscribe(() =>
-      setSearchParams({
-        pageId: _.get.activePageId,
-      }),
-    );
+    from(_.watchCommand([_.commands.setActivePage]))
+      .pipe(
+        observeOn(queueScheduler),
+        tap(() => _.dispatch(initNewPageFlow, void 0)),
+      )
+      .subscribe(() =>
+        setSearchParams({
+          pageId: _.get.activePageId,
+        }),
+      );
 
     _.watchCommand([_.commands.setProjectView]).subscribe(() => {
       const pages = _.get.projectView?.project_page ?? [];
@@ -146,40 +161,27 @@ export const EditorState = defineStore<EditorState>(() => ({
       }
     });
 
-    let subscription: Subscription;
-    createEffect(
-      on(
-        () => _.get.readonly,
-        (readonly) => {
-          if (!!subscription) {
-            subscription.unsubscribe();
-          }
-          if (!readonly) {
-            subscription = from(
-              _.watchCommand([_.commands.updateProjectViewContent]),
-            )
-              .pipe(
-                debounceTime(100),
-                tap(() => _.set("pendingUpdate", true)),
-                debounceTime(1000),
-                switchMap(() => {
-                  const updatedJson = _.selectedPage()!.content as Record<
-                    string,
-                    any
-                  >;
-                  return updateProjectContent(
-                    _.selectedPage()!.id,
-                    updatedJson,
-                  );
-                }),
-                tap(() => _.set("pendingUpdate", false)),
-              )
-              .subscribe();
-          }
-        },
-        { defer: true },
-      ),
-    );
+    from(_.watchCommand([initNewPageFlow]))
+      .pipe(
+        debounceTime(0),
+        filter(() => !_.get.readonly),
+        switchMap(() =>
+          from(_.watchCommand([_.commands.updateProjectViewContent])).pipe(
+            debounceTime(100),
+            tap(() => _.set("pendingUpdate", true)),
+            debounceTime(1000),
+            switchMap(() => {
+              const updatedJson = _.selectedPage()!.content as Record<
+                string,
+                any
+              >;
+              return updateProjectContent(_.selectedPage()!.id, updatedJson);
+            }),
+            tap(() => _.set("pendingUpdate", false)),
+          ),
+        ),
+      )
+      .subscribe();
   })
   .extend((_) => {
     // TODO: statebuilder should allows to inject state in context

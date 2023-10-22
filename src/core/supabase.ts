@@ -8,6 +8,8 @@ export const supabaseCookieName = "sb-token";
 const supabaseUrl = import.meta.env.VITE_CLIENT_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_CLIENT_SUPABASE_KEY;
 
+const initialToken = getSupabaseCookie();
+
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
   auth: {
     storage: undefined,
@@ -17,9 +19,7 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
     storageKey: undefined,
   },
   global: {
-    headers: {
-      Authorization: `Bearer ${cookieStorage.getItem(supabaseCookieName)}`,
-    },
+    headers: initialToken ? { Authorization: `Bearer ${initialToken}` } : {},
   },
 });
 

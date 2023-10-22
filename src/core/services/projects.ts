@@ -112,7 +112,6 @@ export async function updateProjectSettings(
   id: string,
   data: { name: string; description: string },
 ) {
-  console.log("updating id", id);
   return supabase
     .from("project_page")
     .update({ name: data.name, description: data.description })
@@ -125,7 +124,6 @@ export async function updateProjectContent(
   id: string,
   content: Record<string, any>,
 ) {
-  console.log("updating id", id);
   return supabase
     .from("project_page")
     .update({ content })

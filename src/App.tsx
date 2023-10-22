@@ -52,7 +52,9 @@ const App: Component = () => {
     <div class={"h-[100dvh] w-full overflow-hidden flex"}>
       <Suspense fallback={<LoadingCircleWithBackdrop width={32} height={32} />}>
         {/* TODO: cannot use Suspense in this case since ContainerState is in root context. */}
-        <Show when={auth.get.ready && platform.state === "ready"}>
+        <Show
+          when={auth.get.ready && platform.state === "ready" && !!platform()}
+        >
           <Routes />
         </Show>
       </Suspense>

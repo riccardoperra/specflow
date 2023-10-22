@@ -6,8 +6,8 @@ export function LoadingCircle(props: JSX.IntrinsicElements["svg"]) {
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
-      class={`animate-spin -ml-1 mr-3 text-white ${props.class}`}
       {...props}
+      class={`animate-spin -ml-1 mr-3 text-white ${props.class ?? ""}`}
     >
       <circle
         class="opacity-25"

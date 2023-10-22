@@ -51,8 +51,8 @@ export function ProjectEditorContent() {
   return (
     <div class={"w-full h-full min-h-0 relative"}>
       <Show when={editorState.get.pendingUpdate}>
-        <div class={"absolute right-4 top-4"}>
-          <LoadingCircle />
+        <div class={"absolute right-4 top-4 z-20"}>
+          <LoadingCircle class={"w-5 h-5"} />
         </div>
       </Show>
 
