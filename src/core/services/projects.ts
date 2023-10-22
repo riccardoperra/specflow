@@ -1,13 +1,12 @@
 import { supabase } from "../supabase";
-import { Database } from "../../types/supabase";
+import { Tables, Views } from "../../types/supabase";
 import { DIAGRAMS } from "../constants/diagrams";
 
-export type ProjectPageView =
-  Database["public"]["Tables"]["project_page"]["Row"];
+export type ProjectPageView = Views<"project_page_view">;
 
-export type Project = Database["public"]["Tables"]["project"]["Row"];
+export type Project = Tables<"project">;
 
-export type ProjectView = Database["public"]["Tables"]["project"]["Row"] & {
+export type ProjectView = Views<"project_view"> & {
   project_page: ProjectPageView[];
 };
 
@@ -21,8 +20,8 @@ export async function getProjects() {
 
 export async function getProject(id: number): Promise<ProjectView | null> {
   const res = await supabase
-    .from("project")
-    .select("*, project_page(*)")
+    .from("project_view")
+    .select(`*, project_page:project_page_view(*)`)
     .eq("id", id)
     .maybeSingle();
   return res.data;
@@ -32,7 +31,7 @@ export async function getProjectPage(
   id: string,
 ): Promise<ProjectPageView | null> {
   const res = await supabase
-    .from("project_page")
+    .from("project_page_view")
     .select("*")
     .eq("id", id)
     .maybeSingle();

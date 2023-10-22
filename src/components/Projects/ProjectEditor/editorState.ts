@@ -124,6 +124,7 @@ export const EditorState = defineStore<EditorState>(() => ({
 
     _.watchCommand([_.commands.setProjectView]).subscribe(() => {
       const pages = _.get.projectView?.project_page ?? [];
+      _.set("readonly", _.get.projectView!.owner ?? false);
       if (
         searchParams.pageId &&
         !!pages.find((page) => page.id === searchParams.pageId)
