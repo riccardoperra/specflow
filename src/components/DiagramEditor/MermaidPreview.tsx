@@ -63,7 +63,7 @@ export function MermaidPreview(props: MermaidPreviewProps) {
   return (
     <div
       ref={element}
-      class={"w-full h-full overflow-hidden place-items-center"}
+      class={"w-full h-full overflow-hidden place-items-center relative"}
     >
       <Show when={errorMessage()}>
         {(errorMessage) => (

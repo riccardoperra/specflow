@@ -3,5 +3,6 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/supabase/migrations/20231020190554_schema_init.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/supabase/migrations/20231022073236_integrate_platform_limits.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/supabase/migrations/20231022124927_add_project_view.sql" dialect="PostgreSQL" />
   </component>
 </project>

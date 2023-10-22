@@ -7,9 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "gen:types": "supabase gen types typescript --project-id \"byxdpolwzavnqnqtyqbs\" --schema public > src/types/supabase.ts",
-    "gen:types:local": "supabase gen types typescript --local --schema public > src/types/supabase.ts",
-    "supabase:serve:functions": "supabase start && supabase functions serve --env-file=./supabase/.env.local --no-verify-jwt",
+    "gen:types": "supabase gen types typescript --project-id \"byxdpolwzavnqnqtyqbs\" --schema public > src/types/supabase.generated.ts",
+    "gen:types:local": "supabase gen types typescript --local --schema public > src/types/supabase.generated.ts",
+    "supabase:serve:functions": "supabase start && supabase functions serve --env-file=./supabase/.env.local",
     "typecheck": "tsc --noEmit"
   },
   "license": "MIT",
@@ -68,7 +68,8 @@
     "solid-js": "^1.8.3",
     "split-grid": "^1.0.11",
     "statebuilder": "^0.4.3",
-    "tiptap-markdown": "^0.8.2"
+    "tiptap-markdown": "^0.8.2",
+    "type-fest": "^4.5.0"
   },
   "msw": {
     "workerDirectory": "public"
