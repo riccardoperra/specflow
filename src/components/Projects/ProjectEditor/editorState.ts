@@ -20,7 +20,6 @@ import { createControlledDialog } from "../../../core/utils/controlledDialog";
 import { ProjectEditorNewPageDialog } from "./ProjectEditorNewPageDialog/ProjectEditorNewPageDialog";
 import { ProjectEditorNewDiagramDialog } from "./ProjectEditorNewPageDialog/ProjectEditorNewDiagramDialog";
 import { PlatformState } from "../../../core/state/platform";
-import { ContainerState } from "../../../core/+container";
 
 interface EditorState {
   activePageId: string | null;
@@ -183,9 +182,9 @@ export const EditorState = defineStore<EditorState>(() => ({
       )
       .subscribe();
   })
-  .extend((_) => {
+  .extend((_, context) => {
     // TODO: statebuilder should allows to inject state in context
-    const platformState = ContainerState.get(PlatformState);
+    const platformState = context.inject(PlatformState);
     const maxPageLimit = () => platformState()?.max_project_page_per_user ?? 1;
 
     return {
