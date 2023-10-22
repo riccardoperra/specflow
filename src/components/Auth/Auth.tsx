@@ -1,4 +1,4 @@
-import { HankoAuth } from "../Hanko/HankoAuth";
+import { HankoAuth } from "./HankoAuth";
 import { authContainer, backdrop, container, inner } from "./Auth.css";
 import { Show } from "solid-js";
 import { provideState } from "statebuilder";
@@ -22,9 +22,7 @@ export function Auth() {
       </Show>
 
       <div class={`relative z-1 ${backdrop}`}>
-        <div
-          class={`rounded-3xl flex bg-neutral-950 items-stretch gap-4 ${inner}`}
-        >
+        <div class={`rounded-3xl flex items-stretch gap-4 ${inner}`}>
           <div
             class={
               "rounded-lg w-[360px] bg-neutral-900 relative overflow-hidden hidden lg:block"

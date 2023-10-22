@@ -16,9 +16,6 @@ export const inner = style([
     display: "grid",
     gap: "20px",
     justifyItems: "center",
-    background: "rgba(11,11,11,0.8)",
-    boxShadow: "rgba(255, 255, 255, 0.3) 0px 0px 0px 0.5px inset",
-    backdropFilter: "blur(40px)",
     borderRadius: "20px",
     opacity: "1",
     animation:
@@ -27,9 +24,12 @@ export const inner = style([
   responsiveStyle({
     xs: {
       display: "grid",
+      backgroundColor: "transparent",
     },
     lg: {
       display: "grid",
+      background: "rgba(11,11,11,0.8)",
+      boxShadow: "rgba(255, 255, 255, 0.3) 0px 0px 0px 0.5px inset",
       gridTemplateColumns: "360px auto",
       height: "600px",
     },

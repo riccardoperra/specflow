@@ -10,11 +10,14 @@ import {
   type HankoConfigResponse,
   type HankoCurrentUserResponse,
   type HankoEmailResponse,
+  type HankoInitializePasscodeChallengeResponse,
   type HankoNotFoundResponse,
   type HankoUnauthorizedResponse,
   type HankoUserInfoResponse,
 } from "./data/hanko";
 import { logger } from "./data/log";
+
+const ENABLE_PASSCODE_FLOW = true;
 
 const hankoUrl = import.meta.env.VITE_HANKO_API_URL as string;
 
@@ -22,7 +25,7 @@ const getWellKnownConfig = http.get<{}, {}, HankoConfigResponse>(
   `${hankoUrl}/.well-known/config`,
   async () => {
     return HttpResponse.json({
-      password: { enabled: true, min_password_length: 0 },
+      password: { enabled: !ENABLE_PASSCODE_FLOW, min_password_length: 0 },
       emails: { require_verification: false, max_num_of_addresses: 5 },
       account: { allow_deletion: true, allow_signup: false },
       providers: [],
@@ -48,16 +51,68 @@ const me = http.get<
   });
 });
 
-const usersByUserId = http.get(`${hankoUrl}/users/:userId`, ({ params }) => {
+const usersByUserId = http.get<
+  {
+    userId: string;
+  },
+  {},
+  HankoNotFoundResponse | any
+>(`${hankoUrl}/users/:userId`, ({ params }) => {
   const { userId } = params;
   const user = buildUser(findUserById(userId as string));
   if (!user) {
-    return HttpResponse.json(
-      { code: 404, message: "Not Found" } as unknown as null,
-      { status: 404 },
-    );
+    return buildHankoNotFoundResponse();
   }
   return HttpResponse.json(user);
+});
+
+const initializePasscodeChallenge = http.post<
+  {},
+  { user_id: string },
+  HankoInitializePasscodeChallengeResponse | HankoNotFoundResponse
+>(`${hankoUrl}/passcode/login/initialize`, async ({ request }) => {
+  const { user_id } = await request.json();
+  const userInfo = findUserById(user_id)!;
+  const user = buildUser(userInfo);
+  if (!user) {
+    return buildHankoNotFoundResponse();
+  }
+  return HttpResponse.json({
+    id: user_id,
+    ttl: 300,
+    created_at: new Date().toISOString(),
+  } as HankoInitializePasscodeChallengeResponse);
+});
+
+const finalizePasscodeChallenge = http.post<
+  {},
+  { id: string; code: string },
+  | HankoInitializePasscodeChallengeResponse
+  | HankoNotFoundResponse
+  | HankoUnauthorizedResponse
+>(`${hankoUrl}/passcode/login/finalize`, async ({ request }) => {
+  const { id, code } = await request.json();
+  const userInfo = findUserById(id)!;
+  const user = buildUser(userInfo);
+  if (!user) {
+    return buildHankoNotFoundResponse();
+  }
+  if (code !== userInfo.passcode) {
+    return buildHankoNotAuthorizedResponse();
+  }
+  return HttpResponse.json(
+    {
+      id,
+      ttl: 300,
+      created_at: new Date().toISOString(),
+    } as HankoInitializePasscodeChallengeResponse,
+    {
+      headers: {
+        "X-Auth-Token": buildMockAccessToken(user.id),
+        "X-Session-Lifetime": "3600",
+      },
+    },
+  );
 });
 
 const userInfoByEmail = http.post<
@@ -140,6 +195,8 @@ export const hankoHandlers = [
   login,
   getWellKnownConfig,
   logout,
+  initializePasscodeChallenge,
+  finalizePasscodeChallenge,
   getCurrentUserEmails,
   getCurrentUserCredentials,
 ];

@@ -43,10 +43,9 @@ handles
 the authentication is in these files:
 
 - [auth.ts](src/core/state/auth.ts): Handles auth state and sync with supabase instance
-- [Auth.tsx](src/components/Auth/Auth.tsx): Auth page
-- [Profile.tsx](src/components/Profile/ProfileDialog.tsx)
-- [HankoAuth.tsx/HankoProfile.tsx](src/components/Hanko):
-  Profile and hanko auth web component integration with custom styling
+- [Auth.tsx/HankoAuth.tsx](src/components/Auth): Auth page and hanko auth web component integration with custom styling
+- [Profile.tsx/HankoProfile.tsx](src/components/Profile) Profile page and hanko profile web component integration with
+  custom styling
 
 ### Authentication flow
 
@@ -159,13 +158,18 @@ The mocking handlers are all present in the [src/mocks/hanko-handlers.ts](src/mo
 
 If the variable `VITE_ENABLE_AUTH_MOCK` is true, you can login with two different users.
 
+Currently both passcode and password flows are mocked, you can toggle them by updating the `ENABLE_PASSCODE_FLOW`
+constant in [src/mocks/hanko-handlers.ts](src/mocks/hanko-handlers.ts).
+
 - User1:
     - email: **user1@example.com**
     - password: **password**
+    - passcode: 123456
 
 - User2:
     - email: **user2@example.com**
     - password: **password**
+    - passcode: 123456
 
 ## Local development
 

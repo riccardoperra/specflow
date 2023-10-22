@@ -1,4 +1,4 @@
-import { HankoProfile } from "../Hanko/HankoProfile";
+import { HankoProfile } from "./HankoProfile";
 import { backdrop, container, inner, profileContainer } from "./Profile.css";
 import { Button, Dialog, DialogPanelContent, IconButton } from "@codeui/kit";
 import { ControlledDialogProps } from "../../core/utils/controlledDialog";

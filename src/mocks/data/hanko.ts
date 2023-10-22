@@ -2,9 +2,10 @@ import { HttpResponse, StrictResponse } from "msw";
 import { parseJwt } from "./access-token";
 import { logger } from "./log";
 import type {
-  Email as HankoEmailResponse,
-  UserInfo as HankoUserInfoResponse,
   Config as HankoConfigResponse,
+  Email as HankoEmailResponse,
+  Passcode as HankoPasscodeResponse,
+  UserInfo as HankoUserInfoResponse,
 } from "@teamhanko/hanko-elements";
 
 export type { HankoEmailResponse, HankoUserInfoResponse, HankoConfigResponse };
@@ -14,6 +15,7 @@ interface UserInfo {
   email: string;
   emailId: string;
   password: string;
+  passcode: string;
 }
 
 export const hankoUsers = {
@@ -22,12 +24,14 @@ export const hankoUsers = {
     email: "user1@example.com",
     password: "password",
     emailId: crypto.randomUUID(),
+    passcode: "123456",
   },
   user2: {
     id: "a405e378-066d-45f4-88b5-55d375064e4",
     email: "user2@example.com",
     password: "password",
     emailId: crypto.randomUUID(),
+    passcode: "123456",
   },
 } as Record<string, UserInfo>;
 
@@ -60,6 +64,11 @@ export interface HankoNotFoundResponse {
 export interface HankoUnauthorizedResponse {
   code: 401;
   message: "Unauthorized";
+}
+
+export interface HankoInitializePasscodeChallengeResponse
+  extends HankoPasscodeResponse {
+  created_at: string;
 }
 
 export function buildHankoNotFoundResponse(): StrictResponse<HankoNotFoundResponse> {
