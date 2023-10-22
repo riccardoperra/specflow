@@ -5,7 +5,7 @@ import {
   updateProjectContent,
 } from "../../../core/services/projects";
 import { withProxyCommands } from "statebuilder/commands";
-import { debounceTime, from, switchMap, tap } from "rxjs";
+import { debounceTime, from, Subscription, switchMap, tap } from "rxjs";
 import { useSearchParams } from "@solidjs/router";
 import { createEffect, on, runWithOwner } from "solid-js";
 import { createControlledDialog } from "../../../core/utils/controlledDialog";
@@ -20,6 +20,7 @@ interface EditorState {
   pendingUpdate: boolean;
   previewMode: "editor-with-preview" | "editor" | "preview";
   showSidebar: boolean;
+  readonly: boolean;
 }
 
 type Commands = {
@@ -42,6 +43,7 @@ export const EditorState = defineStore<EditorState>(() => ({
   pendingUpdate: false,
   previewMode: "editor-with-preview",
   showSidebar: true,
+  readonly: false,
 }))
   .extend(
     withProxyCommands<Commands>({
@@ -143,18 +145,40 @@ export const EditorState = defineStore<EditorState>(() => ({
       }
     });
 
-    from(_.watchCommand([_.commands.updateProjectViewContent]))
-      .pipe(
-        debounceTime(100),
-        tap(() => _.set("pendingUpdate", true)),
-        debounceTime(1000),
-        switchMap(() => {
-          const updatedJson = _.selectedPage()!.content as Record<string, any>;
-          return updateProjectContent(_.selectedPage()!.id, updatedJson);
-        }),
-        tap(() => _.set("pendingUpdate", false)),
-      )
-      .subscribe();
+    let subscription: Subscription;
+    createEffect(
+      on(
+        () => _.get.readonly,
+        (readonly) => {
+          if (!!subscription) {
+            subscription.unsubscribe();
+          }
+          if (!readonly) {
+            subscription = from(
+              _.watchCommand([_.commands.updateProjectViewContent]),
+            )
+              .pipe(
+                debounceTime(100),
+                tap(() => _.set("pendingUpdate", true)),
+                debounceTime(1000),
+                switchMap(() => {
+                  const updatedJson = _.selectedPage()!.content as Record<
+                    string,
+                    any
+                  >;
+                  return updateProjectContent(
+                    _.selectedPage()!.id,
+                    updatedJson,
+                  );
+                }),
+                tap(() => _.set("pendingUpdate", false)),
+              )
+              .subscribe();
+          }
+        },
+        { defer: true },
+      ),
+    );
   })
   .extend((_) => {
     // TODO: statebuilder should allows to inject state in context

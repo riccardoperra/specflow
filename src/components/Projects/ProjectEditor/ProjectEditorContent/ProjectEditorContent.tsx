@@ -10,6 +10,7 @@ import { PageEditor } from "../../../PageEditor/PageEditor";
 interface DiagramEditorContentProps {
   previewMode: string;
   page: ProjectPageView;
+  disabled?: boolean;
   onValueChange: (value: string) => void;
   onSaveShortcut: () => void;
 }
@@ -21,6 +22,7 @@ function DiagramEditorContent(props: DiagramEditorContentProps) {
     <DiagramEditor
       previewMode={props.previewMode}
       pageId={props.page.id}
+      disabled={props.disabled}
       content={(props.page.content as any).content}
       diagramType={(props.page.content as any).metadata.diagramType}
       onValueChange={props.onValueChange}
@@ -36,6 +38,7 @@ function PageEditorContent(props: DiagramEditorContentProps) {
       previewMode={props.previewMode}
       content={(props.page.content as any).content}
       diagramType={(props.page.content as any).metadata.diagramType}
+      disabled={props.disabled}
       onValueChange={props.onValueChange}
       onSaveShortcut={props.onSaveShortcut}
     />
@@ -60,6 +63,7 @@ export function ProjectEditorContent() {
               <Match when={selectedPage.type === "diagram"}>
                 <DiagramEditorContent
                   previewMode={editorState.get.previewMode}
+                  disabled={editorState.get.readonly}
                   onSaveShortcut={() => void 0}
                   onValueChange={(content) => {
                     editorState.actions.updateProjectViewContent({
@@ -73,6 +77,7 @@ export function ProjectEditorContent() {
               <Match when={selectedPage.type === "page"}>
                 <PageEditorContent
                   previewMode={editorState.get.previewMode}
+                  disabled={editorState.get.readonly}
                   onSaveShortcut={() => void 0}
                   onValueChange={(content) => {
                     editorState.actions.updateProjectViewContent({

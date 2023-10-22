@@ -9,6 +9,7 @@ interface DiagramEditorProps {
   diagramType: string;
   onValueChange: (value: string) => void;
   onSaveShortcut: () => void;
+  disabled?: boolean;
   ref?: Ref<HTMLDivElement>;
 }
 
@@ -40,6 +41,7 @@ export function PageEditor(props: DiagramEditorProps) {
               value={props.content}
               onValueChange={props.onValueChange}
               onSave={props.onSaveShortcut}
+              disabled={props.disabled}
             />
           </div>
         }

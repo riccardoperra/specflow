@@ -7,6 +7,7 @@ interface DiagramEditorProps {
   previewMode: string;
   pageId: string;
   content: string;
+  disabled?: boolean;
   diagramType: string;
   onValueChange: (value: string) => void;
   onSaveShortcut: () => void;
@@ -34,6 +35,7 @@ export function DiagramEditor(props: DiagramEditorProps) {
             <MermaidEditor
               type={props.diagramType}
               value={props.content}
+              disabled={props.disabled}
               onValueChange={props.onValueChange}
               onSave={props.onSaveShortcut}
             />

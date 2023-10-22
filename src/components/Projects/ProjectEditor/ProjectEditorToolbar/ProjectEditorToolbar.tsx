@@ -28,11 +28,11 @@ import { PageActionToolbar } from "./PageActionToolbar";
 import { createBreakpoints } from "../../../../core/utils/breakpoint";
 import { As } from "@kobalte/core";
 import { EllipsisIcon } from "../../../../icons/EllipsisIcon";
+import { ProjectEditorShowOnEditable } from "../ProjectEditorShowOnEditable/ProjectEditorShowOnEditable";
 
 export function ProjectEditorToolbar() {
   const breakpoints = createBreakpoints();
   const editorState = provideState(EditorState);
-  const previewState = provideState(PreviewState);
 
   const controlledDialog = createControlledDialog();
 
@@ -68,56 +68,63 @@ export function ProjectEditorToolbar() {
     <div class={"flex pr-6 pl-3 py-2 gap-2 flex-shrink"}>
       <Show when={!breakpoints.sm}>
         <div class={"flex gap-2 h-[32px] ml-auto"}>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <As
-                style={{ height: "100%" }}
-                component={IconButton}
-                aria-label={"Action menu"}
-                theme={"secondary"}
-                size={"xs"}
-              >
-                <EllipsisIcon />
-              </As>
-            </DropdownMenuTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuContent>
-                <DropdownMenuItem
-                  rightSlot={<CogIcon />}
-                  onClick={onEditDetails}
+          <ProjectEditorShowOnEditable>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <As
+                  style={{ height: "100%" }}
+                  component={IconButton}
+                  aria-label={"Action menu"}
+                  theme={"secondary"}
+                  size={"xs"}
                 >
-                  Edit details
-                </DropdownMenuItem>
-                <DropdownMenuItem rightSlot={<TrashIcon />} onClick={onDelete}>
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenuPortal>
-          </DropdownMenu>
+                  <EllipsisIcon />
+                </As>
+              </DropdownMenuTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    rightSlot={<CogIcon />}
+                    onClick={onEditDetails}
+                  >
+                    Edit details
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    rightSlot={<TrashIcon />}
+                    onClick={onDelete}
+                  >
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenuPortal>
+            </DropdownMenu>
+          </ProjectEditorShowOnEditable>
         </div>
       </Show>
 
       <Show when={breakpoints.sm}>
         <div class={"flex gap-2 h-[32px]"}>
-          <Button
-            style={{ height: "100%" }}
-            theme={"secondary"}
-            size={"xs"}
-            leftIcon={<CogIcon />}
-            onClick={onEditDetails}
-          >
-            Edit details
-          </Button>
-          <Button
-            style={{ height: "100%" }}
-            size={"xs"}
-            class={"h-full"}
-            theme={"negative"}
-            leftIcon={<TrashIcon class={"h-4 w-4"} />}
-            onClick={onDelete}
-          >
-            Delete
-          </Button>
+          <ProjectEditorShowOnEditable>
+            <Button
+              style={{ height: "100%" }}
+              theme={"secondary"}
+              size={"xs"}
+              leftIcon={<CogIcon />}
+              onClick={onEditDetails}
+            >
+              Edit details
+            </Button>
+            <Button
+              style={{ height: "100%" }}
+              size={"xs"}
+              class={"h-full"}
+              theme={"negative"}
+              leftIcon={<TrashIcon class={"h-4 w-4"} />}
+              onClick={onDelete}
+            >
+              Delete
+            </Button>
+          </ProjectEditorShowOnEditable>
         </div>
         <div class={"ml-auto flex"}>
           <Switch>

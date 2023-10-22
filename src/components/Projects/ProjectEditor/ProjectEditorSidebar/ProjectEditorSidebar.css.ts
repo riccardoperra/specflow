@@ -9,8 +9,8 @@ export const sidebar = style([
     padding: themeTokens.spacing["4"],
     paddingTop: themeTokens.spacing["2"],
     backgroundColor: "#151516",
-    transition: "transform 250ms ease-in-out",
-    transform: "translateX(-280px)",
+    transition: "transform 250ms ease-in-out, margin-left 250ms ease-in-out",
+    marginLeft: "-280px",
   },
   responsiveStyle({
     xs: { position: "absolute", left: 0, top: 0, zIndex: 20 },
@@ -19,7 +19,7 @@ export const sidebar = style([
   {
     selectors: {
       "&[data-visible]": {
-        transform: "translateX(0px)",
+        marginLeft: "0",
       },
     },
   },
