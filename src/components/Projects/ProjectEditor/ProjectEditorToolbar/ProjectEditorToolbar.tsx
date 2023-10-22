@@ -10,7 +10,7 @@ import {
 import { CogIcon } from "../../../../icons/CogIcon";
 import { TrashIcon } from "../../../../icons/TrashIcon";
 import { ProjectEditorPageSettingsDialog } from "../ProjectEditorPageSettingsDialog/ProjectEditorPageSettingsDialog";
-import { ConfirmDialog } from "../../../ConfirmDialog/ConfirmDialog";
+import { ConfirmDialog } from "../../../../ui/ConfirmDialog/ConfirmDialog";
 import { createSignal, Match, Show, Switch } from "solid-js";
 import { deleteProjectPage } from "../../../../core/services/projects";
 import { createControlledDialog } from "../../../../core/utils/controlledDialog";
@@ -20,7 +20,7 @@ import { PreviewState } from "../previewState";
 import {
   SegmentedControl,
   SegmentedControlItem,
-} from "../../../SegmentedControl/SegmentedControl";
+} from "../../../../ui/SegmentedControl/SegmentedControl";
 import { CodeIcon } from "../../../../icons/CodeIcon";
 import { PresentationChart } from "../../../../icons/PresentationChart";
 import { DiagramActionToolbar } from "./DiagramActionToolbar";

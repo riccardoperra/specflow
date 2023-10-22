@@ -1,7 +1,7 @@
 import { Ref } from "solid-js";
 import { MarkdownEditor } from "../Editor/MarkdownEditor";
 import { PageEditorPreview } from "./PageEditorPreview";
-import { SplitView } from "../SplitView/SplitView";
+import { SplitView } from "../../ui/SplitView/SplitView";
 
 interface DiagramEditorProps {
   previewMode: string;
