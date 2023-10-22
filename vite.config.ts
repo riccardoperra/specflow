@@ -28,6 +28,12 @@ export default defineConfig({
       "/rest": {
         target: "http://localhost:54321",
       },
+      "/realtime": {
+        target: "ws://localhost:54321/realtime",
+        rewrite: (path) => path.replace(/^\/realtime/, ""),
+        ws: true,
+        changeOrigin: true,
+      },
     },
   },
   build: {

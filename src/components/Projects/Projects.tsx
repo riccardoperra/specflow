@@ -1,20 +1,30 @@
 import { Link } from "@solidjs/router";
 import { createResource, For, Show, Suspense } from "solid-js";
 import { getProjects } from "../../core/services/projects";
-import { Button, IconButton } from "@codeui/kit";
+import { Button, IconButton, Tooltip } from "@codeui/kit";
 import { CurrentUserBadge } from "../UserBadge/CurrentUserBadge";
 import { createControlledDialog } from "../../core/utils/controlledDialog";
 import { NewProjectDialog } from "./NewProjectDialog/NewProjectDialog";
 import { LoadingCircleWithBackdrop } from "../../icons/LoadingCircle";
 import { ReloadIcon } from "../../icons/ReloadIcon";
 import { ProjectCard } from "./ProjectCard/ProjectCard";
+import { PlatformState } from "../../core/state/platform";
+import { ContainerState } from "../../core/+container";
 
 export function Projects() {
   const links = [{ path: "/projects", label: "Dashboard" }];
 
   const [projects, { refetch }] = createResource(getProjects);
+  const platformState = ContainerState.get(PlatformState);
 
   const controlledDialog = createControlledDialog();
+
+  const canCreateNewProject = () => {
+    if (projects.state !== "ready") {
+      return false;
+    }
+    return (projects()?.length ?? 0) < platformState().max_project_row_per_user;
+  };
 
   const onCreateProject = () => {
     controlledDialog(NewProjectDialog, { onSave: refetch });
@@ -61,9 +71,19 @@ export function Projects() {
             >
               <ReloadIcon class={"h-5 w-5"} />
             </IconButton>
-            <Button theme={"primary"} onClick={onCreateProject}>
-              Create project
-            </Button>
+            <Tooltip
+              disabled={canCreateNewProject()}
+              content={`You reached the max limit of projects: ${platformState()
+                ?.max_project_row_per_user}`}
+            >
+              <Button
+                disabled={!canCreateNewProject()}
+                theme={"primary"}
+                onClick={onCreateProject}
+              >
+                Create project
+              </Button>
+            </Tooltip>
           </div>
         </div>
 

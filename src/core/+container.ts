@@ -1,3 +1,4 @@
-import {Container} from "statebuilder";
+import { Container } from "statebuilder";
+import { createRoot } from "solid-js";
 
-export const ContainerState = Container.create();
+export const ContainerState = createRoot(() => Container.create());

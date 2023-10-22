@@ -11,12 +11,12 @@ import {
   DropdownMenuPortal,
   DropdownMenuTrigger,
   IconButton,
+  Tooltip,
 } from "@codeui/kit";
 import { bgBrand } from "../../../../global.css";
 import { PlusIcon } from "../../../../icons/PlusIcon";
 import { As } from "@kobalte/core";
 import { DocumentTextIcon } from "../../../../icons/DocumentTextIcon";
-import { createBreakpoints } from "../../../../core/utils/breakpoint";
 
 interface ProjectEditorSidebarProps {
   project: ProjectView;
@@ -34,38 +34,44 @@ export function ProjectEditorSidebar(props: ProjectEditorSidebarProps) {
         <div class={"flex justify-between items-center"}>
           <h3 class={"text-sm font-semibold"}>Pages</h3>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <As
-                aria-label={"Open dropdown"}
-                size={"xs"}
-                theme={"secondary"}
-                component={IconButton}
-              >
-                <PlusIcon class={"w-4 h-4"} />
-              </As>
-            </DropdownMenuTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuContent>
-                <DropdownMenuItem
-                  rightSlot={<DocumentTextIcon />}
-                  onClick={() =>
-                    editorState.openNewPageDialog(owner!, props.project.id)
-                  }
+          <Tooltip
+            disabled={editorState.canCreateNewProjectPage()}
+            content={`You reached the max limit of pages: ${editorState.maxPageLimit()}`}
+          >
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <As
+                  aria-label={"Open dropdown"}
+                  size={"xs"}
+                  theme={"secondary"}
+                  disabled={!editorState.canCreateNewProjectPage()}
+                  component={IconButton}
                 >
-                  New page
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  rightSlot={<PresentationChart />}
-                  onClick={() =>
-                    editorState.openNewDiagramDialog(owner!, props.project.id)
-                  }
-                >
-                  <span>New diagram</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenuPortal>
-          </DropdownMenu>
+                  <PlusIcon class={"w-4 h-4"} />
+                </As>
+              </DropdownMenuTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    rightSlot={<DocumentTextIcon />}
+                    onClick={() =>
+                      editorState.openNewPageDialog(owner!, props.project.id)
+                    }
+                  >
+                    New page
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    rightSlot={<PresentationChart />}
+                    onClick={() =>
+                      editorState.openNewDiagramDialog(owner!, props.project.id)
+                    }
+                  >
+                    <span>New diagram</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenuPortal>
+            </DropdownMenu>
+          </Tooltip>
         </div>
         <ul class={"flex flex-col gap-2"}>
           <For each={props.project.project_page}>

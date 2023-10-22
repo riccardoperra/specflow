@@ -8,6 +8,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "gen:types": "supabase gen types typescript --project-id \"byxdpolwzavnqnqtyqbs\" --schema public > src/types/supabase.ts",
+    "gen:types:local": "supabase gen types typescript --local --schema public > src/types/supabase.ts",
     "supabase:serve:functions": "supabase start && supabase functions serve --env-file=./supabase/.env.local --no-verify-jwt",
     "typecheck": "tsc --noEmit"
   },

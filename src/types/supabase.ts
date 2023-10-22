@@ -9,6 +9,30 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      platform: {
+        Row: {
+          created_at: string
+          id: string
+          max_project_page_per_user: number
+          max_project_row_per_user: number
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          max_project_page_per_user?: number
+          max_project_row_per_user?: number
+          name?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          max_project_page_per_user?: number
+          max_project_row_per_user?: number
+          name?: string
+        }
+        Relationships: []
+      }
       project: {
         Row: {
           created_at: string
@@ -78,7 +102,42 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_platform_limits: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          created_at: string
+          id: string
+          max_project_page_per_user: number
+          max_project_row_per_user: number
+          name: string
+        }
+      }
+      get_user_project_page_rows:
+        | {
+            Args: {
+              project_id: number
+              user_id: string
+            }
+            Returns: number
+          }
+        | {
+            Args: {
+              project_id: number
+            }
+            Returns: number
+          }
+        | {
+            Args: {
+              project_id: number
+            }
+            Returns: number
+          }
+      get_user_project_rows: {
+        Args: {
+          user_id: string
+        }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
@@ -88,3 +147,4 @@ export interface Database {
     }
   }
 }
+
