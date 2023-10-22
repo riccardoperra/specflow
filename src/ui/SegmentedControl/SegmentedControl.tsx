@@ -31,10 +31,14 @@ type SegmentedControlProps<T = string> = Omit<
 > &
   TypedTabsRootProps<T>;
 
-export function SegmentedControl<T>(props: SegmentedControlProps<T>) {
+export function SegmentedControl(props: SegmentedControlProps) {
   return (
-    // @ts-ignore
-    <Tabs.Root class={styles.wrapper} {...props} orientation={"horizontal"}>
+    <Tabs.Root
+      activationMode={"manual"}
+      class={styles.wrapper}
+      {...props}
+      orientation={"horizontal"}
+    >
       <Tabs.List class={styles.list}>
         {props.children}
         <Tabs.Indicator class={styles.indicator} />

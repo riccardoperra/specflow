@@ -53,7 +53,7 @@ export function ProjectEditorExportDiagramDialog(
             <div>
               <p>Scale</p>
               <div class={"h-[44px] mt-3"}>
-                <SegmentedControl<string>
+                <SegmentedControl
                   value={String(scale())}
                   onChange={(value) => setScale(parseInt(value))}
                 >
