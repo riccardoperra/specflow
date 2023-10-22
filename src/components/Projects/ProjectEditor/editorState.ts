@@ -183,7 +183,6 @@ export const EditorState = defineStore<EditorState>(() => ({
       .subscribe();
   })
   .extend((_, context) => {
-    // TODO: statebuilder should allows to inject state in context
     const platformState = context.inject(PlatformState);
     const maxPageLimit = () => platformState()?.max_project_page_per_user ?? 1;
 
