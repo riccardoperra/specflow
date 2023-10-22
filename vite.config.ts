@@ -3,7 +3,7 @@ import solidPlugin from "vite-plugin-solid";
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 // import devtools from "solid-devtools/vite";
 
-export default defineConfig({
+export default defineConfig((options) => ({
   plugins: [
     /*
     Uncomment the following line to enable solid-devtools.
@@ -17,6 +17,24 @@ export default defineConfig({
         external: ["solid-js", "solid-js/web"],
       },
     }),
+    {
+      name: "html-inject-umami",
+      transformIndexHtml(html) {
+        const websiteId = "840fbc8b-5b20-4f0d-8e55-c82814cfadf5";
+        const scriptSrc =
+          "https://umami-production-af3e.up.railway.app/custom-events.js";
+
+        if (options.mode !== "production" || !websiteId || !scriptSrc)
+          return html;
+
+        // Auto-track is off since query param push a new page view and breaks the analytics
+        // TODO: Find a better solution to handle query params
+        return html.replace(
+          "<!-- %UMAMI% -->",
+          `<script async defer data-website-id='${websiteId.trim()}' src='${scriptSrc.trim()}'></script>`,
+        );
+      },
+    },
   ],
   server: {
     port: 3000,
@@ -43,4 +61,4 @@ export default defineConfig({
     // Add both @codemirror/state and @codemirror/view to included deps to optimize
     include: ["@codemirror/state", "@codemirror/view"],
   },
-});
+}));
