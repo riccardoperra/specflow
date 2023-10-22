@@ -7,6 +7,20 @@ type Commands = {
   setRef: HTMLElement;
 };
 
+export type GenericExportOptions = { fileName: string };
+
+export type ExportOptions = ExportPngOptions | ExportSvgOptions;
+
+export interface ExportPngOptions extends GenericExportOptions {
+  type: "png";
+  scale: number;
+  showBackground: boolean;
+}
+
+export interface ExportSvgOptions extends GenericExportOptions {
+  type: "svg";
+}
+
 export const PreviewState = defineSignal<HTMLElement | null>(() => null)
   .extend(withProxyCommands<Commands>({ devtools: { storeName: "ref" } }))
   .extend(withAsyncAction())
@@ -44,6 +58,57 @@ export const PreviewState = defineSignal<HTMLElement | null>(() => null)
       return ref.firstChild as SVGElement;
     };
 
+    const exportAndSave = _.asyncAction((options: ExportOptions) => {
+      switch (options.type) {
+        case "png": {
+          return exportPreview(node(), (element) =>
+            import("modern-screenshot").then((m) => {
+              const node = options.showBackground
+                ? element
+                : (element.firstChild as SVGElement);
+              return m
+                .domToBlob(node, {
+                  features: { fixSvgXmlDecode: true },
+                  font: {},
+                  type: "image/png",
+                  scale: options.scale ?? 6,
+                  style: { padding: "0px", margin: "0px" },
+                })
+                .then((data) => {
+                  return new File([data], `${options.fileName}.png`, {
+                    type: "image/png",
+                  });
+                })
+                .then((file) => download(file));
+            }),
+          );
+        }
+        case "svg": {
+          return exportPreview(node(), (element) => {
+            const svg = element.firstChild as SVGElement;
+            const file = new File([svg.outerHTML], options.fileName, {
+              type: "image/svg+xml",
+            });
+            return new Promise((r) => {
+              download(file);
+              r(null);
+            });
+          });
+        }
+        default: {
+          throw new TypeError(`Type not valid`);
+        }
+      }
+    });
+
+    const download = (file: File) => {
+      const link = document.createElement("a");
+      link.download = file.name;
+      link.href = URL.createObjectURL(file);
+      link.click();
+      link.remove();
+    };
+
     const domToBlob = () =>
       import("modern-screenshot").then((m) =>
         exportPreview(node(), (svg) =>
@@ -57,7 +122,6 @@ export const PreviewState = defineSignal<HTMLElement | null>(() => null)
 
     const openToExternalWindow = _.asyncAction(() =>
       domToBlob().then((result) => {
-        console.log(result, "result");
         const link = document.createElement("a");
         link.target = "_blank";
         link.href = URL.createObjectURL(result);
@@ -68,5 +132,6 @@ export const PreviewState = defineSignal<HTMLElement | null>(() => null)
 
     return {
       openToExternalWindow,
+      exportAndSave,
     };
   });

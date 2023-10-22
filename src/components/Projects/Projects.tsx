@@ -2,7 +2,7 @@ import { Link } from "@solidjs/router";
 import { createResource, For, Show, Suspense } from "solid-js";
 import { getProjects } from "../../core/services/projects";
 import { Button, IconButton, Tooltip } from "@codeui/kit";
-import { CurrentUserBadge } from "../UserBadge/CurrentUserBadge";
+import { CurrentUserBadge } from "../../ui/UserBadge/CurrentUserBadge";
 import { createControlledDialog } from "../../core/utils/controlledDialog";
 import { NewProjectDialog } from "./NewProjectDialog/NewProjectDialog";
 import { LoadingCircleWithBackdrop } from "../../icons/LoadingCircle";

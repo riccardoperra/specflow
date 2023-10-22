@@ -61,6 +61,7 @@
     "idb-keyval": "^6.2.1",
     "mermaid": "^10.5.1",
     "modern-screenshot": "^4.4.32",
+    "motion": "^10.16.4",
     "openai": "^4.12.4",
     "panzoom": "^9.4.3",
     "rxjs": "^7.8.1",

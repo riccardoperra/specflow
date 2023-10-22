@@ -1,7 +1,7 @@
 import { MermaidPreview } from "./MermaidPreview";
 import { MermaidEditor } from "../Editor/MermaidEditor";
-import { Ref, Show } from "solid-js";
-import { SplitView } from "../SplitView/SplitView";
+import { Ref } from "solid-js";
+import { SplitView } from "../../ui/SplitView/SplitView";
 
 interface DiagramEditorProps {
   previewMode: string;

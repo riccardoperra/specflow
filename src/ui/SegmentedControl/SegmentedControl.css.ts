@@ -11,6 +11,7 @@ export const list = style({
   display: "flex",
   gap: themeTokens.spacing["2"],
   position: "relative",
+  width: "100%",
 });
 
 export const wrapper = style([

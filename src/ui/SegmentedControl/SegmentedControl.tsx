@@ -2,14 +2,16 @@ import { Tabs } from "@kobalte/core";
 import * as styles from "./SegmentedControl.css";
 import { splitProps } from "solid-js";
 
-interface SegmentedControlItemProps extends Tabs.TabsTriggerProps {
-  value: string;
+interface SegmentedControlItemProps<T = string>
+  extends Omit<Tabs.TabsTriggerProps, "value"> {
+  value: T;
 }
 
-export function SegmentedControlItem(props: SegmentedControlItemProps) {
+export function SegmentedControlItem<T>(props: SegmentedControlItemProps<T>) {
   // TODO: merge classes
   const [local, others] = splitProps(props, ["class"]);
   return (
+    // @ts-ignore
     <Tabs.Trigger
       class={[styles.segment, local.class].filter(Boolean).join(" ")}
       {...others}
@@ -17,10 +19,21 @@ export function SegmentedControlItem(props: SegmentedControlItemProps) {
   );
 }
 
-type SegmentedControlProps = Omit<Tabs.TabsRootProps, "orientation">;
+type TypedTabsRootProps<T> = {
+  value?: T;
+  defaultValue?: T;
+  onChange?: (value: T) => void;
+};
 
-export function SegmentedControl(props: SegmentedControlProps) {
+type SegmentedControlProps<T = string> = Omit<
+  Tabs.TabsRootProps,
+  "orientation" | "value" | "defaultValue" | "onChange"
+> &
+  TypedTabsRootProps<T>;
+
+export function SegmentedControl<T>(props: SegmentedControlProps<T>) {
   return (
+    // @ts-ignore
     <Tabs.Root class={styles.wrapper} {...props} orientation={"horizontal"}>
       <Tabs.List class={styles.list}>
         {props.children}

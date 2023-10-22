@@ -3,7 +3,7 @@ import { Link, useNavigate } from "@solidjs/router";
 import { ProjectView } from "../../../core/services/projects";
 import { Button, IconButton } from "@codeui/kit";
 import { ShareIcon } from "../../../icons/ShareIcon";
-import { CurrentUserBadge } from "../../UserBadge/CurrentUserBadge";
+import { CurrentUserBadge } from "../../../ui/UserBadge/CurrentUserBadge";
 import { LeftArrowIcon } from "../../../icons/LeftArrowIcon";
 import { createBreakpoints } from "../../../core/utils/breakpoint";
 import { provideState } from "statebuilder";
