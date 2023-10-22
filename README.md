@@ -24,6 +24,18 @@ SpecFlow tech stack is mainly composed by these technologies:
 - [TipTap Editor](https://tiptap.dev)
 - [Mock Service Worker (next release)](https://mswjs.io/)
 
+Other libraries that I should mention:
+
+- [Kobalte](https://github.com/kobaltedev/kobalte): A SolidJS UI toolkit for building accessible components
+- [solid-primitives](https://github.com/solidjs-community/solid-primitives): High quality primitives for SolidJS
+  applications.
+- [codemirror-lang-mermaid](https://github.com/inspirnathan/codemirror-lang-mermaid): I would never
+  have thought of making this application without this library.
+- [solid-codemirror](https://github.com/riccardoperra/solid-codemirror): Solid CodeMirror wrapper.
+- [CodeUI](https://github.com/riccardoperra/codeui): My UI kit (still wip)
+  for [CodeImage](https://github.com/riccardoperra/codeimage)
+- [statebuilder](https://github.com/riccardoperra/statebuilder): My composable state management library
+
 ## 🔐 Hanko integration details
 
 SpecFlow is a single-page application which integrates Hanko as a main authentication flow. All related code which
