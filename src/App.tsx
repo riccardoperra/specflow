@@ -7,13 +7,12 @@ import "./global.css";
 import { Projects } from "./components/Projects/Projects";
 import { PlatformState } from "./core/state/platform";
 import { LoadingCircleWithBackdrop } from "./icons/LoadingCircle";
-import { ContainerState } from "./core/+container";
 
 const App: Component = () => {
   document.documentElement.setAttribute("data-cui-theme", "dark");
 
   const auth = provideState(AuthState);
-  const platform = ContainerState.get(PlatformState);
+  const platform = provideState(PlatformState);
 
   const authGuard = ({ navigate }: RouteDataFuncArgs) =>
     auth.loggedIn() ? void 0 : navigate("/login");
@@ -51,7 +50,6 @@ const App: Component = () => {
   return (
     <div class={"h-[100dvh] w-full overflow-hidden flex"}>
       <Suspense fallback={<LoadingCircleWithBackdrop width={32} height={32} />}>
-        {/* TODO: cannot use Suspense in this case since ContainerState is in root context. */}
         <Show
           when={auth.get.ready && platform.state === "ready" && !!platform()}
         >

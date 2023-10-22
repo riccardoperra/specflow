@@ -9,13 +9,13 @@ import { LoadingCircleWithBackdrop } from "../../icons/LoadingCircle";
 import { ReloadIcon } from "../../icons/ReloadIcon";
 import { ProjectCard } from "./ProjectCard/ProjectCard";
 import { PlatformState } from "../../core/state/platform";
-import { ContainerState } from "../../core/+container";
+import { provideState } from "statebuilder";
 
 export function Projects() {
   const links = [{ path: "/projects", label: "Dashboard" }];
 
   const [projects, { refetch }] = createResource(getProjects);
-  const platformState = ContainerState.get(PlatformState);
+  const platformState = provideState(PlatformState);
 
   const controlledDialog = createControlledDialog();
 
