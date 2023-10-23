@@ -12,7 +12,6 @@ import {
 import { signSupabaseToken } from "../services/auth";
 import { createControlledDialog } from "../utils/controlledDialog";
 import { ProfileDialog } from "../../components/Profile/ProfileDialog";
-import { MOCK_AUTH_CONTEXT_KEY } from "./constants";
 
 type AuthCommands = {
   setCurrent: User | null;

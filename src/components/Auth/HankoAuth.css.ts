@@ -2,6 +2,7 @@ import { createVar, globalStyle } from "@vanilla-extract/css";
 import { responsiveStyle, themeTokens, themeVars } from "@codeui/kit";
 
 const inputPasscodeBorderRadius = createVar();
+const secondaryButtonBackground = createVar();
 
 globalStyle("hanko-auth", {
   vars: {
@@ -62,6 +63,7 @@ globalStyle("hanko-auth", {
       "1.0012 68.14%, 1.0056 72.24%, 0.9981 86.66%, 1)",
 
     [inputPasscodeBorderRadius]: "12px",
+    [secondaryButtonBackground]: themeVars.brandSecondary,
   },
 });
 
@@ -82,6 +84,10 @@ globalStyle(
 
 const transitions =
   "opacity .2s, background-color .2s, scale 1s var(--elastic-out), outline-color 150ms ease-in-out, outline-offset 150ms ease-in";
+
+globalStyle("hanko-auth::part(form-item)", {
+  minWidth: "100%",
+});
 
 /**
  * Buttons and Links
@@ -110,6 +116,7 @@ globalStyle("hanko-auth::part(button):active", {
 
 globalStyle("hanko-auth::part(button secondary-button)", {
   border: "none",
+  backgroundColor: secondaryButtonBackground,
 });
 
 /**
@@ -149,8 +156,49 @@ globalStyle(
   },
 );
 
-globalStyle("hanko-auth::part(form-item)", {
+globalStyle("hanko-auth::part(error)", {
   vars: {
-    "--button-min-width": "150px",
+    backgroundColor: "#500f1c",
+    color: themeVars.foreground,
+    border: "unset",
+    padding: `0 ${themeTokens.spacing["4"]}`,
   },
+});
+
+/**
+ * Checkbox
+ */
+globalStyle("hanko-profile::part(input checkbox-input)", {
+  position: "relative",
+  height: "24px",
+  width: "24px",
+  overflow: "hidden",
+  borderRadius: themeTokens.radii.sm,
+});
+
+globalStyle("hanko-profile::part(input checkbox-input):focus-visible", {
+  outline: `2px solid ${themeVars.brand}`,
+});
+
+globalStyle("hanko-profile::part(input checkbox-input):hover::before", {
+  backgroundColor: themeVars.formAccent,
+});
+
+globalStyle("hanko-profile::part(input checkbox-input):after", {
+  position: "absolute",
+  opacity: 1,
+  background: themeVars.brand,
+  borderRadius: themeTokens.radii.sm,
+  width: "100%",
+  height: "100%",
+  top: 0,
+  left: 0,
+  transitionProperty: "transform, opacity",
+  transitionTimingFunction: "ease",
+  transitionDuration: ".25s",
+  transformOrigin: "center",
+  color: "white",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
 });

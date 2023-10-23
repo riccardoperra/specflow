@@ -1,8 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { responsiveStyle, themeTokens } from "@codeui/kit";
 
-export const container = style({});
-
 export const inner = style([
   {
     position: "relative",
