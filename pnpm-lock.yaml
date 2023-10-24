@@ -39,8 +39,8 @@ dependencies:
     specifier: ^11.2.7
     version: 11.2.7
   '@kobalte/core':
-    specifier: ^0.11.1
-    version: 0.11.1(solid-js@1.8.3)
+    specifier: ^0.11.2
+    version: 0.11.2(solid-js@1.8.3)
   '@lezer/highlight':
     specifier: ^1.1.6
     version: 1.1.6
@@ -111,8 +111,8 @@ dependencies:
     specifier: ^10.16.4
     version: 10.16.4
   openai:
-    specifier: ^4.12.4
-    version: 4.12.4
+    specifier: ^4.13.0
+    version: 4.13.0
   panzoom:
     specifier: ^9.4.3
     version: 9.4.3
@@ -146,8 +146,8 @@ devDependencies:
     specifier: ^10.4.16
     version: 10.4.16(postcss@8.4.31)
   msw:
-    specifier: 0.0.0-fetch.rc-24
-    version: 0.0.0-fetch.rc-24(typescript@5.2.2)
+    specifier: 2.0.0
+    version: 2.0.0(typescript@5.2.2)
   postcss:
     specifier: ^8.4.31
     version: 8.4.31
@@ -811,7 +811,7 @@ packages:
     peerDependencies:
       solid-js: ^1.7.0
     dependencies:
-      '@kobalte/core': 0.11.1(solid-js@1.8.3)
+      '@kobalte/core': 0.11.2(solid-js@1.8.3)
       '@kobalte/utils': 0.9.0(solid-js@1.8.3)
       '@kobalte/vanilla-extract': 0.4.0(@vanilla-extract/css@1.13.0)
       '@motionone/solid': 10.16.4(solid-js@1.8.3)
@@ -1304,8 +1304,8 @@ packages:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  /@kobalte/core@0.11.1(solid-js@1.8.3):
-    resolution: {integrity: sha512-Gp/zW/tkkzvnHPXj2mzEeV5aAB0OF91efu/4o3QUXqDKVEIuo5+gmr1YAjhvM1DqTB+RwRP0OdAhc00XedHQ6Q==}
+  /@kobalte/core@0.11.2(solid-js@1.8.3):
+    resolution: {integrity: sha512-B19TvpmR0E8n7LJqopF0lbMayBErnWJ5MlTTnrgVAFU1up/2Bo1O6ldTK1c5NikmpppzIK2A8ovUwIhRqw/3Uw==}
     peerDependencies:
       solid-js: ^1.7.11
     dependencies:
@@ -2283,8 +2283,8 @@ packages:
     resolution: {integrity: sha512-wf3Vz+jCmOQ2HV1YUJuCWdL64adYxumkrxtc+H1VUQlnQI04+5HtH+qZCOE21lBE7gIrt+CwX2Wv8Acrw5Ak6w==}
     dev: false
 
-  /@types/node@20.8.7:
-    resolution: {integrity: sha512-21TKHHh3eUHIi2MloeptJWALuCu5H7HQTdTrWIFReA8ad+aggoX+lRes3ex7/FtpC+sVUpFMQ+QTfYr74mruiQ==}
+  /@types/node@20.8.8:
+    resolution: {integrity: sha512-YRsdVxq6OaLfmR9Hy816IMp33xOBjfyOgUd77ehqg96CFywxAPbDbXvAsuN2KVg2HOT8Eh6uAfU+l4WffwPVrQ==}
     dependencies:
       undici-types: 5.25.3
 
@@ -2323,7 +2323,7 @@ packages:
   /@types/websocket@1.0.8:
     resolution: {integrity: sha512-wvkOpWApbuxVfHhSQ1XrjVN4363vsfLJwEo4AboIZk0g1vJA5nmLp8GXUHuIdf4/Fe7+/V0Efe2HvWiLqHtlqw==}
     dependencies:
-      '@types/node': 20.8.7
+      '@types/node': 20.8.8
     dev: false
 
   /@vanilla-extract/babel-plugin-debug-ids@1.0.3:
@@ -3582,7 +3582,7 @@ packages:
     resolution: {integrity: sha512-EzV94NYKoO09GLXGjXj9JIlXijVck4ONSr5wiCWDvhsvj5jxSrzTmRU/9C1DyB6uToszLs8aifA6NQ7lEQdvFw==}
     engines: {node: '>= 0.8'}
     dependencies:
-      '@types/node': 20.8.7
+      '@types/node': 20.8.8
       require-like: 0.1.2
 
   /event-target-shim@5.0.1:
@@ -4797,8 +4797,8 @@ packages:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
     dev: false
 
-  /msw@0.0.0-fetch.rc-24(typescript@5.2.2):
-    resolution: {integrity: sha512-ImP2Np1jfsmtTOu8BW4nDZLU/xyPmsiGZe28MpGaB8g8kCCgUU9pBUaLiTyt2r75SFWC9ayFg0yMeQl2epPjXQ==}
+  /msw@2.0.0(typescript@5.2.2):
+    resolution: {integrity: sha512-lw9UHuzNCWoODHaThGeLLIIuzEBUQkj3fJXQnChHifMKbB2UmF2msHd4d/lnyqjAyD0XWoibdviW9wlstFPpkA==}
     engines: {node: '>=18'}
     hasBin: true
     requiresBuild: true
@@ -4972,8 +4972,8 @@ packages:
       mimic-fn: 2.1.0
     dev: true
 
-  /openai@4.12.4:
-    resolution: {integrity: sha512-oPNVJkpgxDUKF6WGGdHEZh5m/kjmYxS2Y1q7YVFCkvKUGthb8OGYRGCFBRPq5CQJezifzABTZRlVYnXLd6L4vQ==}
+  /openai@4.13.0:
+    resolution: {integrity: sha512-EPqHcB0got9cXDZmQae1KytgA4YWtTnUc7tV8hlahZtcO70DMa4kiaXoxnutj9lwmeKQO7ntG+6pmXtrCMejuQ==}
     hasBin: true
     dependencies:
       '@types/node': 18.18.6
