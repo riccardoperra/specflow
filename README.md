@@ -132,7 +132,7 @@ export function patchSupabaseRestClient(accessToken: string | null) {
   client.functions.setAuth(accessToken ?? supabaseKey);
   if (accessToken) {
     // ✅ Patching rest headers that will be used for querying the database through rest.
-    client.rest.headers = {
+    client['rest'].headers = {
       ...client.rest.headers,
       Authorization: `Bearer ${accessToken}`,
     };

@@ -9,6 +9,7 @@ const supabaseUrl = import.meta.env.VITE_CLIENT_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_CLIENT_SUPABASE_KEY;
 
 const initialToken = getSupabaseCookie();
+const supabaseToken = initialToken ?? supabaseKey;
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
   auth: {
@@ -23,16 +24,17 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
   },
 });
 
+const originalHeaders = structuredClone(supabase["rest"].headers);
+
 export function patchSupabaseRestClient(accessToken: string | null) {
-  const client = supabase;
-  const originalHeaders = structuredClone(client["rest"]["headers"]);
+  supabase.functions.setAuth(accessToken ?? supabaseToken);
   if (accessToken) {
-    client["rest"].headers = {
-      ...client["rest"].headers,
+    supabase["rest"].headers = {
+      ...supabase["rest"].headers,
       Authorization: `Bearer ${accessToken}`,
     };
   } else {
-    client["rest"].headers = originalHeaders;
+    supabase["rest"].headers = originalHeaders;
   }
 }
 
