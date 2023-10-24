@@ -8,6 +8,7 @@ import { Projects } from "./components/Projects/Projects";
 import { PlatformState } from "./core/state/platform";
 import { LoadingCircleWithBackdrop } from "./icons/LoadingCircle";
 import { NotFound } from "./components/NotFound/NotFound";
+import { Footer } from "./components/Footer/Footer";
 
 const App: Component = () => {
   document.documentElement.setAttribute("data-cui-theme", "dark");
@@ -64,6 +65,7 @@ const App: Component = () => {
         >
           <Routes />
         </Show>
+        <Footer />
       </Suspense>
     </div>
   );

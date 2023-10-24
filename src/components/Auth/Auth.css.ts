@@ -55,7 +55,6 @@ export const backdrop = style({
   width: "100vw",
   height: "100vh",
   backgroundColor: "rgba(0, 0, 0, 0.2)",
-  backdropFilter: "blur(10px) saturate(100%)",
   WebkitBoxPack: "center",
   justifyContent: "center",
   WebkitBoxAlign: "center",
