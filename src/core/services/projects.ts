@@ -38,10 +38,7 @@ export async function getProjectPage(
   return res.data;
 }
 
-export async function deleteProject(
-  // TODO: should be uuid
-  id: number,
-): Promise<Project | null> {
+export async function deleteProject(id: string): Promise<Project | null> {
   const res = await supabase.from("project").delete().eq("id", id);
   return res.data;
 }
@@ -65,7 +62,7 @@ export async function createNewProject(name: string, description: string) {
 }
 
 export async function createProjectPageText(
-  projectId: number,
+  projectId: string,
   data: {
     name: string;
     content?: string;
@@ -89,7 +86,7 @@ export async function createProjectPageText(
 }
 
 export async function createProjectPage(
-  projectId: number,
+  projectId: string,
   data: {
     name: string;
     description: string;
@@ -117,7 +114,7 @@ export async function createProjectPage(
 }
 
 export async function updateProjectSettings(
-  id: number,
+  id: string,
   data: { name: string; description: string },
 ) {
   return supabase
@@ -136,7 +133,6 @@ export async function updateProjectPageSettings(
     .from("project_page")
     .update({ name: data.name, description: data.description })
     .eq("id", id)
-    .select()
     .single();
 }
 

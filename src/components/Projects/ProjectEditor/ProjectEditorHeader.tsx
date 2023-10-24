@@ -14,13 +14,15 @@ interface ProjectEditorHeaderProps {
   project: ProjectView;
 }
 
+type LinkItem = { path: string | null; label: string };
+
 export function ProjectEditorHeader(props: ProjectEditorHeaderProps) {
   const breakpoints = createBreakpoints();
   const links = () =>
     [
       breakpoints.sm ? { path: "/projects", label: "My projects" } : null,
       { path: null, label: props.project?.name },
-    ].filter(Boolean);
+    ].filter((v): v is NonNullable<LinkItem> => !!v);
 
   const navigate = useNavigate();
   const editorState = provideState(EditorState);

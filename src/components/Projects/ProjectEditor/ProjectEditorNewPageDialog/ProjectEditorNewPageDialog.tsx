@@ -13,12 +13,10 @@ import {
 import { makeAsyncAction } from "statebuilder/asyncAction";
 import { ControlledDialogProps } from "../../../../core/utils/controlledDialog";
 import { createSignal } from "solid-js";
-import { provideState } from "statebuilder";
-import { EditorState } from "../editorState";
 
 interface ProjectEditorPageSettingsDialogProps extends ControlledDialogProps {
   onSave: (projectPageView: ProjectPageView) => void;
-  projectId: number;
+  projectId: string;
 }
 
 interface Form {
@@ -28,7 +26,6 @@ interface Form {
 export function ProjectEditorNewPageDialog(
   props: ProjectEditorPageSettingsDialogProps,
 ) {
-  const editorState = provideState(EditorState);
   const [submitted, setSubmitted] = createSignal(false);
   const [form, setForm] = createStore<Form>({
     name: "",
@@ -43,7 +40,7 @@ export function ProjectEditorNewPageDialog(
 
   const saveAction = makeAsyncAction((data: Form) =>
     createProjectPageText(props.projectId, {
-      name: form.name,
+      name: data.name,
       content: "",
     })
       .then((result) => onSave(result.data!))

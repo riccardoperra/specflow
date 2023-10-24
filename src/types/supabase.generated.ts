@@ -37,21 +37,21 @@ export interface Database {
         Row: {
           created_at: string
           description: string
-          id: number
+          id: string
           name: string
           user_id: string
         }
         Insert: {
           created_at?: string
           description: string
-          id?: number
+          id?: string
           name?: string
           user_id?: string
         }
         Update: {
           created_at?: string
           description?: string
-          id?: number
+          id?: string
           name?: string
           user_id?: string
         }
@@ -64,7 +64,7 @@ export interface Database {
           description: string | null
           id: string
           name: string
-          project_id: number
+          project_id: string
           type: string
           user_id: string
         }
@@ -74,7 +74,7 @@ export interface Database {
           description?: string | null
           id?: string
           name: string
-          project_id: number
+          project_id: string
           type: string
           user_id?: string
         }
@@ -84,7 +84,7 @@ export interface Database {
           description?: string | null
           id?: string
           name?: string
-          project_id?: number
+          project_id?: string
           type?: string
           user_id?: string
         }
@@ -113,7 +113,7 @@ export interface Database {
           id: string | null
           name: string | null
           owner: boolean | null
-          project_id: number | null
+          project_id: string | null
           type: string | null
           user_id: string | null
         }
@@ -124,7 +124,7 @@ export interface Database {
           id?: string | null
           name?: string | null
           owner?: never
-          project_id?: number | null
+          project_id?: string | null
           type?: string | null
           user_id?: string | null
         }
@@ -135,7 +135,7 @@ export interface Database {
           id?: string | null
           name?: string | null
           owner?: never
-          project_id?: number | null
+          project_id?: string | null
           type?: string | null
           user_id?: string | null
         }
@@ -158,7 +158,7 @@ export interface Database {
         Row: {
           created_at: string | null
           description: string | null
-          id: number | null
+          id: string | null
           name: string | null
           owner: boolean | null
           user_id: string | null
@@ -166,7 +166,7 @@ export interface Database {
         Insert: {
           created_at?: string | null
           description?: string | null
-          id?: number | null
+          id?: string | null
           name?: string | null
           owner?: never
           user_id?: string | null
@@ -174,7 +174,7 @@ export interface Database {
         Update: {
           created_at?: string | null
           description?: string | null
-          id?: number | null
+          id?: string | null
           name?: string | null
           owner?: never
           user_id?: string | null
@@ -195,7 +195,7 @@ export interface Database {
       }
       get_user_project_page_rows: {
         Args: {
-          project_id: number
+          project_id: string
         }
         Returns: number
       }

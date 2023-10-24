@@ -30,7 +30,7 @@ export function ProjectEditorNoPagesContent(
           theme={"primary"}
           leftIcon={<DocumentTextIcon />}
           onClick={() => {
-            editorState.openNewPageDialog(owner!, props.projectView.id);
+            editorState.openNewPageDialog(owner!, props.projectView.id!);
           }}
         >
           New page
@@ -42,7 +42,7 @@ export function ProjectEditorNoPagesContent(
           onClick={() =>
             controlledDialog(ProjectEditorNewDiagramDialog, {
               onSave: (result) => editorState.actions.addNewPage(result),
-              projectId: props.projectView.id,
+              projectId: props.projectView.id!,
             })
           }
         >

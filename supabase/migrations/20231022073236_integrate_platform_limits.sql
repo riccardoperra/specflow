@@ -15,7 +15,7 @@ from public.project
 where public.project.user_id = get_user_project_rows.user_id
 $$ language sql stable;
 
-create or replace function public.get_user_project_page_rows(project_id bigint) returns int as
+create or replace function public.get_user_project_page_rows(project_id uuid) returns int as
 $$
 select count(id)
 from public.project_page
@@ -41,7 +41,7 @@ CREATE POLICY "limit_rows_to_project_page_by_platform_limits"
     ON "public"."project_page" as restrictive
     FOR INSERT
     WITH CHECK (
-        public.get_user_project_page_rows(project_page.project_id::bigint)::integer <
+        public.get_user_project_page_rows(project_page.project_id::uuid)::integer <
         (SELECT max_project_page_per_user
          FROM public.get_platform_limits())
     );

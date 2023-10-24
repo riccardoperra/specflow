@@ -195,7 +195,7 @@ export const EditorState = defineStore<EditorState>(() => ({
           maxPageLimit()
         );
       },
-      openNewPageDialog(owner: any, projectId: number) {
+      openNewPageDialog(owner: any, projectId: string) {
         return runWithOwner(owner, () => {
           return createControlledDialog()(ProjectEditorNewPageDialog, {
             onSave: (result) => _.actions.addNewPage(result),
@@ -203,7 +203,7 @@ export const EditorState = defineStore<EditorState>(() => ({
           });
         });
       },
-      openNewDiagramDialog(owner: any, projectId: number) {
+      openNewDiagramDialog(owner: any, projectId: string) {
         return runWithOwner(owner, () => {
           return createControlledDialog()(ProjectEditorNewDiagramDialog, {
             onSave: (result) => _.actions.addNewPage(result),

@@ -1,4 +1,4 @@
-import { HttpResponse, StrictResponse } from "msw";
+import { DefaultBodyType, HttpResponse, StrictResponse } from "msw";
 import { parseJwt } from "./access-token";
 import { logger } from "./log";
 import type {
@@ -95,6 +95,18 @@ export function getUserByCookies(cookies: Record<string, string | string[]>) {
   const parsedJwt = parseJwt(hankoJwt);
   logger.info(`[MSW/Hanko] Sub: ${parsedJwt.sub}`);
   return findUserById(parsedJwt.sub);
+}
+
+export function buildResponseForToken<T extends DefaultBodyType>(
+  data: T,
+  token: string,
+) {
+  return HttpResponse.json(data, {
+    headers: {
+      "X-Auth-Token": token,
+      "X-Session-Lifetime": "3600",
+    },
+  });
 }
 
 export interface HankoCurrentUserResponse {

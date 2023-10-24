@@ -24,7 +24,7 @@ import { EditorState } from "../editorState";
 
 interface ProjectEditorPageSettingsDialogProps extends ControlledDialogProps {
   onSave: (projectPageView: ProjectPageView) => void;
-  projectId: number;
+  projectId: string;
 }
 
 interface Form {

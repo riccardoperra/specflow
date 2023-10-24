@@ -14,7 +14,7 @@ export type Database = MergeDeep<
             description: string | null;
             id: string;
             name: string;
-            project_id: number;
+            project_id: string;
             type: string;
             user_id: string;
             owner: boolean;
@@ -23,7 +23,7 @@ export type Database = MergeDeep<
         project_view: {
           created_at: string;
           description: string;
-          id: number;
+          id: string;
           name: string;
           user_id: string;
           owner: boolean;

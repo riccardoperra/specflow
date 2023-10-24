@@ -3,6 +3,7 @@ import { buildMockAccessToken } from "./data/access-token";
 import {
   buildHankoNotAuthorizedResponse,
   buildHankoNotFoundResponse,
+  buildResponseForToken,
   buildUser,
   findUserByEmail,
   findUserById,
@@ -100,18 +101,13 @@ const finalizePasscodeChallenge = http.post<
   if (code !== userInfo.passcode) {
     return buildHankoNotAuthorizedResponse();
   }
-  return HttpResponse.json(
+  return buildResponseForToken(
     {
       id,
       ttl: 300,
       created_at: new Date().toISOString(),
-    } as HankoInitializePasscodeChallengeResponse,
-    {
-      headers: {
-        "X-Auth-Token": buildMockAccessToken(user.id),
-        "X-Session-Lifetime": "3600",
-      },
-    },
+    } satisfies HankoInitializePasscodeChallengeResponse,
+    buildMockAccessToken(user.id),
   );
 });
 
@@ -148,12 +144,7 @@ const login = http.post<{}, { user_id: string; password: string }>(
     if (user.password !== password) {
       return buildHankoNotAuthorizedResponse();
     }
-    return HttpResponse.json(null, {
-      headers: {
-        "X-Auth-Token": buildMockAccessToken(user.id),
-        "X-Session-Lifetime": "3600",
-      },
-    });
+    return buildResponseForToken(null, buildMockAccessToken(user.id));
   },
 );
 

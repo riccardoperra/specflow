@@ -57,7 +57,7 @@ export function ProjectEditorSidebar(props: ProjectEditorSidebarProps) {
                     <DropdownMenuItem
                       rightSlot={<DocumentTextIcon />}
                       onClick={() =>
-                        editorState.openNewPageDialog(owner!, props.project.id)
+                        editorState.openNewPageDialog(owner!, props.project.id!)
                       }
                     >
                       New page
@@ -67,7 +67,7 @@ export function ProjectEditorSidebar(props: ProjectEditorSidebarProps) {
                       onClick={() =>
                         editorState.openNewDiagramDialog(
                           owner!,
-                          props.project.id,
+                          props.project.id!,
                         )
                       }
                     >
