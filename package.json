@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "vite",
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "serve": "vite preview",
     "gen:types": "supabase gen types typescript --project-id \"byxdpolwzavnqnqtyqbs\" --schema public > src/types/supabase.generated.ts",

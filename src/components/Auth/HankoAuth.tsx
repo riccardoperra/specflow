@@ -1,6 +1,8 @@
-import "./HankoAuth.css";
+import * as styles from "./HankoAuth.css";
 
 export function HankoAuth() {
-  // @ts-expect-error TODO: discover how to fix
-  return <hanko-auth />;
+  return (
+    // @ts-expect-error TODO: discover how to fix the "hanko-auth" does not exists in jsx element
+    <hanko-auth class={styles.hankoAuth} />
+  );
 }
