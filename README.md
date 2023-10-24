@@ -1,4 +1,15 @@
+<div align="center">
+  
 # SpecFlow
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/3018697f-1796-4a9e-9578-82b5af56a193/deploy-status)](https://app.netlify.com/sites/specflow/deploys)
+[![Made with Hanko](https://img.shields.io/badge/Built%20with-Hanko-red)](https://www.hanko.io/)
+[![Made with SolidJS](https://img.shields.io/badge/Built%20with-SolidJS-blue)](https://github.com/solidjs/solid)
+[![Made with Vanilla Extract](https://img.shields.io/badge/Built%20with-Vanilla%20Extract-ff69b4)](https://github.com/seek-oss/vanilla-extract)
+<br>
+[![Made with Supabase](https://supabase.com/badge-made-with-supabase-dark.svg)](https://supabase.com)
+
+</div>
 
 > [!NOTE]
 > SpecFlow is an open-source tool (MIT License) made as my [Hanko hackathon](https://www.hanko.io/hackathon) entry. It's a MVP far away to be a complete product,
@@ -12,8 +23,8 @@
 > It's also a way to improve my [UI Kit library](https://github.com/riccardoperra/codeui) based on [Kobalte](https://github.com/kobaltedev/kobalte) and [Vanilla Extract](https://vanilla-extract.style/) that I'm working on,
 > initially created to be the CodeImage design system.
 
-SpecFlow is an online tool made for the Hanko hackathon. It allows to everyone in the tech field (mostly devs and
-analysts) to store and centralize the project specs and documentation.
+SpecFlow is an online tool that allows to everyone in the tech field (mostly devs and
+analysts) to store and centralize their project specs and documentation.
 
 In SpecFlow, users can manage their projects, write markdown like documentation and generate diagrams such as sequence
 diagrams, ER, Mind maps etc.
