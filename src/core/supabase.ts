@@ -19,9 +19,11 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
     persistSession: false,
     storageKey: undefined,
   },
-  global: {
-    headers: initialToken ? { Authorization: `Bearer ${initialToken}` } : {},
-  },
+  // TODO: This is commented in order to have the original headers valuated
+  // with the supabaseKey.
+  // global: {
+  // headers: initialToken ? { Authorization: `Bearer ${initialToken}` } : {},
+  // },
 });
 
 const originalHeaders = structuredClone(supabase["rest"].headers);

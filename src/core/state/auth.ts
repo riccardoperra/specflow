@@ -11,7 +11,7 @@ import {
 } from "../supabase";
 import { signSupabaseToken } from "../services/auth";
 import { createControlledDialog } from "../utils/controlledDialog";
-import { ProfileDialog } from "../../components/Profile/ProfileDialog";
+import { ProfileDialog } from "../../components/Auth/ProfileDialog";
 
 type AuthCommands = {
   setCurrent: User | null;

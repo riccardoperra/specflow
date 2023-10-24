@@ -15,11 +15,7 @@ export function ProfileDialog(props: ControlledDialogProps) {
     >
       <DialogPanelContent>
         <div class={`w-full h-full flex relative`}>
-          <div class={`relative z-1`}>
-            <div class={`w-full flex justify-center overflow-auto`}>
-              <HankoProfile />
-            </div>
-          </div>
+          <HankoProfile />
         </div>
       </DialogPanelContent>
     </Dialog>

@@ -62,12 +62,10 @@ Other libraries that I should mention:
 ## 🔐 Hanko integration details
 
 SpecFlow is a single-page application which integrates Hanko for authentication. All related code which
-handles the authentication is in these files:
+handles the authentication is in these files/folder:
 
 - [auth.ts](src/core/state/auth.ts): Handles auth state and sync with supabase instance
-- [Auth.tsx/HankoAuth.tsx](src/components/Auth): Auth page and hanko auth web component integration with custom styling
-- [Profile.tsx/HankoProfile.tsx](src/components/Profile) Profile page and hanko profile web component integration with
-  custom styling
+- [src/components/Auth](src/components/Auth): Auth page and profile component using hanko element using Vanilla Extract for custom styling
 
 ### Authentication flow
 
@@ -82,7 +80,7 @@ We can do that using hanko `authFlowCompleted` event, which gets called once the
 
 ```typescript
 hanko.onAuthFlowCompleted(() => {
-  supabase.functions.invoke("hanko-auth", {body: {token: session.jwt}})
+  supabase.functions.invoke("hanko-auth", { body: { token: session.jwt } });
 });
 ```
 
@@ -90,7 +88,7 @@ After that event we will call the supabase edge function
 in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts) which validate Hanko JWT token retrieving their JWKS config, then sign ourselves a new token for supabase.
 
 ```ts
-import * as jose from 'https://deno.land/x/jose@v4.9.0/index.ts';
+import * as jose from "https://deno.land/x/jose@v4.9.0/index.ts";
 
 const hankoApiUrl = Deno.env.get("HANKO_API_URL");
 // 1. ✅ Retrieves Hanko JWKS configuration
@@ -106,9 +104,10 @@ const payload = {
 // 3. ✅ Sign new token for supabase using it's private key
 const supabaseToken = Deno.env.get("PRIVATE_KEY_SUPABASE");
 const secret = new TextEncoder().encode(supabaseToken);
-const token = await jose.SignJWT(payload)
+const token = await jose
+  .SignJWT(payload)
   .setExpirationTime(data.payload.exp) // We'll set the same expiration time as Hanko token
-  .setProtectedHeader({alg: "HS256"}) // Supabase uses a different algorithm
+  .setProtectedHeader({ alg: "HS256" }) // Supabase uses a different algorithm
   .sign(secret);
 ```
 
@@ -118,9 +117,10 @@ Our payload for the JWT will contain the user's identifier from Hanko and the sa
 > We are signing this JWT using Supabase's signing secret token, so it will be able to check the jwt authenticity.
 > This is a crucial step which obviously for security reasons cannot be done on the client side.
 
-Once that each supabase fetch call should include our custom token which contains the Hanko **userId**. 
+Once that each supabase fetch call should include our custom token which contains the Hanko **userId**.
+
 ```ts
-import {createClient} from 'supabase';
+import { createClient } from "supabase";
 
 const supabaseUrl = import.meta.env.VITE_CLIENT_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_CLIENT_SUPABASE_KEY;
@@ -132,7 +132,7 @@ export function patchSupabaseRestClient(accessToken: string | null) {
   client.functions.setAuth(accessToken ?? supabaseKey);
   if (accessToken) {
     // ✅ Patching rest headers that will be used for querying the database through rest.
-    client['rest'].headers = {
+    client["rest"].headers = {
       ...client.rest.headers,
       Authorization: `Bearer ${accessToken}`,
     };
@@ -208,14 +208,15 @@ Currently both passcode and password flows are mocked, you can toggle them by up
 constant in [src/mocks/hanko-handlers.ts](src/mocks/hanko-handlers.ts).
 
 - User1:
-    - email: **user1@example.com**
-    - password: **password**
-    - passcode: 123456
+
+  - email: **user1@example.com**
+  - password: **password**
+  - passcode: 123456
 
 - User2:
-    - email: **user2@example.com**
-    - password: **password**
-    - passcode: 123456
+  - email: **user2@example.com**
+  - password: **password**
+  - passcode: 123456
 
 ## Local development
 
