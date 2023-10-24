@@ -15,7 +15,7 @@
 > SpecFlow is an open-source tool (MIT License) made as my [Hanko hackathon](https://www.hanko.io/hackathon) entry. It's a MVP far away to be a complete product,
 > born with the aim of testing integrations and interactions between new tech/libraries.
 >
-> More in detail, in this project I want to experiment with Hanko's authentication system by integrating it with a third party as a supabase,
+> More in detail, in this project I experiment with Hanko's authentication by integrating it with a third party system like supabase,
 > the latter used trying to take advantage of the system of generated types, RSL policies and edge functions.
 >
 > Furthermore, I tried to integrate OpenAI via edge functions to try generating code directly from a user-defined prompt.
@@ -61,7 +61,7 @@ Other libraries that I should mention:
 
 ## 🔐 Hanko integration details
 
-SpecFlow is a single-page application which integrates Hanko as a main authentication system. All related code which
+SpecFlow is a single-page application which integrates Hanko for authentication. All related code which
 handles the authentication is in these files:
 
 - [auth.ts](src/core/state/auth.ts): Handles auth state and sync with supabase instance
@@ -118,8 +118,31 @@ Our payload for the JWT will contain the user's identifier from Hanko and the sa
 > We are signing this JWT using Supabase's signing secret token, so it will be able to check the jwt authenticity.
 > This is a crucial step which obviously for security reasons cannot be done on the client side.
 
-Once that each supabase fetch call should include our custom token which contains the Hanko **userId**. Next, thanks to
-a **postgres function** we can extract the userId from the jwt in order to know which user is authenticated.
+Once that each supabase fetch call should include our custom token which contains the Hanko **userId**. 
+```ts
+import {createClient} from 'supabase';
+
+const supabaseUrl = import.meta.env.VITE_CLIENT_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_CLIENT_SUPABASE_KEY;
+const client = createClient(supabaseUrl, supabaseKey);
+const originalHeaders = structuredClone(client.rest.headers);
+
+export function patchSupabaseRestClient(accessToken: string | null) {
+  // ✅ Set functions auth in order to put the jwt token for edge functions which need authentication
+  client.functions.setAuth(accessToken ?? supabaseKey);
+  if (accessToken) {
+    // ✅ Patching rest headers that will be used for querying the database through rest.
+    client.rest.headers = {
+      ...client.rest.headers,
+      Authorization: `Bearer ${accessToken}`,
+    };
+  } else {
+    client["rest"].headers = originalHeaders;
+  }
+}
+```
+
+Next, thanks to a **postgres function** we can extract the userId from the jwt in order to let supabase knows which user is authenticated.
 
 ```sql
 create
