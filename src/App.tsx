@@ -7,6 +7,7 @@ import "./global.css";
 import { Projects } from "./components/Projects/Projects";
 import { PlatformState } from "./core/state/platform";
 import { LoadingCircleWithBackdrop } from "./icons/LoadingCircle";
+import { NotFound } from "./components/NotFound/NotFound";
 
 const App: Component = () => {
   document.documentElement.setAttribute("data-cui-theme", "dark");
@@ -44,6 +45,14 @@ const App: Component = () => {
       path: "/login",
       component: Auth,
       data: authGuard,
+    },
+    {
+      path: "/not-found",
+      component: NotFound,
+    },
+    {
+      path: "/*",
+      data: ({ navigate }) => navigate("/projects"),
     },
   ]);
 

@@ -1,0 +1,6 @@
+{
+    "postCreateCommand": [
+        "pnpm install",
+        "pnpm supabase start"
+    ]
+}

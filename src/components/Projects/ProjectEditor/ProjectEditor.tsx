@@ -1,4 +1,4 @@
-import { useParams } from "@solidjs/router";
+import { useNavigate, useParams } from "@solidjs/router";
 import { createResource, Show, Signal, Suspense } from "solid-js";
 import { getProject, ProjectView } from "../../../core/services/projects";
 import { ProjectEditorHeader } from "./ProjectEditorHeader";
@@ -14,18 +14,29 @@ import { ProjectEditorNoPagesContent } from "./ProjectEditorNoPagesContent/Proje
 export function ProjectEditor() {
   const params = useParams<{ id: string }>();
   const editorState = provideState(EditorState);
+  const navigate = useNavigate();
 
-  const [projectView] = createResource(() => Number(params.id), getProject, {
-    storage: (value) =>
-      [
-        () => editorState.get.projectView,
-        (v: () => ProjectView | null) => {
-          editorState.actions.setProjectView(v());
-          return editorState.get.projectView;
-        },
-      ] as Signal<ProjectView | null | undefined>,
-    initialValue: null,
-  });
+  const [projectView] = createResource(
+    () => Number(params.id),
+    async (id) => {
+      const project = await getProject(id);
+      if (!project) {
+        navigate("/not-found");
+      }
+      return project;
+    },
+    {
+      storage: (value) =>
+        [
+          () => editorState.get.projectView,
+          (v: () => ProjectView | null) => {
+            editorState.actions.setProjectView(v());
+            return editorState.get.projectView;
+          },
+        ] as Signal<ProjectView | null | undefined>,
+      initialValue: null,
+    },
+  );
 
   return (
     <Suspense fallback={<LoadingCircleWithBackdrop width={32} height={32} />}>

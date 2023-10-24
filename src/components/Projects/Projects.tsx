@@ -1,6 +1,6 @@
-import { Link } from "@solidjs/router";
+import { Link, Navigate, useNavigate } from "@solidjs/router";
 import { createResource, For, Show, Suspense } from "solid-js";
-import { getProjects } from "../../core/services/projects";
+import { Project, getProjects } from "../../core/services/projects";
 import { Button, IconButton, Tooltip } from "@codeui/kit";
 import { CurrentUserBadge } from "../../ui/UserBadge/CurrentUserBadge";
 import { createControlledDialog } from "../../core/utils/controlledDialog";
@@ -13,8 +13,8 @@ import { provideState } from "statebuilder";
 
 export function Projects() {
   const links = [{ path: "/projects", label: "Dashboard" }];
-
-  const [projects, { refetch }] = createResource(getProjects);
+  const navigate = useNavigate();
+  const [projects, { refetch, mutate }] = createResource(getProjects);
   const platformState = provideState(PlatformState);
 
   const controlledDialog = createControlledDialog();
@@ -26,8 +26,29 @@ export function Projects() {
     return (projects()?.length ?? 0) < platformState().max_project_row_per_user;
   };
 
+  const onDeleteProject = ({ id }: Project) => {
+    mutate((projects) =>
+      (projects ?? []).filter((project) => project.id !== id),
+    );
+  };
+
+  const onEditProject = ({ id, name, description }: Project) => {
+    mutate((projects) =>
+      (projects ?? []).map((project) => {
+        if (project.id === id) {
+          return { ...project, name, description };
+        }
+        return project;
+      }),
+    );
+  };
+
   const onCreateProject = () => {
-    controlledDialog(NewProjectDialog, { onSave: refetch });
+    controlledDialog(NewProjectDialog, {
+      onSave: (result) => {
+        navigate(`/projects/${result.id}/editor`);
+      },
+    });
   };
 
   return (
@@ -93,7 +114,13 @@ export function Projects() {
               fallback={<LoadingCircleWithBackdrop width={32} height={32} />}
             >
               <For each={projects()}>
-                {(project) => <ProjectCard project={project} />}
+                {(project) => (
+                  <ProjectCard
+                    onDelete={onDeleteProject}
+                    onEdit={onEditProject}
+                    project={project}
+                  />
+                )}
               </For>
             </Suspense>
           </div>

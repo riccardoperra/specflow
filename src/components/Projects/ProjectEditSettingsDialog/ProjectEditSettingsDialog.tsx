@@ -6,18 +6,18 @@ import {
   TextArea,
   TextField,
 } from "@codeui/kit";
-import {
-  ProjectPageView,
-  updateProjectPageSettings,
-} from "../../../../core/services/projects";
 import { makeAsyncAction } from "statebuilder/asyncAction";
 import { createStore, unwrap } from "solid-js/store";
 import { createEffect, createSignal } from "solid-js";
-import { ControlledDialogProps } from "../../../../core/utils/controlledDialog";
+import {
+  Project,
+  updateProjectSettings,
+} from "../../../core/services/projects";
+import { ControlledDialogProps } from "../../../core/utils/controlledDialog";
 
-interface ProjectEditorPageSettingsDialogProps extends ControlledDialogProps {
-  onSave: (projectPageView: ProjectPageView) => void;
-  projectPage: ProjectPageView;
+interface ProjectEditSettingsDialogProps extends ControlledDialogProps {
+  onSave: (project: Project) => void;
+  project: Project;
 }
 
 interface Form {
@@ -25,29 +25,29 @@ interface Form {
   description: string;
 }
 
-export function ProjectEditorPageSettingsDialog(
-  props: ProjectEditorPageSettingsDialogProps,
+export function ProjectEditSettingsDialog(
+  props: ProjectEditSettingsDialogProps,
 ) {
   const [submitted, setSubmitted] = createSignal(false);
   const [form, setForm] = createStore<Form>({
-    name: props.projectPage.name,
-    description: props.projectPage.description ?? "",
+    name: props.project.name,
+    description: props.project.description ?? "",
   });
 
   createEffect(
-    () => props.projectPage,
+    () => props.project,
     setForm({
-      description: props.projectPage.description ?? "",
-      name: props.projectPage.name,
+      description: props.project.description ?? "",
+      name: props.project.name,
     }),
   );
 
-  const onSave = (projectPageView: ProjectPageView) => {
-    props.onSave(projectPageView);
+  const onSave = (project: Project) => {
+    props.onSave(project);
   };
 
   const saveAction = makeAsyncAction((data: Form) =>
-    updateProjectPageSettings(props.projectPage.id, data)
+    updateProjectSettings(props.project.id, data)
       .then((result) => onSave(result.data!))
       .catch(() => {
         // TODO add error toast
@@ -66,7 +66,7 @@ export function ProjectEditorPageSettingsDialog(
   return (
     <Dialog
       size={"md"}
-      title={"Page settings"}
+      title={"Project settings"}
       open={saveAction.loading ? true : props.isOpen}
       onOpenChange={props.onOpenChange}
     >

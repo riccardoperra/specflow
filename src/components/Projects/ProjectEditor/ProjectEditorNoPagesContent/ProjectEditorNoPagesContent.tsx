@@ -20,8 +20,10 @@ export function ProjectEditorNoPagesContent(
   const editorState = provideState(EditorState);
 
   return (
-    <div class={"flex items-center justify-center h-full flex-col gap-12"}>
-      <h1 class={"text-4xl"}>No pages found in this project.</h1>
+    <div class={"flex items-center justify-center h-full flex-col gap-12 p-4"}>
+      <h1 class={"text-3xl md:text-4xl text-center"}>
+        No pages found in this project.
+      </h1>
       <div class={"flex gap-3"}>
         <Button
           size={"lg"}
