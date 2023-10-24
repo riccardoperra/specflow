@@ -133,6 +133,7 @@ export async function updateProjectPageSettings(
     .from("project_page")
     .update({ name: data.name, description: data.description })
     .eq("id", id)
+    .select()
     .single();
 }
 
