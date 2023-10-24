@@ -17,7 +17,7 @@ export function ProjectEditor() {
   const navigate = useNavigate();
 
   const [projectView] = createResource(
-    () => Number(params.id),
+    () => params.id,
     async (id) => {
       const project = await getProject(id);
       if (!project) {

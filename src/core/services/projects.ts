@@ -18,7 +18,7 @@ export async function getProjects() {
   return res.data ?? [];
 }
 
-export async function getProject(id: number): Promise<ProjectView | null> {
+export async function getProject(id: string): Promise<ProjectView | null> {
   const res = await supabase
     .from("project_view")
     .select(`*, project_page:project_page_view(*)`)
