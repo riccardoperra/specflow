@@ -1,4 +1,16 @@
-## SpecFlow
+# SpecFlow
+
+> [!NOTE]
+> SpecFlow is an open-source tool (MIT License) made as my [Hanko hackathon](https://www.hanko.io/hackathon) entry. It's a MVP far away to be a complete product,
+> born with the aim of testing integrations and interactions between new tech/libraries.
+>
+> More in detail, in this project I want to experiment with Hanko's authentication system by integrating it with a third party as a supabase,
+> the latter used trying to take advantage of the system of generated types, RSL policies and edge functions.
+>
+> Furthermore, I tried to integrate OpenAI via edge functions to try generating code directly from a user-defined prompt.
+>
+> It's also a way to improve my [UI Kit library](https://github.com/riccardoperra/codeui) based on [Kobalte](https://github.com/kobaltedev/kobalte) and [Vanilla Extract](https://vanilla-extract.style/) that I'm working on,
+> initially created to be the CodeImage design system.
 
 SpecFlow is an online tool made for the Hanko hackathon. It allows to everyone in the tech field (mostly devs and
 analysts) to store and centralize the project specs and documentation.
@@ -38,9 +50,8 @@ Other libraries that I should mention:
 
 ## 🔐 Hanko integration details
 
-SpecFlow is a single-page application which integrates Hanko as a main authentication flow. All related code which
-handles
-the authentication is in these files:
+SpecFlow is a single-page application which integrates Hanko as a main authentication system. All related code which
+handles the authentication is in these files:
 
 - [auth.ts](src/core/state/auth.ts): Handles auth state and sync with supabase instance
 - [Auth.tsx/HankoAuth.tsx](src/components/Auth): Auth page and hanko auth web component integration with custom styling
@@ -53,7 +64,7 @@ Supabase Database comes with a useful RSL policy which allows to restrict the ac
 Since we need that each user can operate only inside it's projects, we need to somehow make supabase
 understand who is making the requests.
 
-Since Hanko **is replacing** supabase auth, after the sign-in in the UI we need to extract the data we need
+Since Hanko **is replacing** supabase auth (which is disabled), after the sign-in from the UI we need to extract the data we need
 from Hanko's JWT, and sign our own to send to Supabase.
 
 We can do that using hanko `authFlowCompleted` event, which gets called once the user authenticates through the UI.
@@ -65,8 +76,7 @@ hanko.onAuthFlowCompleted(() => {
 ```
 
 After that event we will call the supabase edge function
-in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts)
-to validate Hanko JWT token retrieving their JWKS config, then sign ourselves a new token for supabase.
+in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts) which validate Hanko JWT token retrieving their JWKS config, then sign ourselves a new token for supabase.
 
 ```ts
 import * as jose from 'https://deno.land/x/jose@v4.9.0/index.ts';
@@ -86,15 +96,15 @@ const payload = {
 const supabaseToken = Deno.env.get("PRIVATE_KEY_SUPABASE");
 const secret = new TextEncoder().encode(supabaseToken);
 const token = await jose.SignJWT(payload)
-  .setExpirationTime(data.payload.exp)
+  .setExpirationTime(data.payload.exp) // We'll set the same expiration time as Hanko token
   .setProtectedHeader({alg: "HS256"}) // Supabase uses a different algorithm
-  .sign(new TextEncoder().encode(secret));
+  .sign(secret);
 ```
 
 Our payload for the JWT will contain the user's identifier from Hanko and the same expiration date.
 
 > [!IMPORTANT]
-> We are signing this JWT using Supabase's signing secret token, so it will be able to check its authenticity.
+> We are signing this JWT using Supabase's signing secret token, so it will be able to check the jwt authenticity.
 > This is a crucial step which obviously for security reasons cannot be done on the client side.
 
 Once that each supabase fetch call should include our custom token which contains the Hanko **userId**. Next, thanks to
@@ -111,9 +121,11 @@ language sql stable;
 
 The supabase database schema is up through the initial migration which will define all functions, tables and rls.
 
-[20231020190554_schema_init.sql](supabase/migrations/20231020190554_schema_init.sql)
+[20231020190554_schema_init.sql](supabase/migrations/20231020190554_schema_init.sql).
 
-Here a sequence diagram of an in-depth detail of the client side authentication flow (made with SpecFlow 😉)
+You can find all realted migrations [here](https://github.com/riccardoperra/specflow/tree/main/supabase/migrations).
+
+Here a sequence diagram of an in-depth detail of the client side authentication flow (made through SpecFlow 😉)
 
 ```mermaid
 sequenceDiagram
