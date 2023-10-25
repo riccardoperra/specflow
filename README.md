@@ -16,23 +16,22 @@
 > born with the aim of testing integrations and interactions between new tech/libraries.
 >
 > More in detail, in this project I experiment with Hanko's authentication by integrating it with a third party system like supabase,
-> the latter used trying to take advantage of the system of generated types, RSL policies and edge functions.
+> the latter used trying to take advantage of the generated types, RSL policies, realtime and edge functions.
 >
-> Furthermore, I tried to integrate OpenAI via edge functions to try generating code directly from a user-defined prompt.
+> Furthermore, I used OpenAI API via edge functions to generate code directly from a user-defined prompt.
 >
-> It's also a way to improve my [UI Kit library](https://github.com/riccardoperra/codeui) based on [Kobalte](https://github.com/kobaltedev/kobalte) and [Vanilla Extract](https://vanilla-extract.style/) that I'm working on,
-> initially created to be the CodeImage design system.
+> This project it's also a way to improve my [UI Kit library](https://github.com/riccardoperra/codeui) based on [Kobalte](https://github.com/kobaltedev/kobalte) and [Vanilla Extract](https://vanilla-extract.style/) that I'm working on,
+> initially born to be the CodeImage design system.
 
-SpecFlow is an online tool that allows to everyone in the tech field (mostly devs and
-analysts) to store and centralize their project specs and documentation.
+SpecFlow is an online tool that allows to everyone, mostly devs and
+analysts, to store and centralize their project specs and documentation.
 
 In SpecFlow, users can manage their projects, write markdown like documentation and generate diagrams such as sequence
-diagrams, ER, Mind maps etc.
+diagrams, ER, Mind maps etc complaint to Mermaid syntax.
 
-In SpecFlow, users can use AI as an assistant to generate the content they need to show.
+Users can use AI as an assistant to generate the content they need to show.
 
-In SpecFlow, users can share their project pages with all members of the team, assuring that everyone has all necessary
-information for their work.
+Users can share their project pages with all members of the team, assuring that everyone has all necessary information for their work. (This is still wip)
 
 ## 🤖 Tech stack
 
@@ -45,7 +44,7 @@ SpecFlow tech stack is mainly composed by these technologies:
 - [TailwindCSS](https://tailwindcss.com/)
 - [CodeMirror6](https://codemirror.net)
 - [TipTap Editor](https://tiptap.dev)
-- [Mock Service Worker (next release)](https://mswjs.io/)
+- [Mock Service Worker](https://mswjs.io/)
 
 Other libraries that I should mention:
 
@@ -62,7 +61,7 @@ Other libraries that I should mention:
 ## 🔐 Hanko integration details
 
 SpecFlow is a single-page application which integrates Hanko for authentication. All related code which
-handles the authentication is in these files/folder:
+handles the authentication is in these files/folders:
 
 - [auth.ts](src/core/state/auth.ts): Handles auth state and sync with supabase instance
 - [src/components/Auth](src/components/Auth): Auth page and profile component using hanko element using Vanilla Extract for custom styling
@@ -73,7 +72,7 @@ Supabase Database comes with a useful RSL policy which allows to restrict the ac
 Since we need that each user can operate only inside it's projects, we need to somehow make supabase
 understand who is making the requests.
 
-Since Hanko **is replacing** supabase auth (which is disabled), after the sign-in from the UI we need to extract the data we need
+Hanko **is replacing** supabase traditional auth (which is disabled), so after the sign-in from the UI we need to extract the data we need
 from Hanko's JWT, and sign our own to send to Supabase.
 
 We can do that using hanko `authFlowCompleted` event, which gets called once the user authenticates through the UI.
@@ -85,7 +84,7 @@ hanko.onAuthFlowCompleted(() => {
 ```
 
 After that event we will call the supabase edge function
-in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts) which validate Hanko JWT token retrieving their JWKS config, then sign ourselves a new token for supabase.
+in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts) which validate Hanko JWT retrieving the JWKS config, then sign ourselves a new token for supabase.
 
 ```ts
 import * as jose from "https://deno.land/x/jose@v4.9.0/index.ts";
@@ -157,7 +156,7 @@ The supabase database schema is up through the initial migration which will defi
 
 [20231020190554_schema_init.sql](supabase/migrations/20231020190554_schema_init.sql).
 
-You can find all realted migrations [here](https://github.com/riccardoperra/specflow/tree/main/supabase/migrations).
+You can find all others migrations [here](https://github.com/riccardoperra/specflow/tree/main/supabase/migrations).
 
 Here a sequence diagram of an in-depth detail of the client side authentication flow (made through SpecFlow 😉)
 
@@ -200,12 +199,9 @@ sequenceDiagram
 SpecFlow integrates the latest version of [MockServiceWorker](https://mswjs.io/) to mock locally the entire Hanko
 authentication flow.
 
-The mocking handlers are all present in the [src/mocks/hanko-handlers.ts](src/mocks/hanko-handlers.ts) file.
+The mocking handlers are written in [src/mocks/hanko-handlers.ts](src/mocks/hanko-handlers.ts) file.
 
-If the variable `VITE_ENABLE_AUTH_MOCK` is true, you can login with two different users.
-
-Currently both passcode and password flows are mocked, you can toggle them by updating the `ENABLE_PASSCODE_FLOW`
-constant in [src/mocks/hanko-handlers.ts](src/mocks/hanko-handlers.ts).
+When the environment variable `VITE_ENABLE_AUTH_MOCK` is true, MSW will be initialized in order to login with two different users.
 
 - User1:
 
@@ -217,6 +213,9 @@ constant in [src/mocks/hanko-handlers.ts](src/mocks/hanko-handlers.ts).
   - email: **user2@example.com**
   - password: **password**
   - passcode: 123456
+ 
+Currently both passcode and password flows are mocked, you can toggle them by updating the `ENABLE_PASSCODE_FLOW`
+constant in [src/mocks/hanko-handlers.ts](src/mocks/hanko-handlers.ts).
 
 ## Local development
 
