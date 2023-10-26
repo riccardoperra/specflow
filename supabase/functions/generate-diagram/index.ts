@@ -13,15 +13,12 @@ export const generatePrompt = (
 ) => {
   return [
     `You are generating the code for a system called ${projectName}. Description: ${projectDescription}.
-     Currently the feature you are generating has a name ${pageName}.
-     All mermaid generated code MUST HAVE the type of the diagram as the first line. 
      Mermaid DOES NOT support special characters like "\\n" or "\\s" or "\\b."
-    `.trim(),
-    `Diagram description from the user: ${prompt}.
-     YOU MUST GENERATE only the code using Mermaid syntax for a ${diagramType} diagram. No explanation or introduction.
-     YOU MUST FOLLOW prompt description by the user. Use the project description only as a context for actors etc.
-     YOU MUST RETURNS only the code.
-    `.trim(),
+     Diagram description from the user: ${prompt}.
+     Title should be: ${pageName}
+     YOU MUST GENERATE only the code using Mermaid syntax for a ${diagramType} diagram. Only code, no explanation or introduction.
+  
+     `.trim(),
   ];
 };
 
