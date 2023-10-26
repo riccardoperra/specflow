@@ -152,6 +152,19 @@ $$
 language sql stable;
 ```
 
+We can use RLS now using our user_id from hanko.
+
+```sql
+CREATE POLICY "Allows all operations" ON public.project_page
+    AS PERMISSIVE FOR ALL
+    TO public
+    -- ✅ Use our user_id function to get hanko user_id from jwt
+    USING ((auth.user_id() = user_id))
+    WITH CHECK ((auth.user_id() = user_id));
+
+ALTER TABLE public.project_page ENABLE ROW LEVEL SECURITY;
+```
+
 The supabase database schema is up through the initial migration which will define all functions, tables and rls.
 
 [20231020190554_schema_init.sql](supabase/migrations/20231020190554_schema_init.sql).
@@ -213,7 +226,7 @@ When the environment variable `VITE_ENABLE_AUTH_MOCK` is true, MSW will be initi
   - email: **user2@example.com**
   - password: **password**
   - passcode: 123456
- 
+
 Currently both passcode and password flows are mocked, you can toggle them by updating the `ENABLE_PASSCODE_FLOW`
 constant in [src/mocks/hanko-handlers.ts](src/mocks/hanko-handlers.ts).
 
