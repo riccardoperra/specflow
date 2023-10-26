@@ -1,6 +1,7 @@
 import { ProjectPageView, ProjectView } from "./projects";
 import OpenAI from "openai";
 import Completion = OpenAI.Completion;
+import { supabase } from "../supabase";
 
 export async function generateNewMermaidDiagramCode(
   project: ProjectView,
@@ -18,10 +19,7 @@ export async function generateNewMermaidDiagramCode(
     diagramType: page.diagramType,
     prompt,
   };
-  return fetch("/functions/v1/generate-diagram", {
-    method: "POST",
-    body: JSON.stringify(body),
-  }).then((data) => data.json());
+  return supabase.functions.invoke("generate-diagram", { body }).then(result => result.data);
 }
 
 export async function generateMermaidDiagramCode(
