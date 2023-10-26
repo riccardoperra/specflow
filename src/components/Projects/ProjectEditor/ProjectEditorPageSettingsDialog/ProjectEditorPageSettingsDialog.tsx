@@ -48,7 +48,7 @@ export function ProjectEditorPageSettingsDialog(
 
   const saveAction = makeAsyncAction((data: Form) =>
     updateProjectPageSettings(props.projectPage.id, data)
-      .then((result) => onSave(result.data!))
+      .then((result) => onSave({ ...props.projectPage, ...result.data! }))
       .catch(() => {
         // TODO add error toast
         alert("Error");
