@@ -16,9 +16,9 @@ const App: Component = () => {
   const platform = provideState(PlatformState);
 
   const authGuard = (
-    { navigate }: RouteDataFuncArgs,
+    data: RouteDataFuncArgs,
     onLoggedIn: (data: RouteDataFuncArgs) => void,
-  ) => (auth.loggedIn() ? void 0 : navigate("/login"));
+  ) => (auth.loggedIn() ? onLoggedIn(data) : data.navigate("/login"));
 
   const Routes = useRoutes([
     {
