@@ -1,10 +1,8 @@
 import { Component, lazy, Show, Suspense } from "solid-js";
 import { RouteDataFuncArgs, useRoutes } from "@solidjs/router";
-import { Auth } from "./components/Auth/Auth";
 import { provideState } from "statebuilder";
 import { AuthState } from "./core/state/auth";
 import "./global.css";
-import { Projects } from "./components/Projects/Projects";
 import { PlatformState } from "./core/state/platform";
 import { LoadingCircleWithBackdrop } from "./icons/LoadingCircle";
 import { NotFound } from "./components/NotFound/NotFound";
@@ -31,6 +29,7 @@ const App: Component = () => {
           default: Projects,
         })),
       ),
+      
       data: authGuard,
     },
     {
@@ -44,7 +43,9 @@ const App: Component = () => {
     },
     {
       path: "/login",
-      component: Auth,
+      component: lazy(() => import("./components/Auth/Auth").then(({ Auth }) => ({
+        default: Auth,
+      }))),
       data: authGuard,
     },
     {
