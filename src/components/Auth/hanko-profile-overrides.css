@@ -1,0 +1,34 @@
+.hanko_accordion .hanko_accordionItem .hanko_accordionContent {
+    margin: 0 !important;
+}
+
+.hanko_accordion .hanko_accordionItem .hanko_accordionInput:checked + .hanko_label ~ .hanko_accordionContent {
+    background: #333;
+    margin: 0;
+    width: auto;
+    padding: .5rem 1.5rem;
+    border-radius: var(--border-radius, 8px);
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.hanko_accordion .hanko_accordionItem .hanko_accordionInput:checked + .hanko_label {
+    border-radius: var(--border-radius, 8px);
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.hanko_accordion .hanko_accordionItem .hanko_label {
+    width: 100%;
+}
+
+.hanko_accordion .hanko_accordionItem .hanko_label:hover.hanko_dropdown {
+    background: var(--brand-color);
+    color: var(--color);
+}
+
+.hanko_accordion .hanko_accordionItem .hanko_accordionInput:checked+.hanko_label.hanko_dropdown {
+    width: 100%;
+    background: var(--brand-color);
+    color: var(--color);
+}

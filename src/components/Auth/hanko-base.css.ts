@@ -4,6 +4,9 @@ import { createTheme, globalStyle, style } from "@vanilla-extract/css";
 export const [hankoTheme, hankoVars] = createTheme({
   brandColor: themeVars.brand,
   dangerColor: "#500f1c",
+  buttonCriticalColor: themeVars.critical,
+  buttonCriticalAccentHoverColor: themeVars.criticalAccentHover,
+  buttonCriticalAccentActiveColor: themeVars.criticalAccentActive,
   foregroundColor: themeVars.foreground,
   inputPasscodeBorderRadius: "12px",
   secondaryButtonBackground: themeVars.brandSecondary,
@@ -81,6 +84,7 @@ export const hankoComponent = style([
         color: hankoVars.foregroundColor,
         border: "unset",
         padding: `0 ${themeTokens.spacing["4"]}`,
+        gap: themeTokens.spacing["2"],
       },
       /**
        * Buttons and links
@@ -106,6 +110,17 @@ export const hankoComponent = style([
       "&::part(button secondary-button)": {
         border: "none",
         backgroundColor: hankoVars.secondaryButtonBackground,
+      },
+      "&::part(button dangerous-button)": {
+        border: "none",
+        backgroundColor: hankoVars.buttonCriticalColor,
+        color: "white",
+      },
+      "&::part(button dangerous-button):active": {
+        backgroundColor: hankoVars.buttonCriticalAccentActiveColor,
+      },
+      "&::part(button dangerous-button):hover": {
+        backgroundColor: hankoVars.buttonCriticalAccentHoverColor,
       },
       /**
        * Inputs
@@ -162,6 +177,12 @@ export const hankoComponent = style([
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
+      },
+      /**
+       * Divider
+       */
+      "&::part(divider-text)": {
+        background: "transparent",
       },
     },
   },

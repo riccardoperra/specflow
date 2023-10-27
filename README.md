@@ -13,8 +13,9 @@
 
 > [!NOTE]
 > SpecFlow is an open-source tool (MIT License) made for the [Hanko hackathon](https://www.hanko.io/hackathon).
-> It's a MVP made in two weeks far away to be a complete product, born with the aim of testing integrations and interactions between new
-> tech/libraries, and to better understand the authentication flow by also integrating the passkeys.
+> It's an MVP made in less than two weeks far away to be a complete product, born with the aim of testing integrations
+> and interactions between new tech/libraries, and to better understand the authentication flow by also integrating
+> passkeys.
 >
 > More in detail, in this project I experiment with Hanko's authentication by integrating it with a third party system
 > like supabase, the latter used trying to take advantage of the generated types, RSL policies, realtime and edge
@@ -31,24 +32,16 @@
 
 - ✅ SpecFlow provides you with a single hub to organize and centralize all your project specs and documentation. No more
   endless searching; everything you need is just a click away.
-
-- ✅ Write your project notes, requirements, and specifications using a Markdown-like interface
-  In SpecFlow, users can manage their projects, write markdown like documentation and generate diagrams such as
-  sequence diagrams, ER, Mind maps etc complaint to Mermaid syntax.
-
+- ✅ Write your project notes, requirements, and specifications using a Markdown-like interface.
+- ✅ Write and export diagrams such as sequence diagrams, ER, Mind maps etc complaint to Mermaid syntax.
 - ✅ AI-Powered Assistance: with SpecFlow, you can harness the power of AI to
   effortlessly generate content, saving you time and effort.
-  > [!NOTE]
-  > Currently for the hackathon it is only possible to generate mermaid diagrams using my personal openai key
-
+  > [!WARNING]
+  > Currently for the hackathon it is only possible to generate mermaid diagrams using my personal OpenAI key which has
+  a limit usage.
 - ✅ Collaborative Team Sharing (Work in Progress): Soon, SpecFlow will enable sharing of project pages with all
   team members. This feature ensures that everyone has access to the essential information they need to excel in their
   roles.
-
-Users can use AI as an assistant to generate the content they need to show.
-
-Users can share their project pages with all members of the team, assuring that everyone has all necessary information
-for their work. (This is still wip)
 
 ## 🤖 Tech stack
 
@@ -71,9 +64,9 @@ Other libraries that I should mention:
 - [codemirror-lang-mermaid](https://github.com/inspirnathan/codemirror-lang-mermaid): I would never
   have thought of making this application without this library.
 - [solid-codemirror](https://github.com/riccardoperra/solid-codemirror): Solid CodeMirror wrapper.
-- [CodeUI](https://github.com/riccardoperra/codeui): My UI kit (still wip)
+- [CodeUI](https://github.com/riccardoperra/codeui): My own UI kit (**still wip**)
   for [CodeImage](https://github.com/riccardoperra/codeimage)
-- [statebuilder](https://github.com/riccardoperra/statebuilder): My composable state management library
+- [statebuilder](https://github.com/riccardoperra/statebuilder): My own pluggable state management library
 
 ## 🔐 Hanko integration details
 
