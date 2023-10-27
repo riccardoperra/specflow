@@ -8,7 +8,6 @@ export function HankoProfile() {
   let hankoProfile: HTMLElement;
 
   onMount(() => {
-    console.log(hankoProfile);
     const styleElement = document.createElement("style");
     styleElement.textContent = overrides;
     hankoProfile.shadowRoot!.appendChild(styleElement);
@@ -16,6 +15,7 @@ export function HankoProfile() {
 
   return (
     <hanko-profile
+      tabindex={0} // This is needed to fix focus on dialog
       ref={(ref) => (hankoProfile = ref!)}
       class={styles.hankoProfile}
     />

@@ -152,6 +152,8 @@ const logout = http.post(`${hankoUrl}/logout`, () => {
   return HttpResponse.text(null, { status: 204 });
 });
 
+const emails = [] as HankoEmailResponse[];
+
 const getCurrentUserEmails = http.get<
   {},
   {},
@@ -169,12 +171,28 @@ const getCurrentUserEmails = http.get<
       is_primary: true,
       identity: null,
     } as {} as HankoEmailResponse,
+    ...emails,
   ]);
 });
 
 const getCurrentUserCredentials = http.get(
   `${hankoUrl}/webauthn/credentials`,
   () => {
+    return HttpResponse.json([]);
+  },
+);
+
+const addEmail = http.post<{}, { address: string }>(
+  `${hankoUrl}/emails`,
+  async ({ request }) => {
+    const body = await request.json();
+    emails.push({
+      address: body.address,
+      id: crypto.randomUUID(),
+      is_verified: false,
+      is_primary: false,
+      identity: { id: crypto.randomUUID(), provider: "google" },
+    });
     return HttpResponse.json([]);
   },
 );
@@ -190,4 +208,5 @@ export const hankoHandlers = [
   finalizePasscodeChallenge,
   getCurrentUserEmails,
   getCurrentUserCredentials,
+  addEmail,
 ];

@@ -18,6 +18,10 @@ export const hankoProfile = style([
       "--background-color": themeVars.accent4,
 
       "--container-padding": "0",
+
+      "--paragraph-inner-color": themeVars.accent10,
+      "--paragraph-heading-color": themeVars.foreground,
+      "--accordion-container-bg": themeVars.accent4,
     },
     width: "100%",
   },

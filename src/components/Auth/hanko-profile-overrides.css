@@ -3,7 +3,7 @@
 }
 
 .hanko_accordion .hanko_accordionItem .hanko_accordionInput:checked + .hanko_label ~ .hanko_accordionContent {
-    background: #333;
+    background: var(--accordion-container-bg);
     margin: 0;
     width: auto;
     padding: .5rem 1.5rem;
@@ -31,4 +31,8 @@
     width: 100%;
     background: var(--brand-color);
     color: var(--color);
+}
+
+.hanko_paragraph:has(h2.hanko_headline) {
+    color: var(--paragraph-inner-color);
 }
