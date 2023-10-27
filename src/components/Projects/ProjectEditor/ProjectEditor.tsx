@@ -3,7 +3,7 @@ import { createResource, Show, Signal, Suspense } from "solid-js";
 import { getProject, ProjectView } from "../../../core/services/projects";
 import { ProjectEditorHeader } from "./ProjectEditorHeader";
 import { ProjectEditorSidebar } from "./ProjectEditorSidebar/ProjectEditorSidebar";
-import { provideState } from "statebuilder";
+import { InjectFlags, provideState } from "statebuilder";
 import { EditorState } from "./editorState";
 import { ProjectEditorContent } from "./ProjectEditorContent/ProjectEditorContent";
 import { ProjectEditorToolbar } from "./ProjectEditorToolbar/ProjectEditorToolbar";
@@ -13,7 +13,7 @@ import { ProjectEditorNoPagesContent } from "./ProjectEditorNoPagesContent/Proje
 
 export function ProjectEditor() {
   const params = useParams<{ id: string }>();
-  const editorState = provideState(EditorState);
+  const editorState = provideState(EditorState, InjectFlags.local);
   const navigate = useNavigate();
 
   const [projectView] = createResource(

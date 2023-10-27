@@ -1,6 +1,6 @@
 import { provideState } from "statebuilder";
 import { EditorState } from "../editorState";
-import { Match, Show, Switch } from "solid-js";
+import { lazy, Match, Show, Switch } from "solid-js";
 import { ProjectPageView } from "../../../../core/services/projects";
 import { DiagramEditor } from "../../../DiagramEditor/DiagramEditor";
 import { LoadingCircle } from "../../../../icons/LoadingCircle";
@@ -18,6 +18,14 @@ interface DiagramEditorContentProps {
 function DiagramEditorContent(props: DiagramEditorContentProps) {
   const previewState = provideState(PreviewState);
 
+  const DiagramEditor = lazy(() =>
+    import("../../../DiagramEditor/DiagramEditor").then(
+      ({ DiagramEditor }) => ({
+        default: DiagramEditor,
+      }),
+    ),
+  );
+
   return (
     <DiagramEditor
       previewMode={props.previewMode}
@@ -33,6 +41,12 @@ function DiagramEditorContent(props: DiagramEditorContentProps) {
 }
 
 function PageEditorContent(props: DiagramEditorContentProps) {
+  const PageEditor = lazy(() =>
+    import("../../../PageEditor/PageEditor").then(({ PageEditor }) => ({
+      default: PageEditor,
+    })),
+  );
+
   return (
     <PageEditor
       previewMode={props.previewMode}

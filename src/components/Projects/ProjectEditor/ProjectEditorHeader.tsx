@@ -64,13 +64,13 @@ export function ProjectEditorHeader(props: ProjectEditorHeaderProps) {
         </For>
       </div>
       <div class={"ml-auto flex items-center gap-2"}>
-        <Button
-          leftIcon={<ShareIcon class={"w-4 h-4"} />}
-          size={"sm"}
-          theme={"primary"}
-        >
-          Share
-        </Button>
+        {/*<Button*/}
+        {/*  leftIcon={<ShareIcon class={"w-4 h-4"} />}*/}
+        {/*  size={"sm"}*/}
+        {/*  theme={"primary"}*/}
+        {/*>*/}
+        {/*  Share*/}
+        {/*</Button>*/}
 
         <CurrentUserBadge />
       </div>

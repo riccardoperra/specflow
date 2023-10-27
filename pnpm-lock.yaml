@@ -129,8 +129,8 @@ dependencies:
     specifier: ^1.0.11
     version: 1.0.11
   statebuilder:
-    specifier: ^0.5.0
-    version: 0.5.0
+    specifier: 0.0.0-20231027182437
+    version: 0.0.0-20231027182437
   tiptap-markdown:
     specifier: ^0.8.2
     version: 0.8.2(@tiptap/core@2.1.12)
@@ -5789,18 +5789,8 @@ packages:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
     dev: false
 
-  /statebuilder@0.3.1:
-    resolution: {integrity: sha512-fGqSNxMc2YjjPvp3vKu4TJDjt7C42pp4aap/IKdbm0a4Xmf3R642EquMKSiY9CWStjlIrSdAN6va81P/fx1qZw==}
-    peerDependenciesMeta:
-      rxjs:
-        optional: true
-    dependencies:
-      rxjs: 7.8.1
-      solid-js: 1.8.4
-    dev: false
-
-  /statebuilder@0.5.0:
-    resolution: {integrity: sha512-MaTHVxE0NAueem6Evxf2jVDwzDdbdHfOECx5uH4h7SGevap9MdBHC9W3t5qf7Aj8viGIiCHf51zSyk3i8WYodQ==}
+  /statebuilder@0.0.0-20231027182437:
+    resolution: {integrity: sha512-rG39v6c5q2MRZRmoWC7wqdAajBDHlHG+P5qNBCFrmL9kQnxf0R8FMqcUoupk6xlSD1slKr2AW4TnEcFCSs7Y3w==}
     peerDependenciesMeta:
       '@solid-primitives/event-bus':
         optional: true
@@ -5808,6 +5798,16 @@ packages:
         optional: true
     dependencies:
       '@solid-primitives/event-bus': 1.0.8(solid-js@1.8.4)
+      rxjs: 7.8.1
+      solid-js: 1.8.4
+    dev: false
+
+  /statebuilder@0.3.1:
+    resolution: {integrity: sha512-fGqSNxMc2YjjPvp3vKu4TJDjt7C42pp4aap/IKdbm0a4Xmf3R642EquMKSiY9CWStjlIrSdAN6va81P/fx1qZw==}
+    peerDependenciesMeta:
+      rxjs:
+        optional: true
+    dependencies:
       rxjs: 7.8.1
       solid-js: 1.8.4
     dev: false
