@@ -12,20 +12,22 @@
 </div>
 
 > [!NOTE]
-> SpecFlow is an open-source tool (MIT License) made for the [Hanko hackathon](https://www.hanko.io/hackathon). It's a
-> MVP far away to be a complete product,
-> born with the aim of testing integrations and interactions between new tech/libraries.
+> SpecFlow is an open-source tool (MIT License) made for the [Hanko hackathon](https://www.hanko.io/hackathon).
+> It's a MVP made in two weeks far away to be a complete product, born with the aim of testing integrations and interactions between new
+> tech/libraries, and to better understand the authentication flow by also integrating the passkeys.
 >
 > More in detail, in this project I experiment with Hanko's authentication by integrating it with a third party system
-> like supabase,
-> the latter used trying to take advantage of the generated types, RSL policies, realtime and edge functions.
+> like supabase, the latter used trying to take advantage of the generated types, RSL policies, realtime and edge
+> functions.
 >
-> Furthermore, I used OpenAI API via edge functions to generate code directly from a user-defined prompt.
+> Furthermore, I make a small usage of OpenAI API via edge functions to generate code directly from a user-defined
+> prompt.
 >
 > This project it's also a way to improve my [UI Kit library](https://github.com/riccardoperra/codeui) based
 > on [Kobalte](https://github.com/kobaltedev/kobalte) and [Vanilla Extract](https://vanilla-extract.style/) that I'm
-> working on,
-> initially born to be the CodeImage design system.
+> working on, initially born to be the CodeImage design system.
+
+## 💡 Features
 
 - ✅ SpecFlow provides you with a single hub to organize and centralize all your project specs and documentation. No more
   endless searching; everything you need is just a click away.

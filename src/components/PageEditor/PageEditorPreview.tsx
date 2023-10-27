@@ -34,7 +34,7 @@ interface PageEditorPreviewProps {
 }
 
 export const TIPTAP_ATTRIBUTE_CLASSES =
-  "prose-lg prose-stone dark:prose-invert prose-headings:font-display font-default focus:outline-none max-w-full";
+  "prose-lg prose-stone prose-headings:font-display font-default focus:outline-none max-w-full";
 
 export function PageEditorPreview(props: PageEditorPreviewProps) {
   let ref!: HTMLDivElement;
@@ -42,7 +42,7 @@ export function PageEditorPreview(props: PageEditorPreviewProps) {
   const editor = createEditor(() => ({
     element: ref!,
     extensions: TIPTAP_PLUGINS,
-    editable: false,
+    editable: false, // Currently it's only a preview
     autofocus: false,
     content: props.content,
     editorProps: {
