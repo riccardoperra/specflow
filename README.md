@@ -1,5 +1,5 @@
 <div align="center">
-  
+
 # SpecFlow
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/3018697f-1796-4a9e-9578-82b5af56a193/deploy-status)](https://app.netlify.com/sites/specflow/deploys)
@@ -12,26 +12,41 @@
 </div>
 
 > [!NOTE]
-> SpecFlow is an open-source tool (MIT License) made as my [Hanko hackathon](https://www.hanko.io/hackathon) entry. It's a MVP far away to be a complete product,
+> SpecFlow is an open-source tool (MIT License) made for the [Hanko hackathon](https://www.hanko.io/hackathon). It's a
+> MVP far away to be a complete product,
 > born with the aim of testing integrations and interactions between new tech/libraries.
 >
-> More in detail, in this project I experiment with Hanko's authentication by integrating it with a third party system like supabase,
+> More in detail, in this project I experiment with Hanko's authentication by integrating it with a third party system
+> like supabase,
 > the latter used trying to take advantage of the generated types, RSL policies, realtime and edge functions.
 >
 > Furthermore, I used OpenAI API via edge functions to generate code directly from a user-defined prompt.
 >
-> This project it's also a way to improve my [UI Kit library](https://github.com/riccardoperra/codeui) based on [Kobalte](https://github.com/kobaltedev/kobalte) and [Vanilla Extract](https://vanilla-extract.style/) that I'm working on,
+> This project it's also a way to improve my [UI Kit library](https://github.com/riccardoperra/codeui) based
+> on [Kobalte](https://github.com/kobaltedev/kobalte) and [Vanilla Extract](https://vanilla-extract.style/) that I'm
+> working on,
 > initially born to be the CodeImage design system.
 
-SpecFlow is an online tool that allows to everyone, mostly devs and
-analysts, to store and centralize their project specs and documentation.
+- ✅ SpecFlow provides you with a single hub to organize and centralize all your project specs and documentation. No more
+  endless searching; everything you need is just a click away.
 
-In SpecFlow, users can manage their projects, write markdown like documentation and generate diagrams such as sequence
-diagrams, ER, Mind maps etc complaint to Mermaid syntax.
+- ✅ Write your project notes, requirements, and specifications using a Markdown-like interface
+  In SpecFlow, users can manage their projects, write markdown like documentation and generate diagrams such as
+  sequence diagrams, ER, Mind maps etc complaint to Mermaid syntax.
+
+- ✅ AI-Powered Assistance: with SpecFlow, you can harness the power of AI to
+  effortlessly generate content, saving you time and effort.
+  > [!NOTE]
+  > Currently for the hackathon it is only possible to generate mermaid diagrams using my personal openai key
+
+- ✅ Collaborative Team Sharing (Work in Progress): Soon, SpecFlow will enable sharing of project pages with all
+  team members. This feature ensures that everyone has access to the essential information they need to excel in their
+  roles.
 
 Users can use AI as an assistant to generate the content they need to show.
 
-Users can share their project pages with all members of the team, assuring that everyone has all necessary information for their work. (This is still wip)
+Users can share their project pages with all members of the team, assuring that everyone has all necessary information
+for their work. (This is still wip)
 
 ## 🤖 Tech stack
 
@@ -64,7 +79,8 @@ SpecFlow is a single-page application which integrates Hanko for authentication.
 handles the authentication is in these files/folders:
 
 - [auth.ts](src/core/state/auth.ts): Handles auth state and sync with supabase instance
-- [src/components/Auth](src/components/Auth): Auth page and profile component using hanko element using Vanilla Extract for custom styling
+- [src/components/Auth](src/components/Auth): Auth page and profile component using hanko element using Vanilla Extract
+  for custom styling
 
 ### Authentication flow
 
@@ -72,19 +88,21 @@ Supabase Database comes with a useful RSL policy which allows to restrict the ac
 Since we need that each user can operate only inside it's projects, we need to somehow make supabase
 understand who is making the requests.
 
-Hanko **is replacing** supabase traditional auth (which is disabled), so after the sign-in from the UI we need to extract the data we need
+Hanko **is replacing** supabase traditional auth (which is disabled), so after the sign-in from the UI we need to
+extract the data we need
 from Hanko's JWT, and sign our own to send to Supabase.
 
 We can do that using hanko `authFlowCompleted` event, which gets called once the user authenticates through the UI.
 
 ```typescript
 hanko.onAuthFlowCompleted(() => {
-  supabase.functions.invoke("hanko-auth", { body: { token: session.jwt } });
+  supabase.functions.invoke("hanko-auth", {body: {token: session.jwt}});
 });
 ```
 
 After that event we will call the supabase edge function
-in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts) which validate Hanko JWT retrieving the JWKS config, then sign ourselves a new token for supabase.
+in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts) which validate Hanko JWT retrieving the JWKS
+config, then sign ourselves a new token for supabase.
 
 ```ts
 import * as jose from "https://deno.land/x/jose@v4.9.0/index.ts";
@@ -106,7 +124,7 @@ const secret = new TextEncoder().encode(supabaseToken);
 const token = await jose
   .SignJWT(payload)
   .setExpirationTime(data.payload.exp) // We'll set the same expiration time as Hanko token
-  .setProtectedHeader({ alg: "HS256" }) // Supabase uses a different algorithm
+  .setProtectedHeader({alg: "HS256"}) // Supabase uses a different algorithm
   .sign(secret);
 ```
 
@@ -119,7 +137,7 @@ Our payload for the JWT will contain the user's identifier from Hanko and the sa
 Once that each supabase fetch call should include our custom token which contains the Hanko **userId**.
 
 ```ts
-import { createClient } from "supabase";
+import {createClient} from "supabase";
 
 const supabaseUrl = import.meta.env.VITE_CLIENT_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_CLIENT_SUPABASE_KEY;
@@ -141,7 +159,8 @@ export function patchSupabaseRestClient(accessToken: string | null) {
 }
 ```
 
-Next, thanks to a **postgres function** we can extract the userId from the jwt in order to let supabase knows which user is authenticated.
+Next, thanks to a **postgres function** we can extract the userId from the jwt in order to let supabase knows which user
+is authenticated.
 
 ```sql
 create
@@ -155,7 +174,8 @@ language sql stable;
 We can use RLS now using our user_id from hanko.
 
 ```sql
-CREATE POLICY "Allows all operations" ON public.project_page
+CREATE
+POLICY "Allows all operations" ON public.project_page
     AS PERMISSIVE FOR ALL
     TO public
     -- ✅ Use our user_id function to get hanko user_id from jwt
@@ -214,18 +234,19 @@ authentication flow.
 
 The mocking handlers are written in [src/mocks/hanko-handlers.ts](src/mocks/hanko-handlers.ts) file.
 
-When the environment variable `VITE_ENABLE_AUTH_MOCK` is true, MSW will be initialized in order to login with two different users.
+When the environment variable `VITE_ENABLE_AUTH_MOCK` is true, MSW will be initialized in order to login with two
+different users.
 
 - User1:
 
-  - email: **user1@example.com**
-  - password: **password**
-  - passcode: 123456
+    - email: **user1@example.com**
+    - password: **password**
+    - passcode: 123456
 
 - User2:
-  - email: **user2@example.com**
-  - password: **password**
-  - passcode: 123456
+    - email: **user2@example.com**
+    - password: **password**
+    - passcode: 123456
 
 Currently both passcode and password flows are mocked, you can toggle them by updating the `ENABLE_PASSCODE_FLOW`
 constant in [src/mocks/hanko-handlers.ts](src/mocks/hanko-handlers.ts).

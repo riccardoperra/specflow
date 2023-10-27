@@ -121,7 +121,7 @@ export const hankoComponent = style([
         padding: `0 ${themeTokens.spacing["4"]}`,
       },
       "&::part(input):focus, &::part(input):focus-visible": {
-        outlineOffset: "3px",
+        outlineOffset: "4px",
         outline: `2px solid ${hankoVars.brandColor}`,
       },
       "&::part(input):-webkit-autofill, &::part(input):-webkit-autofill:hover, &::part(input):-webkit-autofill:focus":
