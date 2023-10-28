@@ -1,9 +1,13 @@
 import { useNavigate, useParams } from "@solidjs/router";
-import { createResource, Show, Signal, Suspense } from "solid-js";
+import { createResource, Show, Suspense } from "solid-js";
 import { getProject, ProjectView } from "../../../core/services/projects";
 import { ProjectEditorHeader } from "./ProjectEditorHeader";
 import { ProjectEditorSidebar } from "./ProjectEditorSidebar/ProjectEditorSidebar";
-import { InjectFlags, provideState } from "statebuilder";
+import {
+  provideState,
+  StateProvider,
+  ɵWithResourceStorage,
+} from "statebuilder";
 import { EditorState } from "./editorState";
 import { ProjectEditorContent } from "./ProjectEditorContent/ProjectEditorContent";
 import { ProjectEditorToolbar } from "./ProjectEditorToolbar/ProjectEditorToolbar";
@@ -11,9 +15,17 @@ import * as styles from "./ProjectEditor.css";
 import { LoadingCircleWithBackdrop } from "../../../icons/LoadingCircle";
 import { ProjectEditorNoPagesContent } from "./ProjectEditorNoPagesContent/ProjectEditorNoPagesContent";
 
-export function ProjectEditor() {
+export function ProjectEditorRoot() {
+  return (
+    <StateProvider>
+      <ProjectEditor />
+    </StateProvider>
+  );
+}
+
+function ProjectEditor() {
   const params = useParams<{ id: string }>();
-  const editorState = provideState(EditorState, InjectFlags.local);
+  const editorState = provideState(EditorState);
   const navigate = useNavigate();
 
   const [projectView] = createResource(
@@ -26,14 +38,11 @@ export function ProjectEditor() {
       return project;
     },
     {
-      storage: (value) =>
-        [
-          () => editorState.get.projectView,
-          (v: () => ProjectView | null) => {
-            editorState.actions.setProjectView(v());
-            return editorState.get.projectView;
-          },
-        ] as Signal<ProjectView | null | undefined>,
+      storage: ɵWithResourceStorage(
+        Object.assign(() => editorState.get.projectView, {
+          set: (v: ProjectView | null) => editorState.actions.setProjectView(v),
+        }),
+      ),
       initialValue: null,
     },
   );

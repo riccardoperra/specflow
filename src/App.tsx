@@ -45,7 +45,7 @@ const App: Component = () => {
         ),
       component: lazy(() =>
         import("./components/Projects/ProjectEditor/ProjectEditor").then(
-          ({ ProjectEditor }) => ({ default: ProjectEditor }),
+          ({ ProjectEditorRoot }) => ({ default: ProjectEditorRoot }),
         ),
       ),
     },

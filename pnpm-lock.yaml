@@ -129,8 +129,8 @@ dependencies:
     specifier: ^1.0.11
     version: 1.0.11
   statebuilder:
-    specifier: 0.0.0-20231027182437
-    version: 0.0.0-20231027182437
+    specifier: 0.0.0-20231028092513
+    version: 0.0.0-20231028092513
   tiptap-markdown:
     specifier: ^0.8.2
     version: 0.8.2(@tiptap/core@2.1.12)
@@ -5789,8 +5789,8 @@ packages:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
     dev: false
 
-  /statebuilder@0.0.0-20231027182437:
-    resolution: {integrity: sha512-rG39v6c5q2MRZRmoWC7wqdAajBDHlHG+P5qNBCFrmL9kQnxf0R8FMqcUoupk6xlSD1slKr2AW4TnEcFCSs7Y3w==}
+  /statebuilder@0.0.0-20231028092513:
+    resolution: {integrity: sha512-b0eibsCXVjLyyNrDrDc9yqhQZb53moBbg3qifL2xIX75U9fk9n/c8Zjpx8xeQvbOXgoFdrzYCJ1wY55eGvTN9A==}
     peerDependenciesMeta:
       '@solid-primitives/event-bus':
         optional: true
