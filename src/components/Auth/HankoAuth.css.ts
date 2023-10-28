@@ -15,7 +15,30 @@ export const hankoAuth = style([
       "--container-padding": hankoAuthThemeVars.containerPadding,
     },
     selectors: {
+      "&::part(headline1)": responsiveStyle({
+        xs: {
+          textAlign: "center",
+        },
+        lg: {
+          textAlign: "left",
+        },
+      }),
+      "&::part(paragraph)": responsiveStyle({
+        xs: {
+          textAlign: "center",
+        },
+        lg: {
+          textAlign: "left",
+        },
+      }),
       "&::part(form-item)": {
+        minWidth: "100%",
+      },
+      "&::part(input)": {
+        minWidth: "100%",
+        // backgroundColor: "rgba(10, 10, 10, .75)",
+      },
+      "&::part(input passcode-input)": {
         minWidth: "100%",
       },
       "&::part(container)": responsiveStyle({

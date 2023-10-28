@@ -107,12 +107,20 @@ export function MermaidEditor(props: VoidProps<JsonEditorProps>) {
     //   return false;
     // }),
     EditorView.theme({
+      "&": {
+        height: "100%",
+        "min-width": "fit-content",
+        "max-width": "100%",
+      },
       ".cm-line:first-child": {
         "user-select": "none",
         opacity: 1,
       },
       ".cm-disabled-line": {
         "user-select": "none",
+      },
+      ".cm-scroller": {
+        overflow: "hidden",
       },
     }),
   ]);

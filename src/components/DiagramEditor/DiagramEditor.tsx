@@ -31,7 +31,7 @@ export function DiagramEditor(props: DiagramEditorProps) {
     <div class={"h-full w-full"}>
       <SplitView
         left={
-          <div class="bg-[#181818] h-full px-2 p-4">
+          <div class="bg-[#181818] h-full">
             <MermaidEditor
               type={props.diagramType}
               value={props.content}

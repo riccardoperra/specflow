@@ -8,6 +8,7 @@ import { LoadingCircleWithBackdrop } from "./icons/LoadingCircle";
 import { NotFound } from "./components/NotFound/NotFound";
 import { Footer } from "./components/Footer/Footer";
 import { getUmami } from "./core/utils/umami";
+import { Auth } from "./components/Auth/Auth";
 
 const App: Component = () => {
   document.documentElement.setAttribute("data-cui-theme", "dark");
@@ -52,11 +53,7 @@ const App: Component = () => {
     {
       path: "/login",
       data: () => getUmami().trackView(`/login`),
-      component: lazy(() =>
-        import("./components/Auth/Auth").then(({ Auth }) => ({
-          default: Auth,
-        })),
-      ),
+      component: Auth,
     },
     {
       path: "/not-found",

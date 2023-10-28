@@ -16,7 +16,7 @@
   "devDependencies": {
     "@vanilla-extract/vite-plugin": "^3.9.0",
     "autoprefixer": "^10.4.16",
-    "msw": "2.0.0",
+    "msw": "2.0.1",
     "postcss": "^8.4.31",
     "prettier": "^3.0.3",
     "solid-devtools": "^0.27.7",
@@ -63,7 +63,7 @@
     "mermaid": "^10.6.0",
     "modern-screenshot": "^4.4.33",
     "motion": "^10.16.4",
-    "openai": "^4.14.0",
+    "openai": "^4.14.1",
     "panzoom": "^9.4.3",
     "rxjs": "^7.8.1",
     "solid-codemirror": "^2.3.0",
