@@ -21,7 +21,7 @@
 > like supabase, the latter used trying to take advantage of the generated types, RSL policies, realtime and edge
 > functions.
 >
-> Furthermore, I make a small usage of OpenAI API via edge functions to generate code directly from a user-defined
+> Furthermore, I made a small use of OpenAI API via edge functions to generate code directly from a user-defined
 > prompt.
 >
 > This project it's also a way to improve my [UI Kit library](https://github.com/riccardoperra/codeui) based

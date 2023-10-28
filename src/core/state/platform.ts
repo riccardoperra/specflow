@@ -1,13 +1,11 @@
-import { experimental__defineResource } from "./plugins/bindStateBuilderResource";
+import { ɵdefineResource } from "statebuilder";
 import { getPlatformConfiguration, Platform } from "../services/platform";
 import { supabase } from "../supabase";
 import { createEffect, createMemo, on } from "solid-js";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { withLogger } from "./plugins/withLogger";
 
-export const PlatformState = experimental__defineResource(
-  getPlatformConfiguration,
-)
+export const PlatformState = ɵdefineResource(getPlatformConfiguration)
   .extend(withLogger({ name: "PlatformState" }))
   .extend((_, context) => {
     let subscription: RealtimeChannel | null;
