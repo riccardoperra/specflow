@@ -1,6 +1,6 @@
-import { Link, Navigate, useNavigate } from "@solidjs/router";
-import { createResource, For, Show, Suspense } from "solid-js";
-import { Project, getProjects } from "../../core/services/projects";
+import { Link, useNavigate } from "@solidjs/router";
+import { createResource, ErrorBoundary, For, Show, Suspense } from "solid-js";
+import { getProjects, Project } from "../../core/services/projects";
 import { Button, IconButton, Tooltip } from "@codeui/kit";
 import { CurrentUserBadge } from "../../ui/UserBadge/CurrentUserBadge";
 import { createControlledDialog } from "../../core/utils/controlledDialog";
@@ -108,23 +108,39 @@ export function Projects() {
           </div>
         </div>
 
-        <div class={"mt-4"}>
-          <div class={"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"}>
-            <Suspense
-              fallback={<LoadingCircleWithBackdrop width={32} height={32} />}
+        <ErrorBoundary
+          fallback={(err, reset) => (
+            <div
+              class={
+                "flex flex-col gap-4 justify-center items-center text-lg min-h-[300px]"
+              }
             >
-              <For each={projects()}>
-                {(project) => (
-                  <ProjectCard
-                    onDelete={onDeleteProject}
-                    onEdit={onEditProject}
-                    project={project}
-                  />
-                )}
-              </For>
-            </Suspense>
+              An error occurred.
+              {err.message}
+              <Button theme={"primary"} onClick={reset}>
+                Reload
+              </Button>
+            </div>
+          )}
+        >
+          <div class={"mt-4"}>
+            <div class={"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"}>
+              <Suspense
+                fallback={<LoadingCircleWithBackdrop width={32} height={32} />}
+              >
+                <For each={projects()}>
+                  {(project) => (
+                    <ProjectCard
+                      onDelete={onDeleteProject}
+                      onEdit={onEditProject}
+                      project={project}
+                    />
+                  )}
+                </For>
+              </Suspense>
+            </div>
           </div>
-        </div>
+        </ErrorBoundary>
       </div>
     </div>
   );

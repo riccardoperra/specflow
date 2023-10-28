@@ -1,12 +1,6 @@
-import { formatDistanceToNow } from "../../../core/utils/date";
-import {
-  Project,
-  ProjectView,
-  deleteProject,
-} from "../../../core/services/projects";
+import { deleteProject, Project } from "../../../core/services/projects";
 import { Link } from "@solidjs/router";
 import {
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -20,8 +14,7 @@ import { createControlledDialog } from "../../../core/utils/controlledDialog";
 import { ConfirmDialog } from "../../../ui/ConfirmDialog/ConfirmDialog";
 import { createSignal } from "solid-js";
 import { ProjectEditSettingsDialog } from "../ProjectEditSettingsDialog/ProjectEditSettingsDialog";
-
-const locale: Intl.UnicodeBCP47LocaleIdentifier = "en-US";
+import { createTimeAgo } from "@solid-primitives/date";
 
 interface ProjectCardProps {
   project: Project;
@@ -32,10 +25,11 @@ interface ProjectCardProps {
 export function ProjectCard(props: ProjectCardProps) {
   const controlledDialog = createControlledDialog();
 
-  const onEdit = () => controlledDialog(ProjectEditSettingsDialog, {
-    onSave: props.onEdit,
-    project: props.project
-  });
+  const onEdit = () =>
+    controlledDialog(ProjectEditSettingsDialog, {
+      onSave: props.onEdit,
+      project: props.project,
+    });
 
   const onDelete = () => {
     controlledDialog(ConfirmDialog, (openChange) => {
@@ -57,9 +51,7 @@ export function ProjectCard(props: ProjectCardProps) {
     });
   };
 
-  const createdAt = () => {
-    return formatDistanceToNow(locale, props.project.created_at as string);
-  };
+  const [createdAt] = createTimeAgo(() => props.project.created_at);
 
   return (
     <Link

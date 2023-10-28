@@ -18,7 +18,7 @@
 > passkeys.
 >
 > More in detail, in this project I experiment with Hanko's authentication by integrating it with a third party system
-> like supabase, the latter used trying to take advantage of the generated types, RSL policies, realtime and edge
+> like supabase, the latter used trying to take advantage of the generated types, RLS policies, realtime and edge
 > functions.
 >
 > Furthermore, I made a small use of OpenAI API via edge functions to generate code directly from a user-defined
@@ -61,6 +61,14 @@ Other libraries that I should mention:
 - [Kobalte](https://github.com/kobaltedev/kobalte): A SolidJS UI toolkit for building accessible components
 - [solid-primitives](https://github.com/solidjs-community/solid-primitives): High quality primitives for SolidJS
   applications.
+    - [@solid-primitives/media](https://github.com/solidjs-community/solid-primitives/tree/main/packages/media#readme):
+      Primitives to deal with media queries
+    - [@solid-primitives/storage](https://github.com/solidjs-community/solid-primitives/tree/main/packages/storage#readme):
+      Primitives to deal with storage API (cookie handling)
+    - [@solid-primitives/event-bus](https://github.com/solidjs-community/solid-primitives/tree/main/packages/event-bus#readme):
+      Primitives to deal with event-bus (statebuilder/commands)
+    - [@solid-primitives/date](https://github.com/solidjs-community/solid-primitives/tree/main/packages/date):
+      Primitives to deal with dates
 - [codemirror-lang-mermaid](https://github.com/inspirnathan/codemirror-lang-mermaid): I would never
   have thought of making this application without this library.
 - [solid-codemirror](https://github.com/riccardoperra/solid-codemirror): Solid CodeMirror wrapper.
@@ -79,24 +87,24 @@ handles the authentication is in these files/folders:
 
 ### Authentication flow
 
-Supabase Database comes with a useful RSL policy which allows to restrict the access from our data using custom rules.
-Since we need that each user can operate only inside it's projects, we need to somehow make supabase
-understand who is making the requests.
+Supabase Database comes with a useful [RLS policy](https://supabase.com/docs/guides/auth/row-level-security) which
+allows to restrict data access using custom rules. Since we need that each user can operate only inside their projects,
+we need to somehow make supabase understand who is making the requests.
 
 Hanko **is replacing** supabase traditional auth (which is disabled), so after the sign-in from the UI we need to
-extract the data we need
-from Hanko's JWT, and sign our own to send to Supabase.
+extract the data we need from Hanko's JWT, and sign our own to send to Supabase.
 
 We can do that using hanko `authFlowCompleted` event, which gets called once the user authenticates through the UI.
 
 ```typescript
 hanko.onAuthFlowCompleted(() => {
+  const session = hanko.session.get();
   supabase.functions.invoke("hanko-auth", {body: {token: session.jwt}});
 });
 ```
 
-After that event we will call the supabase edge function
-in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts) which validate Hanko JWT retrieving the JWKS
+During that event we will call the supabase edge function
+in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts) which will validate the Hanko JWT retrieving the JWKS
 config, then sign ourselves a new token for supabase.
 
 ```ts
@@ -119,14 +127,14 @@ const secret = new TextEncoder().encode(supabaseToken);
 const token = await jose
   .SignJWT(payload)
   .setExpirationTime(data.payload.exp) // We'll set the same expiration time as Hanko token
-  .setProtectedHeader({alg: "HS256"}) // Supabase uses a different algorithm
+  .setProtectedHeader({alg: "HS256"})
   .sign(secret);
 ```
 
 Our payload for the JWT will contain the user's identifier from Hanko and the same expiration date.
 
 > [!IMPORTANT]
-> We are signing this JWT using Supabase's signing secret token, so it will be able to check the jwt authenticity.
+> We are signing this JWT using Supabase's signing secret token, so we'll be able to check the jwt authenticity.
 > This is a crucial step which obviously for security reasons cannot be done on the client side.
 
 Once that each supabase fetch call should include our custom token which contains the Hanko **userId**.
@@ -136,7 +144,11 @@ import {createClient} from "supabase";
 
 const supabaseUrl = import.meta.env.VITE_CLIENT_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_CLIENT_SUPABASE_KEY;
+
 const client = createClient(supabaseUrl, supabaseKey);
+
+// Get headers after creating the supabase client. 
+// The authorization bearer is valuated with the `supabaseKey`
 const originalHeaders = structuredClone(client.rest.headers);
 
 export function patchSupabaseRestClient(accessToken: string | null) {
@@ -158,15 +170,13 @@ Next, thanks to a **postgres function** we can extract the userId from the jwt i
 is authenticated.
 
 ```sql
-create
-or replace function auth.user_id() returns text as
-$$
+create function auth.hanko_user_id() returns text as $$
 select nullif(current_setting('request.jwt.claims', true)::json ->> 'userId', '')::text;
 $$
 language sql stable;
 ```
 
-We can use RLS now using our user_id from hanko.
+We can now define a new RLS using our hanko user_id retrieved through our custom function.
 
 ```sql
 CREATE
@@ -174,8 +184,8 @@ POLICY "Allows all operations" ON public.project_page
     AS PERMISSIVE FOR ALL
     TO public
     -- ✅ Use our user_id function to get hanko user_id from jwt
-    USING ((auth.user_id() = user_id))
-    WITH CHECK ((auth.user_id() = user_id));
+    USING ((auth.hanko_user_id() = user_id))
+    WITH CHECK ((auth.hanko_user_id() = user_id));
 
 ALTER TABLE public.project_page ENABLE ROW LEVEL SECURITY;
 ```
