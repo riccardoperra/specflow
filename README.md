@@ -104,7 +104,8 @@ hanko.onAuthFlowCompleted(() => {
 ```
 
 During that event we will call the supabase edge function
-in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts) which will validate the Hanko JWT retrieving the JWKS
+in [supabase/functions/hanko-auth](supabase/functions/hanko-auth/index.ts) which will validate the Hanko JWT retrieving
+the JWKS
 config, then sign ourselves a new token for supabase.
 
 ```ts
@@ -255,6 +256,29 @@ different users.
 
 Currently both passcode and password flows are mocked, you can toggle them by updating the `ENABLE_PASSCODE_FLOW`
 constant in [src/mocks/hanko-handlers.ts](src/mocks/hanko-handlers.ts).
+
+## 🖌️ Styling Hanko
+
+<img src="docs/login-1.png" alt="Login Page - Email">
+<span style="text-align:center">
+
+_Login Page - Email Insert_
+
+</span>
+
+<img src="docs/login-2.png" alt="Login Page - Passcode challenge">
+<span style="text-align:center">
+
+_Login Page - Passcode challenge._
+
+</span>
+
+<img src="docs/profile-1.png" alt="Profile Page">
+<span style="text-align:center">
+
+_Profile Page Dialog._
+
+</span>
 
 ## Local development
 
