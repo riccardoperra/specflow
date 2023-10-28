@@ -24,6 +24,9 @@ export const hankoProfile = style([
       "--accordion-container-bg": themeVars.accent4,
     },
     width: "100%",
+    ":focus-visible": {
+      outline: "none",
+    },
   },
   {
     selectors: {
@@ -39,6 +42,16 @@ export const hankoProfile = style([
       },
       "&::part(paragraph)": {
         marginBottom: themeTokens.spacing["6"],
+      },
+      "&::part(input)": {
+        vars: {
+          "--item-height": "42px",
+        },
+      },
+      "&::part(button)": {
+        vars: {
+          "--item-height": "42px",
+        },
       },
     },
   },

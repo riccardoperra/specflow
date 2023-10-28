@@ -1,4 +1,9 @@
-import { globalStyle, style } from "@vanilla-extract/css";
+import {
+  globalKeyframes,
+  globalStyle,
+  keyframes,
+  style,
+} from "@vanilla-extract/css";
 import { themeTokens, themeVars } from "@codeui/kit";
 
 globalStyle("html", {
@@ -46,4 +51,19 @@ globalStyle("::-webkit-scrollbar-thumb", {
 
 globalStyle("::-webkit-scrollbar-thumb:hover", {
   backgroundColor: themeVars.accent8,
+});
+
+const backdropFilter = keyframes({
+  "0%": {
+    backdropFilter: "blur(0px) saturate(180%)",
+  },
+  "100%": {
+    backdropFilter: "blur(8px) saturate(180%)",
+  },
+});
+
+// Add backdrop filter blur for modals
+
+globalStyle("div[data-panel-size]", {
+  animation: `${backdropFilter} 250ms normal forwards ease-in-out`,
 });
