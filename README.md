@@ -30,6 +30,10 @@
 
 <img alt="Homepage of SpecFlow" src="./docs/1.png" width="100%"/>
 
+Read the integration post: 
+
+https://dev.to/riccardoperra/specflow-integrating-hanko-and-supabase-in-a-solidjs-client-side-application-550m
+
 ## 💡 Features
 
 - ✅ SpecFlow provides you with a single hub to organize and centralize all your project specs and documentation. No more
